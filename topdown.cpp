@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "shader.hpp"
 
@@ -51,7 +52,14 @@ int main(int argc, char **argv)
 	shader.attachFile("assets/shaders/default.frag", ShaderType::Fragment);
 	shader.link();
 
+	ShaderUniform projection = shader.getUniform("Projection");
+
 	Shader::bind(&shader);
+	glm::mat4 pMatrix = glm::ortho(
+		0.f, static_cast<float>(WIDTH),
+		static_cast<float>(HEIGHT), 0.f,
+		-1.f, 1.f);
+	projection.set(pMatrix);
 
 	glfwSwapInterval(1);
 	glClearColor(0.f, 0.2f, 0.4f, 1.0f);
