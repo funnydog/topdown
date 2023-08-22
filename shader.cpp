@@ -16,11 +16,11 @@ ShaderUniform::ShaderUniform(int location)
 void
 ShaderUniform::set(const glm::mat4 &matrix)
 {
-	glUniformMatrix4fv(
-		mLocation,
-		1,
-		GL_FALSE,
-		glm::value_ptr(matrix));
+	glCheck(glUniformMatrix4fv(
+			mLocation,
+			1,
+			GL_FALSE,
+			glm::value_ptr(matrix)));
 }
 
 Shader::Shader()
