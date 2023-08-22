@@ -8,6 +8,7 @@ project('topdown', 'cpp',
 
 srcs = [
   'glcheck.cpp',
+  'shader.cpp',
   'topdown.cpp',
   'utility.cpp',
 ]
