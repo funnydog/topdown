@@ -8,8 +8,8 @@
 namespace
 {
 	const char *PROJECT_NAME = "TopDown";
-	int WIDTH = 640;
-	int HEIGHT = 480;
+	const int WIDTH = 640;
+	const int HEIGHT = 480;
 }
 
 int main(int argc, char **argv)
