@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "shader.hpp"
+
 namespace
 {
 	const char *PROJECT_NAME = "TopDown";
@@ -43,6 +45,14 @@ int main(int argc, char **argv)
 		throw std::runtime_error(
 			reinterpret_cast<const char *>(glewGetErrorString(err)));
 	}
+
+	Shader shader;
+	shader.attachFile("assets/shaders/default.vert", ShaderType::Vertex);
+	shader.attachFile("assets/shaders/default.frag", ShaderType::Fragment);
+	shader.link();
+
+	Shader::bind(&shader);
+
 	glfwSwapInterval(1);
 	glClearColor(0.f, 0.2f, 0.4f, 1.0f);
 
