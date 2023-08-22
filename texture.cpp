@@ -5,6 +5,7 @@
 
 #include "glcheck.hpp"
 #include "texture.hpp"
+#include "stb_image.h"
 
 Texture::Texture()
 	: mTexture(0)
@@ -91,6 +92,22 @@ Texture::update(const void *pixels, unsigned x, unsigned y, unsigned w, unsigned
 			pixels));
 	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 	glCheck(glFlush());
+}
+
+bool
+Texture::loadFromFile(const std::filesystem::path &path)
+{
+	int width, height, channels;
+	auto *pixels = stbi_load(path.c_str(), &width, &height, &channels, 4);
+	if (!pixels)
+	{
+		std::cerr << "Texture::loadFromFile - Cannot load " << path.string()
+			  << std::endl;
+		return false;
+	}
+	bool result = create(width, height, pixels);
+	stbi_image_free(pixels);
+	return result;
 }
 
 unsigned
