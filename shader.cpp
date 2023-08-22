@@ -1,8 +1,27 @@
+#include <cassert>
+
 #include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "glcheck.hpp"
 #include "shader.hpp"
 #include "utility.hpp"
+
+ShaderUniform::ShaderUniform(int location)
+	: mLocation(location)
+{
+	assert(location >= 0);
+}
+
+void
+ShaderUniform::set(const glm::mat4 &matrix)
+{
+	glUniformMatrix4fv(
+		mLocation,
+		1,
+		GL_FALSE,
+		glm::value_ptr(matrix));
+}
 
 Shader::Shader()
 	: mProgram(0)
@@ -78,6 +97,17 @@ Shader::link()
 		glCheck(glGetProgramInfoLog(mProgram, length, nullptr, message.data()));
 		throw std::runtime_error(message);
 	}
+}
+
+ShaderUniform
+Shader::getUniform(const std::string &name) const
+{
+	auto location = glGetUniformLocation(mProgram, name.c_str());
+	if (location == -1)
+	{
+		throw std::runtime_error(name + " uniform not found");
+	}
+	return ShaderUniform(location);
 }
 
 void

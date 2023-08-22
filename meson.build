@@ -13,10 +13,12 @@ srcs = [
   'utility.cpp',
 ]
 
+libglm = dependency('glm')
 libglew = dependency('glew')
 libglfw3 = dependency('glfw3')
 
 deps = [
+  libglm,
   libglew,
   libglfw3,
 ]
