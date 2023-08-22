@@ -35,6 +35,14 @@ int main(int argc, char **argv)
 		throw std::runtime_error("Cannot create a new window");
 	}
 	glfwMakeContextCurrent(window);
+
+	GLenum err = glewInit();
+	if (err != GLEW_OK)
+	{
+		glfwTerminate();
+		throw std::runtime_error(
+			reinterpret_cast<const char *>(glewGetErrorString(err)));
+	}
 	glfwSwapInterval(1);
 	glClearColor(0.f, 0.2f, 0.4f, 1.0f);
 
