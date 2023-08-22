@@ -7,10 +7,12 @@ class Texture
 
 	Texture(const Texture &other) = delete;
 	Texture& operator=(const Texture &other) = delete;
-	Texture(Texture &&other) noexcept = delete;
-	Texture& operator=(Texture &&ohter) noexcept = delete;
 
-	bool create(unsigned width, unsigned height, bool repeat=false, bool smooth=false);
+	Texture(Texture &&other) noexcept = default;
+	Texture& operator=(Texture &&ohter) noexcept = default;
+
+	bool create(unsigned width, unsigned height,
+		    const void *pixels=nullptr, bool repeat=false, bool smooth=false);
 	void update(const void *pixels);
 	void update(const void *pixels, unsigned x, unsigned y, unsigned w, unsigned h);
 

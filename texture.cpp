@@ -20,7 +20,7 @@ Texture::~Texture()
 }
 
 bool
-Texture::create(unsigned width, unsigned height, bool repeat, bool smooth)
+Texture::create(unsigned width, unsigned height, const void *pixels, bool repeat, bool smooth)
 {
 	if (width == 0 || height == 0)
 	{
@@ -48,7 +48,8 @@ Texture::create(unsigned width, unsigned height, bool repeat, bool smooth)
 			0,
 			GL_RGBA,
 			GL_UNSIGNED_BYTE,
-			nullptr));
+			pixels));
+
 	GLint parameter = repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE;
 	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, parameter));
 	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, parameter));
