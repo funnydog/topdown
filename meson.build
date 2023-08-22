@@ -8,6 +8,7 @@ project('topdown', 'cpp',
 
 srcs = [
   'topdown.cpp',
+  'utility.cpp',
 ]
 
 libglew = dependency('glew')
