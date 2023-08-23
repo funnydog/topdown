@@ -23,7 +23,7 @@ RenderTarget::~RenderTarget()
 	glDeleteBuffers(1, &mEBO);
 	glDeleteBuffers(1, &mVBO);
 
-	clear();
+	beginBatch();
 	DrawChannel *channel = mFreeChannels;
 	while (channel)
 	{
@@ -34,7 +34,7 @@ RenderTarget::~RenderTarget()
 }
 
 void
-RenderTarget::clear()
+RenderTarget::beginBatch()
 {
 	mVertices.clear();
 	*mChannelTail = mFreeChannels;
@@ -44,7 +44,7 @@ RenderTarget::clear()
 }
 
 void
-RenderTarget::complete()
+RenderTarget::endBatch()
 {
 	mIndices.clear();
 	for (auto channel = mChannelList; channel; channel = channel->next)
@@ -57,7 +57,7 @@ RenderTarget::complete()
 }
 
 void
-RenderTarget::draw() const
+RenderTarget::drawBatch() const
 {
 	if (!mChannelList)
 	{

@@ -15,18 +15,18 @@ public:
 	/**
 	 * Clear the buffer for a new list.
 	 */
-	void clear();
+	void beginBatch();
 
 	/**
 	 * Merge the index buffers and fix the idxOffsets before
 	 * drawing the batch.
 	 */
-	void complete();
+	void endBatch();
 
 	/**
 	 * Send the blob of vertices to the GPU.
 	 */
-	void draw() const;
+	void drawBatch() const;
 
 	/**
 	 * Set the texture for the next primitive.
