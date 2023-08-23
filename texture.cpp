@@ -178,20 +178,26 @@ Texture::loadFromFile(const std::filesystem::path &path)
 unsigned
 Texture::getWidth() const
 {
-	GLint width;
-	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
-	glCheck(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width));
-	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	GLint width = 0;
+	if (mTexture)
+	{
+		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+		glCheck(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	}
 	return width;
 }
 
 unsigned
 Texture::getHeight() const
 {
-	GLint height;
-	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
-	glCheck(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height));
-	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	GLint height = 0;
+	if (mTexture)
+	{
+		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+		glCheck(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	}
 	return height;
 }
 
