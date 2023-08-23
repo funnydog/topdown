@@ -86,10 +86,12 @@ Transformable::getTransform() const
 	{
 		mTransformNeedsUpdate = false;
 		mTransform = glm::scale(
-			glm::rotate(
-				glm::translate(glm::mat4(1.f), glm::vec3(mPosition, 0.f)),
-				glm::radians(mRotation),
-				glm::vec3(-mOrigin, 1.f)),
+			glm::translate(
+				glm::rotate(
+					glm::translate(glm::mat4(1.f), glm::vec3(mPosition, 0.f)),
+					glm::radians(mRotation),
+					glm::vec3(0.f, 0.f, 1.f)),
+				glm::vec3(-mOrigin, 0.f)),
 			glm::vec3(mScale, 1.f));
 	}
 	return mTransform;
