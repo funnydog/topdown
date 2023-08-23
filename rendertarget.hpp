@@ -7,6 +7,7 @@
 #include "shader.hpp"
 #include "texture.hpp"
 #include "vertex.hpp"
+#include "view.hpp"
 
 class Canvas;
 class Window;
@@ -77,6 +78,9 @@ private:
 	DrawChannel *newChannel(const Texture *texture, unsigned vtxOffset);
 
 private:
+	View mDefaultView;
+	View mView;
+
 	std::vector<Vertex>        mVertices;
 	std::vector<std::uint16_t> mIndices;
 

@@ -3,8 +3,6 @@
 
 #include <GL/glew.h>
 
-#include <glm/gtc/matrix_transform.hpp>
-
 #include "color.hpp"
 #include "glcheck.hpp"
 #include "rendertarget.hpp"
@@ -57,27 +55,21 @@ RenderTarget::initialize()
 	mShader.attachFile("assets/shaders/default.frag", ShaderType::Fragment);
 	mShader.link();
 
-	Shader::bind(&mShader);
-	ShaderUniform projection = mShader.getUniform("Projection");
+	glm::vec2 size = mCanvas->getSize();
+	mDefaultView.setCenter(size * 0.5f);
+	mDefaultView.setSize(size);
+	mView = mDefaultView;
 
-	auto size = mCanvas->getSize();
-	Shader::bind(&mShader);
-	glm::mat4 pMatrix = glm::ortho(
-		0.f, static_cast<float>(size.x),
-		static_cast<float>(size.y), 0.f,
-		-1.f, 1.f);
-	projection.set(pMatrix);
-
-	glGenBuffers(1, &mVBO);
-	glGenBuffers(1, &mEBO);
+	glCheck(glGenBuffers(1, &mVBO));
+	glCheck(glGenBuffers(1, &mEBO));
 }
 
 void
 RenderTarget::clear(Color color)
 {
 	glm::vec4 clearColor(color);
-	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glCheck(glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a));
+	glCheck(glClear(GL_COLOR_BUFFER_BIT));
 }
 
 void
@@ -110,6 +102,10 @@ RenderTarget::drawBatch() const
 	{
 		return;
 	}
+
+	Shader::bind(&mShader);
+	ShaderUniform projection = mShader.getUniform("Projection");
+	projection.set(mView.getTransform());
 
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
 	glCheck(glBufferData(GL_ARRAY_BUFFER,
@@ -155,6 +151,8 @@ RenderTarget::drawBatch() const
 	glCheck(glDisableVertexAttribArray(0));
 	glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+	Shader::bind(nullptr);
 }
 
 RenderTarget::DrawChannel *
