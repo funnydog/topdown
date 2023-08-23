@@ -4,17 +4,22 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "clock.hpp"
 #include "glcheck.hpp"
 #include "rendertarget.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
+#include "time.hpp"
 #include "vertex.hpp"
 
 namespace
 {
-	const char *PROJECT_NAME = "TopDown";
-	const int WIDTH = 640;
-	const int HEIGHT = 480;
+const char *PROJECT_NAME = "TopDown";
+const int WIDTH = 640;
+const int HEIGHT = 480;
+
+static const int MaxStepsPerFrame = 5;
+static const Time TimePerFrame = Time::microseconds(1000000ULL / 60ULL);
 }
 
 int main(int argc, char **argv)
@@ -90,8 +95,22 @@ int main(int argc, char **argv)
 	};
 	const std::uint16_t indices[] = { 0, 1, 2, 1, 3, 2 };
 
+	Clock clock;
+
+	Time timeSinceLastUpdate = clock.getElapsedTime();
 	while (!glfwWindowShouldClose(window))
 	{
+		auto elapsedTime = clock.restart();
+		timeSinceLastUpdate += elapsedTime;
+		int steps = MaxStepsPerFrame;
+		while (steps-- && timeSinceLastUpdate > TimePerFrame)
+		{
+			timeSinceLastUpdate -= TimePerFrame;
+			// TODO
+			// process input()
+			// update(TimePerFrame)
+		}
+
 		glCheck(glClear(GL_COLOR_BUFFER_BIT));
 
 		target.clear();
