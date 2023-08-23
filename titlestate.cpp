@@ -9,13 +9,17 @@
 
 TitleState::TitleState(StateStack &stack, const Context &context)
 	: State(stack, context)
+	, mText(context.fonts->get(FontID::Title), "TopDown Scroller!")
 {
+	const auto halfSize = mText.getSize() * 0.5f;
+	mText.setOrigin(halfSize);
+	mText.move({320.f, 240.f});
 }
 
 bool
-TitleState::update(Time dt)
+TitleState::update(Time)
 {
-	(void)dt;
+	mText.rotate(1.f);
 	return true;
 }
 
@@ -30,15 +34,10 @@ TitleState::handleEvent(const Event &event)
 void
 TitleState::draw()
 {
-	glm::mat4 pos = glm::translate(
-		glm::mat4(1.f),
-		glm::vec3(50, 50, 0));
-
-	auto &font = mContext.fonts->get(FontID::Title);
 	auto &target = *mContext.target;
 	target.clear();
 	target.beginBatch();
-	font.draw(target, pos, "TopDown Scroller", Color::White);
+	mText.draw(target, glm::mat4(1.f));
 	target.endBatch();
 	target.drawBatch();
 }

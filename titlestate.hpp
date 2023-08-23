@@ -1,6 +1,7 @@
 #pragma once
 
 #include "state.hpp"
+#include "text.hpp"
 
 class TitleState: public State
 {
@@ -11,4 +12,5 @@ public:
 	virtual bool handleEvent(const Event &event) override;
 	virtual void draw() override;
 private:
+	Text mText;
 };
