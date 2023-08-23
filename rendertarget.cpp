@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 
+#include "color.hpp"
 #include "glcheck.hpp"
 #include "rendertarget.hpp"
 
@@ -12,8 +13,7 @@ RenderTarget::RenderTarget()
 	, mCurrent(nullptr)
 	, mFreeChannels(nullptr)
 {
-	uint32_t color = 0xFFFFFFFF;
-	mWhiteTexture.create(1, 1, &color);
+	mWhiteTexture.create(1, 1, &Color::White);
 	glGenBuffers(1, &mVBO);
 	glGenBuffers(1, &mEBO);
 }
