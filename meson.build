@@ -15,6 +15,7 @@ srcs = [
   'texture.cpp',
   'topdown.cpp',
   'utility.cpp',
+  'window.cpp',
 ]
 
 libglm = dependency('glm')

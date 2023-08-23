@@ -11,6 +11,7 @@
 #include "texture.hpp"
 #include "time.hpp"
 #include "vertex.hpp"
+#include "window.hpp"
 
 namespace
 {
@@ -31,36 +32,7 @@ int main(int argc, char **argv)
 	}
 	std::cout << "This is project " << PROJECT_NAME << ".\n";
 
-	if (!glfwInit())
-	{
-		throw std::runtime_error("Cannot initialize GLFW3");
-	}
-
-	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, PROJECT_NAME, nullptr, nullptr);
-	if (!window)
-	{
-		glfwTerminate();
-		throw std::runtime_error("Cannot create a new window");
-	}
-	glfwMakeContextCurrent(window);
-
-	GLenum err = glewInit();
-	if (err != GLEW_OK)
-	{
-		glfwTerminate();
-		throw std::runtime_error(
-			reinterpret_cast<const char *>(glewGetErrorString(err)));
-	}
-
-	glfwSwapInterval(1);
-	glCheck(glEnable(GL_CULL_FACE));
-	glCheck(glEnable(GL_BLEND));
-	glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-	glCheck(glClearColor(0.f, 0.2f, 0.4f, 1.0f));
+	Window window(PROJECT_NAME, WIDTH, HEIGHT);
 
 	Texture texture;
 	texture.loadFromFile("assets/textures/explosion.png");
@@ -79,10 +51,6 @@ int main(int argc, char **argv)
 		-1.f, 1.f);
 	projection.set(pMatrix);
 
-	GLuint vao;
-	glCheck(glGenVertexArrays(1, &vao));
-	glCheck(glBindVertexArray(vao));
-
 	RenderTarget target;
 	const std::uint32_t white = 0xFFFFFFFF;
 	const float width = texture.getWidth();
@@ -98,7 +66,7 @@ int main(int argc, char **argv)
 	Clock clock;
 
 	Time timeSinceLastUpdate = clock.getElapsedTime();
-	while (!glfwWindowShouldClose(window))
+	while (!window.isClosed())
 	{
 		auto elapsedTime = clock.restart();
 		timeSinceLastUpdate += elapsedTime;
@@ -122,14 +90,9 @@ int main(int argc, char **argv)
 
 		target.draw();
 
-		glfwSwapBuffers(window);
+		window.display();
+
 		glfwPollEvents();
 	}
-
-	glCheck(glBindVertexArray(0));
-	glCheck(glDeleteVertexArrays(1, &vao));
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
 	return 0;
 }
