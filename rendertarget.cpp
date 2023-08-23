@@ -3,25 +3,35 @@
 
 #include <GL/glew.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "color.hpp"
 #include "glcheck.hpp"
 #include "rendertarget.hpp"
+#include "window.hpp"
 
-RenderTarget::RenderTarget()
+RenderTarget::RenderTarget(const Window &window)
 	: mChannelList(nullptr)
 	, mChannelTail(&mChannelList)
 	, mCurrent(nullptr)
 	, mFreeChannels(nullptr)
+	, mWindow(window)
+	, mVBO(0)
+	, mEBO(0)
 {
-	mWhiteTexture.create(1, 1, &Color::White);
-	glGenBuffers(1, &mVBO);
-	glGenBuffers(1, &mEBO);
+	initialize();
 }
 
 RenderTarget::~RenderTarget()
 {
-	glDeleteBuffers(1, &mEBO);
-	glDeleteBuffers(1, &mVBO);
+	if (mEBO)
+	{
+		glDeleteBuffers(1, &mEBO);
+	}
+	if (mVBO)
+	{
+		glDeleteBuffers(1, &mVBO);
+	}
 
 	beginBatch();
 	DrawChannel *channel = mFreeChannels;
@@ -31,6 +41,29 @@ RenderTarget::~RenderTarget()
 		delete channel;
 		channel = next;
 	}
+}
+
+void
+RenderTarget::initialize()
+{
+	mWhiteTexture.create(1, 1, &Color::White);
+	mShader.attachFile("assets/shaders/default.vert", ShaderType::Vertex);
+	mShader.attachFile("assets/shaders/default.frag", ShaderType::Fragment);
+	mShader.link();
+
+	Shader::bind(&mShader);
+	ShaderUniform projection = mShader.getUniform("Projection");
+
+	auto size = mWindow.getSize();
+	Shader::bind(&mShader);
+	glm::mat4 pMatrix = glm::ortho(
+		0.f, static_cast<float>(size.x),
+		static_cast<float>(size.y), 0.f,
+		-1.f, 1.f);
+	projection.set(pMatrix);
+
+	glGenBuffers(1, &mVBO);
+	glGenBuffers(1, &mEBO);
 }
 
 void

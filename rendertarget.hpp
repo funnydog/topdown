@@ -4,13 +4,16 @@
 #include <vector>
 
 #include "color.hpp"
+#include "shader.hpp"
 #include "texture.hpp"
 #include "vertex.hpp"
+
+class Window;
 
 class RenderTarget
 {
 public:
-	RenderTarget();
+	RenderTarget(const Window &window);
 	~RenderTarget();
 
 	/**
@@ -54,6 +57,9 @@ public:
 
 	template <typename Iterator> void addVertices(Iterator start, Iterator end);
 
+protected:
+	void initialize();
+
 private:
 	struct DrawChannel
 	{
@@ -76,7 +82,10 @@ private:
 	DrawChannel  *mCurrent;
 	DrawChannel  *mFreeChannels;
 
+	const Window &mWindow;
+
 	Texture  mWhiteTexture;
+	Shader   mShader;
 	unsigned mVBO;
 	unsigned mEBO;
 };
