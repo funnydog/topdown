@@ -73,7 +73,7 @@ Font::loadFromFile(const std::filesystem::path &path, unsigned size)
 
 void
 Font::draw(RenderTarget &target, const glm::mat4 &transform,
-	   const std::string &text, Color color)
+	   const std::string &text, Color color) const
 {
 	if (text.empty())
 	{

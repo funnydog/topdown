@@ -23,7 +23,7 @@ public:
 	bool loadFromFile(const std::filesystem::path &path, unsigned size);
 
 	void draw(RenderTarget &target, const glm::mat4 &transform,
-		  const std::string &text, Color color);
+		  const std::string &text, Color color) const;
 
 	glm::vec2 getSize(const std::string &text) const;
 	const Texture &getTexture() const;
