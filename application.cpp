@@ -20,7 +20,8 @@ const Time TimePerFrame = Time::microseconds(1000000ULL / 60ULL);
 Application::Application()
 	: mEventQueue()
 	, mWindow(PROJECT_NAME, WIDTH, HEIGHT)
-	, mStateStack({&mWindow})
+	, mRenderTarget()
+	, mStateStack({&mWindow, &mRenderTarget})
 	, mUpdateTime(Time::Zero)
 	, mNumFrames(0)
 {

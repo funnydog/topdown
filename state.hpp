@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "event.hpp"
+#include "rendertarget.hpp"
 #include "resources.hpp"
 #include "time.hpp"
 #include "window.hpp"
@@ -16,6 +17,7 @@ public:
 	struct Context
 	{
 		Window *window;
+		RenderTarget *target;
 	};
 public:
 	State(StateStack &stack, const Context &context);

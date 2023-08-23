@@ -1,6 +1,7 @@
 #pragma once
 
 #include "eventqueue.hpp"
+#include "rendertarget.hpp"
 #include "statestack.hpp"
 #include "time.hpp"
 #include "window.hpp"
@@ -22,9 +23,10 @@ private:
 	void updateStatistics(Time dt);
 
 private:
-	EventQueue  mEventQueue;
-	Window      mWindow;
-	StateStack  mStateStack;
-	Time        mUpdateTime;
-	std::size_t mNumFrames;
+	EventQueue   mEventQueue;
+	Window       mWindow;
+	RenderTarget mRenderTarget;
+	StateStack   mStateStack;
+	Time         mUpdateTime;
+	std::size_t  mNumFrames;
 };
