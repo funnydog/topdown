@@ -7,19 +7,21 @@ project('topdown', 'cpp',
   ])
 
 srcs = [
+  'topdown.cpp',
   'application.cpp',
   # states
   'state.cpp',
   'statestack.cpp',
   'titlestate.cpp',
+  # graphics
   'glcheck.cpp',
-  'clock.cpp',
-  'eventqueue.cpp',
   'rendertarget.cpp',
   'shader.cpp',
   'stb_image.cpp',
   'texture.cpp',
-  'topdown.cpp',
+  # system
+  'clock.cpp',
+  'eventqueue.cpp',
   'utility.cpp',
   'window.cpp',
 ]
