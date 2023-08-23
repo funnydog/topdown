@@ -10,6 +10,7 @@ srcs = [
   # states
   'state.cpp',
   'statestack.cpp',
+  'titlestate.cpp',
   'glcheck.cpp',
   'clock.cpp',
   'eventqueue.cpp',
