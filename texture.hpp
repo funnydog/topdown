@@ -12,7 +12,7 @@ public:
 	Texture& operator=(const Texture &other) = delete;
 
 	Texture(Texture &&other) noexcept = default;
-	Texture& operator=(Texture &&ohter) noexcept = default;
+	Texture& operator=(Texture &&other) noexcept = default;
 
 	bool create(unsigned width, unsigned height,
 		    const void *pixels=nullptr, bool repeat=false, bool smooth=false);
