@@ -20,6 +20,7 @@ srcs = [
   'shader.cpp',
   'stb_image.cpp',
   'texture.cpp',
+  'view.cpp',
   # system
   'clock.cpp',
   'eventqueue.cpp',
