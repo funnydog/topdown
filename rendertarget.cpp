@@ -15,7 +15,7 @@ RenderTarget::RenderTarget(const Window &window)
 	, mChannelTail(&mChannelList)
 	, mCurrent(nullptr)
 	, mFreeChannels(nullptr)
-	, mWindow(window)
+	, mCanvas(&window)
 	, mVBO(0)
 	, mEBO(0)
 {
@@ -44,6 +44,12 @@ RenderTarget::~RenderTarget()
 }
 
 void
+RenderTarget::setCanvas(const Canvas &canvas)
+{
+	mCanvas = &canvas;
+}
+
+void
 RenderTarget::initialize()
 {
 	mWhiteTexture.create(1, 1, &Color::White);
@@ -54,7 +60,7 @@ RenderTarget::initialize()
 	Shader::bind(&mShader);
 	ShaderUniform projection = mShader.getUniform("Projection");
 
-	auto size = mWindow.getSize();
+	auto size = mCanvas->getSize();
 	Shader::bind(&mShader);
 	glm::mat4 pMatrix = glm::ortho(
 		0.f, static_cast<float>(size.x),

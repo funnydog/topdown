@@ -8,6 +8,7 @@
 #include "texture.hpp"
 #include "vertex.hpp"
 
+class Canvas;
 class Window;
 
 class RenderTarget
@@ -57,6 +58,8 @@ public:
 
 	template <typename Iterator> void addVertices(Iterator start, Iterator end);
 
+	void setCanvas(const Canvas &canvas);
+
 protected:
 	void initialize();
 
@@ -82,7 +85,7 @@ private:
 	DrawChannel  *mCurrent;
 	DrawChannel  *mFreeChannels;
 
-	const Window &mWindow;
+	const Canvas *mCanvas;
 
 	Texture  mWhiteTexture;
 	Shader   mShader;

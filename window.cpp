@@ -74,6 +74,12 @@ Window::isClosed() const
 	return glfwWindowShouldClose(mWindow);
 }
 
+bool
+Window::isKeyPressed(int key) const
+{
+	return glfwGetKey(mWindow, key) == GLFW_PRESS;
+}
+
 glm::ivec2
 Window::getSize() const
 {
@@ -81,7 +87,7 @@ Window::getSize() const
 }
 
 bool
-Window::isKeyPressed(int key) const
+Window::setActive(bool active)
 {
-	return glfwGetKey(mWindow, key) == GLFW_PRESS;
+	return active;
 }
