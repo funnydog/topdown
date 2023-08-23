@@ -14,6 +14,7 @@ srcs = [
   'statestack.cpp',
   'titlestate.cpp',
   # graphics
+  'font.cpp',
   'glcheck.cpp',
   'rendertarget.cpp',
   'shader.cpp',
@@ -26,11 +27,13 @@ srcs = [
   'window.cpp',
 ]
 
+libfreetype2 = dependency('freetype2')
 libglm = dependency('glm')
 libglew = dependency('glew')
 libglfw3 = dependency('glfw3')
 
 deps = [
+  libfreetype2,
   libglm,
   libglew,
   libglfw3,
