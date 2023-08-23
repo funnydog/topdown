@@ -21,11 +21,16 @@ Application::Application()
 	: mEventQueue()
 	, mWindow(PROJECT_NAME, WIDTH, HEIGHT)
 	, mRenderTarget(mWindow)
-	, mStateStack({&mWindow, &mRenderTarget})
+	, mTextures()
+	, mFonts()
+	, mStateStack({&mWindow, &mRenderTarget, &mTextures, &mFonts})
 	, mUpdateTime(Time::Zero)
 	, mNumFrames(0)
 {
 	mEventQueue.registerWindow(mWindow);
+
+	mFonts.load(FontID::Title, "assets/fonts/belligerent.ttf", 48);
+	mFonts.load(FontID::Body, "assets/fonts/belligerent.ttf", 26);
 
 	registerStates();
 	mStateStack.pushState(StateID::Title);

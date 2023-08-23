@@ -16,8 +16,10 @@ public:
 	typedef std::unique_ptr<State> Ptr;
 	struct Context
 	{
-		Window *window;
-		RenderTarget *target;
+		Window        *window;
+		RenderTarget  *target;
+		TextureHolder *textures;
+		FontHolder    *fonts;
 	};
 public:
 	State(StateStack &stack, const Context &context);

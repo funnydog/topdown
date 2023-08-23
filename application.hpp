@@ -2,6 +2,9 @@
 
 #include "eventqueue.hpp"
 #include "rendertarget.hpp"
+#include "resourceholder.hpp"
+#include "texture.hpp"
+#include "font.hpp"
 #include "statestack.hpp"
 #include "time.hpp"
 #include "window.hpp"
@@ -23,10 +26,12 @@ private:
 	void updateStatistics(Time dt);
 
 private:
-	EventQueue   mEventQueue;
-	Window       mWindow;
-	RenderTarget mRenderTarget;
-	StateStack   mStateStack;
-	Time         mUpdateTime;
-	std::size_t  mNumFrames;
+	EventQueue    mEventQueue;
+	Window        mWindow;
+	RenderTarget  mRenderTarget;
+	TextureHolder mTextures;
+	FontHolder    mFonts;
+	StateStack    mStateStack;
+	Time          mUpdateTime;
+	std::size_t   mNumFrames;
 };
