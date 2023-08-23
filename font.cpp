@@ -85,6 +85,11 @@ Font::draw(RenderTarget &target, const glm::mat4 &transform,
 	target.setTexture(&mTexture);
 	for (auto codepoint: cv.from_bytes(text))
 	{
+		getGlyph(codepoint);
+	}
+
+	for (auto codepoint: cv.from_bytes(text))
+	{
 		const auto &glyph = getGlyph(codepoint);
 		x += glyph.bearing.x;
 		float y = mLineHeight - glyph.bearing.y;
