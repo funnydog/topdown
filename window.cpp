@@ -38,7 +38,6 @@ Window::Window(const std::string &title, unsigned width, unsigned height)
 	}
 
 	glfwSwapInterval(1);
-	glfwSetWindowUserPointer(mWindow, this);
 
 	glCheck(glEnable(GL_CULL_FACE));
 	glCheck(glEnable(GL_BLEND));

@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 struct GLFWwindow;
+class EventQueue;
 
 class Window
 {
@@ -29,4 +30,6 @@ protected:
 	GLFWwindow *mWindow;
 	glm::ivec2  mSize;
 	unsigned    mVAO;
+
+	friend class EventQueue;
 };

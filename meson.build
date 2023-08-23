@@ -9,6 +9,7 @@ project('topdown', 'cpp',
 srcs = [
   'glcheck.cpp',
   'clock.cpp',
+  'eventqueue.cpp',
   'rendertarget.cpp',
   'shader.cpp',
   'stb_image.cpp',
