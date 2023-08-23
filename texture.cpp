@@ -94,6 +94,71 @@ Texture::update(const void *pixels, unsigned x, unsigned y, unsigned w, unsigned
 	glCheck(glFlush());
 }
 
+void
+Texture::update(const Texture &other, unsigned x, unsigned y)
+{
+	auto dstWidth = getWidth();
+	auto dstHeight = getHeight();
+	auto srcWidth = other.getWidth();
+	auto srcHeight = other.getHeight();
+	assert(x + srcWidth <= dstWidth
+	       && "Destination x coordinate is outside of the texture");
+	assert(y + srcHeight <= dstHeight
+	       && "Destination y coordinate is outside of the texture");
+
+	if (!mTexture || !other.mTexture)
+	{
+		return;
+	}
+
+	GLint oldReadFB, oldDrawFB;
+	glCheck(glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &oldReadFB));
+	glCheck(glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &oldDrawFB));
+
+	GLuint sourceFB, destFB;
+	glCheck(glGenFramebuffers(1, &sourceFB));
+	glCheck(glGenFramebuffers(1, &destFB));
+
+	if (!sourceFB || !destFB)
+	{
+		throw std::runtime_error("Texture::update() - cannot create framebuffer objects");
+	}
+
+	glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, sourceFB));
+	glCheck(glFramebufferTexture2D(GL_READ_FRAMEBUFFER,
+				       GL_COLOR_ATTACHMENT0,
+				       GL_TEXTURE_2D,
+				       other.mTexture,
+				       0));
+
+	glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, destFB));
+	glCheck(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER,
+				       GL_COLOR_ATTACHMENT0,
+				       GL_TEXTURE_2D,
+				       mTexture,
+				       0));
+
+	GLenum sourceStatus = glCheckFramebufferStatus(GL_READ_FRAMEBUFFER);
+	GLenum destStatus = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+	if (sourceStatus != GL_FRAMEBUFFER_COMPLETE
+	    && destStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		throw std::runtime_error("Framebuffers not complete");
+	}
+
+	glCheck(glBlitFramebuffer(
+			0, 0, srcWidth, srcHeight,
+			x, y, x + srcWidth, x + srcHeight,
+			GL_COLOR_BUFFER_BIT,
+			GL_NEAREST));
+
+	glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, oldReadFB));
+	glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, oldDrawFB));
+
+	glCheck(glDeleteFramebuffers(1, &destFB));
+	glCheck(glDeleteFramebuffers(1, &sourceFB));
+}
+
 bool
 Texture::loadFromFile(const std::filesystem::path &path)
 {
