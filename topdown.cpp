@@ -12,6 +12,7 @@
 #include "time.hpp"
 #include "vertex.hpp"
 #include "window.hpp"
+#include "eventqueue.hpp"
 
 namespace
 {
@@ -32,7 +33,10 @@ int main(int argc, char **argv)
 	}
 	std::cout << "This is project " << PROJECT_NAME << ".\n";
 
+	EventQueue eventQueue;
 	Window window(PROJECT_NAME, WIDTH, HEIGHT);
+
+	eventQueue.registerWindow(window);
 
 	Texture texture;
 	texture.loadFromFile("assets/textures/explosion.png");
@@ -74,8 +78,20 @@ int main(int argc, char **argv)
 		while (steps-- && timeSinceLastUpdate > TimePerFrame)
 		{
 			timeSinceLastUpdate -= TimePerFrame;
-			// TODO
-			// process input()
+
+			// process the input
+			eventQueue.poll();
+			Event event;
+			while (eventQueue.get(event))
+			{
+				if (const auto ev(std::get_if<KeyPressed>(&event)); ev)
+				{
+					if (ev->key == GLFW_KEY_ESCAPE)
+					{
+						ev->window->close();
+					}
+				}
+			}
 			// update(TimePerFrame)
 		}
 
