@@ -2,7 +2,7 @@
 
 #include "statestack.hpp"
 
-StateStack::StateStack(const State::Context &context)
+StateStack::StateStack(State::Context context)
 	: mStack()
 	, mPendingList()
 	, mContext(context)

@@ -9,7 +9,7 @@
 class StateStack
 {
 public:
-	explicit StateStack(const State::Context &context);
+	explicit StateStack(State::Context context);
 
 	StateStack(const StateStack &) = delete;
 	StateStack& operator=(const StateStack &) = delete;
@@ -48,7 +48,7 @@ private:
 private:
 	std::vector<State::Ptr> mStack;
 	std::vector<PendingChange> mPendingList;
-	const State::Context &mContext;
+	State::Context mContext;
 	std::map<StateID, std::function<State::Ptr()>> mFactories;
 };
 
