@@ -90,14 +90,20 @@ Application::processInput()
 		{
 			quit();
 		}
-		else if (const auto ev(std::get_if<KeyPressed>(&event)); ev
-			 && ev->key == GLFW_KEY_P)
+		else if (const auto ev(std::get_if<KeyPressed>(&event)); ev)
 		{
-			std::cout << "Statistics"
-				  << "\nFPS: " << mNumFrames / mUpdateTime.asSeconds()
-				  << "\nFrame Length: "
-				  << (mUpdateTime / mNumFrames).asMicroseconds()
-				  << "\n";
+			if (ev->key == GLFW_KEY_P)
+			{
+				std::cout << "Statistics"
+					  << "\nFPS: " << mNumFrames / mUpdateTime.asSeconds()
+					  << "\nFrame Length: "
+					  << (mUpdateTime / mNumFrames).asMicroseconds()
+					  << "\n";
+			}
+			else if (ev->key == GLFW_KEY_ESCAPE)
+			{
+				quit();
+			}
 		}
 	}
 }
