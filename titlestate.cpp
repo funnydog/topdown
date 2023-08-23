@@ -1,6 +1,10 @@
 #include <GL/glew.h>
 
+#include <glm/gtx/transform.hpp>
+
+#include "font.hpp"
 #include "glcheck.hpp"
+#include "resourceholder.hpp"
 #include "titlestate.hpp"
 
 TitleState::TitleState(StateStack &stack, const Context &context)
@@ -26,5 +30,15 @@ TitleState::handleEvent(const Event &event)
 void
 TitleState::draw()
 {
-	glCheck(glClear(GL_COLOR_BUFFER_BIT));
+	glm::mat4 pos = glm::translate(
+		glm::mat4(1.f),
+		glm::vec3(50, 50, 0));
+
+	auto &font = mContext.fonts->get(FontID::Title);
+	auto &target = *mContext.target;
+	target.clear();
+	target.beginBatch();
+	font.draw(target, pos, "TopDown Scroller", Color::White);
+	target.endBatch();
+	target.drawBatch();
 }
