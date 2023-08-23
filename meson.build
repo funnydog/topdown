@@ -20,6 +20,7 @@ srcs = [
   'shader.cpp',
   'stb_image.cpp',
   'texture.cpp',
+  'text.cpp',
   'transformable.cpp',
   'view.cpp',
   # system
