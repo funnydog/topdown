@@ -34,6 +34,14 @@ RenderTarget::~RenderTarget()
 }
 
 void
+RenderTarget::clear(Color color)
+{
+	glm::vec4 clearColor(color);
+	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void
 RenderTarget::beginBatch()
 {
 	mVertices.clear();

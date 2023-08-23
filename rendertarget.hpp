@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 
+#include "color.hpp"
 #include "texture.hpp"
 #include "vertex.hpp"
 
@@ -11,6 +12,12 @@ class RenderTarget
 public:
 	RenderTarget();
 	~RenderTarget();
+
+	/**
+	 * Clear the target with the given @color.
+	 * @param[in] color
+	 */
+	void clear(Color = Color::Black);
 
 	/**
 	 * Clear the buffer for a new list.
