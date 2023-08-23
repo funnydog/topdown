@@ -7,6 +7,9 @@ project('topdown', 'cpp',
   ])
 
 srcs = [
+  # states
+  'state.cpp',
+  'statestack.cpp',
   'glcheck.cpp',
   'clock.cpp',
   'eventqueue.cpp',
