@@ -1,5 +1,6 @@
 #pragma once
 
+#include "rectangleshape.hpp"
 #include "sprite.hpp"
 #include "state.hpp"
 #include "text.hpp"
@@ -15,4 +16,5 @@ public:
 private:
 	Text mText;
 	Sprite mSprite;
+	RectangleShape mRectangle;
 };
