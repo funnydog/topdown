@@ -1,9 +1,11 @@
 #include "gamestate.hpp"
+#include "playercontrol.hpp"
 
 GameState::GameState(StateStack &stack, const Context &context)
 	: State(stack, context)
 	, mWindow(*context.window)
 	, mTarget(*context.target)
+	, mControl(*context.control)
 	, mWorld(context)
 {
 }
@@ -11,13 +13,18 @@ GameState::GameState(StateStack &stack, const Context &context)
 bool
 GameState::update(Time dt)
 {
+	mControl.handleRealtimeInput(mWindow, mWorld.getCommandQueue());
 	mWorld.update(dt);
 	return true;
 }
 
 bool
-GameState::handleEvent(const Event &)
+GameState::handleEvent(const Event &event)
 {
+	if (mControl.handleEvent(event, mWorld.getCommandQueue()))
+	{
+		return true;
+	}
 	return false;
 }
 

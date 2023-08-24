@@ -13,7 +13,8 @@ public:
 	virtual void draw() override;
 
 private:
-	Window       &mWindow;
-	RenderTarget &mTarget;
-	World         mWorld;
+	Window        &mWindow;
+	RenderTarget  &mTarget;
+	PlayerControl &mControl;
+	World          mWorld;
 };
