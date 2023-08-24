@@ -66,6 +66,6 @@ void
 Entity::updateCurrent(Time dt)
 {
 	auto seconds = dt.asSeconds();
-	mVelocity += mAcceleration * seconds * 0.5f;
+	mVelocity += mAcceleration * seconds;
 	move(mVelocity * seconds);
 }
