@@ -58,6 +58,12 @@ World::buildScene()
 
 }
 
+CommandQueue&
+World::getCommandQueue()
+{
+	return mCommandQueue;
+}
+
 void
 World::update(Time dt)
 {

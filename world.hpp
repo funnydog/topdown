@@ -17,6 +17,8 @@ class World
 public:
 	World(const State::Context &context);
 
+	CommandQueue& getCommandQueue();
+
 	void update(Time dt);
 	void draw(RenderTarget &target);
 
