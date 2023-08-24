@@ -1,5 +1,6 @@
 #pragma once
 
+#include "sprite.hpp"
 #include "state.hpp"
 #include "text.hpp"
 
@@ -13,4 +14,5 @@ public:
 	virtual void draw() override;
 private:
 	Text mText;
+	Sprite mSprite;
 };

@@ -29,6 +29,8 @@ Application::Application()
 {
 	mEventQueue.registerWindow(mWindow);
 
+	mTextures.load(TextureID::Explosion, "assets/textures/explosion.png");
+
 	mFonts.load(FontID::Title, "assets/fonts/belligerent.ttf", 48);
 	mFonts.load(FontID::Body, "assets/fonts/belligerent.ttf", 26);
 
