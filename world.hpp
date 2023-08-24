@@ -2,6 +2,7 @@
 
 #include <array>
 
+#include "aircraft.hpp"
 #include "rendertarget.hpp"
 #include "resources.hpp"
 #include "resourceholder.hpp"
@@ -36,7 +37,8 @@ private:
 	SceneNode      mSceneGraph;
 	std::array<SceneNode*, LayerCount> mSceneLayers;
 
-	FloatRect mWorldBounds;
-	glm::vec2 mSpawnPosition;
-	float     mScrollSpeed;
+	FloatRect  mWorldBounds;
+	Aircraft  *mPlayer;
+	glm::vec2  mSpawnPosition;
+	float      mScrollSpeed;
 };
