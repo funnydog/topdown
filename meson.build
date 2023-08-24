@@ -13,6 +13,7 @@ srcs = [
   'state.cpp',
   'statestack.cpp',
   'titlestate.cpp',
+  'gamestate.cpp',
   # scenenodes
   'scenenode.cpp',
   'spritenode.cpp',
