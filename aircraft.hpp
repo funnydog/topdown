@@ -15,7 +15,10 @@ public:
 public:
 	explicit Aircraft(Type type, const TextureHolder &textures);
 
-	virtual void drawCurrent(RenderTarget &target) const;
+	virtual unsigned getCategory() const override;
+
+private:
+	virtual void drawCurrent(RenderTarget &target) const override;
 
 private:
 	Type mType;
