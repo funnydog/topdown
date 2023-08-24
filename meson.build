@@ -21,6 +21,7 @@ srcs = [
   # game
   'world.cpp',
   'aircraft.cpp',
+  'playercontrol.cpp',
   # graphics
   'font.cpp',
   'glcheck.cpp',
