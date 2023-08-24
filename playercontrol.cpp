@@ -20,6 +20,7 @@ PlayerControl::handleEvent(const Event &event, CommandQueue &commands)
 				  << s.getPosition().y << "\n";
 		};
 		commands.push(output);
+		return true;
 	}
 	return false;
 }
@@ -32,8 +33,35 @@ PlayerControl::handleRealtimeInput(const Window &window, CommandQueue &commands)
 		Command moveUp;
 		moveUp.category = Category::Player;
 		moveUp.action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-			aircraft.move({0, -5.f});
+			aircraft.accelerate({0, -180.f});
 		});
 		commands.push(moveUp);
+	}
+	if (window.isKeyPressed(GLFW_KEY_DOWN))
+	{
+		Command moveDown;
+		moveDown.category = Category::Player;
+		moveDown.action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
+			aircraft.accelerate({0, 180.f});
+		});
+		commands.push(moveDown);
+	}
+	if (window.isKeyPressed(GLFW_KEY_LEFT))
+	{
+		Command moveLeft;
+		moveLeft.category = Category::Player;
+		moveLeft.action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
+			aircraft.accelerate({-180.f, 0.f});
+		});
+		commands.push(moveLeft);
+	}
+	if (window.isKeyPressed(GLFW_KEY_RIGHT))
+	{
+		Command moveRight;
+		moveRight.category = Category::Player;
+		moveRight.action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
+			aircraft.accelerate({180.f, 0.f});
+		});
+		commands.push(moveRight);
 	}
 }
