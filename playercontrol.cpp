@@ -7,20 +7,93 @@
 #include "scenenode.hpp"
 #include "window.hpp"
 
+PlayerControl::PlayerControl()
+{
+	setDefaultKeyBindings();
+	setDefaultActionBindings();
+}
+
+void
+PlayerControl::setDefaultKeyBindings()
+{
+	mKeyBinding[GLFW_KEY_UP] = MoveUp;
+	mKeyBinding[GLFW_KEY_DOWN] = MoveDown;
+	mKeyBinding[GLFW_KEY_LEFT] = MoveLeft;
+	mKeyBinding[GLFW_KEY_RIGHT] = MoveRight;
+	mKeyBinding[GLFW_KEY_P] = PrintPosition;
+}
+
+void
+PlayerControl::setDefaultActionBindings()
+{
+	mActionBinding[MoveUp].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
+		aircraft.accelerate({0, -180.f});
+	});
+	mActionBinding[MoveDown].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
+		aircraft.accelerate({0, +180.f});
+	});
+	mActionBinding[MoveLeft].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
+		aircraft.accelerate({-180.f, 0.f});
+	});
+	mActionBinding[MoveRight].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
+		aircraft.accelerate({+180.f, 0.f});
+	});
+	mActionBinding[PrintPosition].action = [](SceneNode &s, Time) {
+		std::cout << s.getPosition().x << ","
+			  << s.getPosition().y << "\n";
+	};
+	for (auto &[action, command]: mActionBinding)
+	{
+		command.category = Category::Player;
+	}
+}
+
+int
+PlayerControl::getAssignedKey(Action action) const
+{
+	for (auto [key, act]: mKeyBinding)
+	{
+		if (action == act)
+		{
+			return key;
+		}
+	}
+	return GLFW_KEY_UNKNOWN;
+}
+
+void
+PlayerControl::setAssignedKey(Action action, int key)
+{
+	// remove any key already assigned to the action
+	for (auto it = mKeyBinding.begin(); it != mKeyBinding.end(); )
+	{
+		if (it->second == action)
+		{
+			it = mKeyBinding.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+	mKeyBinding[key] = action;
+}
+
 bool
 PlayerControl::handleEvent(const Event &event, CommandQueue &commands)
 {
-	if (const auto ev(std::get_if<KeyPressed>(&event)); ev
-	    && ev->key == GLFW_KEY_P)
+	if (const auto ev(std::get_if<KeyPressed>(&event)); ev)
 	{
-		Command output;
-		output.category = Category::Player;
-		output.action = [](SceneNode &s, Time) {
-			std::cout << s.getPosition().x << ","
-				  << s.getPosition().y << "\n";
-		};
-		commands.push(output);
-		return true;
+		auto it = mKeyBinding.find(ev->key);
+		if (it != mKeyBinding.end() && !isRealtimeAction(it->second))
+		{
+			auto it2 = mActionBinding.find(it->second);
+			if (it2 != mActionBinding.end())
+			{
+				commands.push(it2->second);
+				return true;
+			}
+		}
 	}
 	return false;
 }
@@ -28,40 +101,27 @@ PlayerControl::handleEvent(const Event &event, CommandQueue &commands)
 void
 PlayerControl::handleRealtimeInput(const Window &window, CommandQueue &commands)
 {
-	if (window.isKeyPressed(GLFW_KEY_UP))
+	for(auto [key, action]: mKeyBinding)
 	{
-		Command moveUp;
-		moveUp.category = Category::Player;
-		moveUp.action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-			aircraft.accelerate({0, -180.f});
-		});
-		commands.push(moveUp);
+		if (isRealtimeAction(action) && window.isKeyPressed(key))
+		{
+			auto it = mActionBinding.find(action);
+			if (it != mActionBinding.end())
+			{
+				commands.push(it->second);
+			}
+		}
 	}
-	if (window.isKeyPressed(GLFW_KEY_DOWN))
+}
+
+bool
+PlayerControl::isRealtimeAction(Action action)
+{
+	switch (action)
 	{
-		Command moveDown;
-		moveDown.category = Category::Player;
-		moveDown.action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-			aircraft.accelerate({0, 180.f});
-		});
-		commands.push(moveDown);
-	}
-	if (window.isKeyPressed(GLFW_KEY_LEFT))
-	{
-		Command moveLeft;
-		moveLeft.category = Category::Player;
-		moveLeft.action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-			aircraft.accelerate({-180.f, 0.f});
-		});
-		commands.push(moveLeft);
-	}
-	if (window.isKeyPressed(GLFW_KEY_RIGHT))
-	{
-		Command moveRight;
-		moveRight.category = Category::Player;
-		moveRight.action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-			aircraft.accelerate({180.f, 0.f});
-		});
-		commands.push(moveRight);
+	case PrintPosition:
+		return false;
+	default:
+		return true;
 	}
 }
