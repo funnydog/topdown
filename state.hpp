@@ -9,6 +9,7 @@
 #include "window.hpp"
 
 class StateStack;
+class PlayerControl;
 
 class State
 {
@@ -20,6 +21,7 @@ public:
 		RenderTarget  *target;
 		TextureHolder *textures;
 		FontHolder    *fonts;
+		PlayerControl *control;
 	};
 public:
 	State(StateStack &stack, const Context &context);

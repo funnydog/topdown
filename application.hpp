@@ -3,11 +3,13 @@
 #include "eventqueue.hpp"
 #include "rendertarget.hpp"
 #include "resourceholder.hpp"
-#include "texture.hpp"
-#include "font.hpp"
 #include "statestack.hpp"
 #include "time.hpp"
 #include "window.hpp"
+
+#include "font.hpp"
+#include "texture.hpp"
+#include "playercontrol.hpp"
 
 class Application
 {
@@ -31,6 +33,7 @@ private:
 	RenderTarget  mRenderTarget;
 	TextureHolder mTextures;
 	FontHolder    mFonts;
+	PlayerControl mPlayer;
 	StateStack    mStateStack;
 	Time          mUpdateTime;
 	std::size_t   mNumFrames;
