@@ -14,6 +14,7 @@ public:
 	typedef std::unique_ptr<SceneNode> Ptr;
 
 public:
+	SceneNode();
 	virtual ~SceneNode() = default;
 
 	void attachChild(Ptr child);
@@ -47,17 +48,17 @@ protected:
 
 private:
 	std::vector<Ptr>  mChildren;
-	SceneNode        *mParent = nullptr;
+	SceneNode        *mParent;
 
 	// geometric properties
-	glm::vec2 mOrigin{0.f};
-	glm::vec2 mPosition{0.f};
-	glm::vec2 mScale{1.f};
-	float     mRotation{1.f};
+	glm::vec2 mOrigin;
+	glm::vec2 mPosition;
+	glm::vec2 mScale;
+	float     mRotation;
 
 	// cached
-	mutable glm::mat4 mTransform{1.f};
-	mutable glm::mat4 mWorldTransform{1.f};
-	mutable bool      mTransformDirty{true};
-	mutable bool      mWorldTransformDirty{true};
+	mutable glm::mat4 mTransform;
+	mutable glm::mat4 mWorldTransform;
+	mutable bool      mTransformDirty;
+	mutable bool      mWorldTransformDirty;
 };

@@ -1,5 +1,18 @@
 #include "scenenode.hpp"
 
+SceneNode::SceneNode()
+	: mChildren()
+	, mOrigin(0.f)
+	, mPosition(0.f)
+	, mScale(1.f)
+	, mRotation(0.f)
+	, mTransform(1.f)
+	, mWorldTransform(1.f)
+	, mTransformDirty(true)
+	, mWorldTransformDirty(true)
+{
+}
+
 void
 SceneNode::attachChild(Ptr child)
 {
