@@ -69,6 +69,9 @@ Sprite::setTextureRect(const IntRect &rect)
 		mVertices[3].uv = { x1, y1 };
 	}
 	mSize = rect.size;
+	mVertices[1].pos.y = mSize.y;
+	mVertices[2].pos.x = mSize.x;
+	mVertices[3].pos = mSize;
 }
 
 glm::vec2
