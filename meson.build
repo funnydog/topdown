@@ -17,6 +17,8 @@ srcs = [
   # scenenodes
   'scenenode.cpp',
   'spritenode.cpp',
+  # game
+  'world.cpp',
   # graphics
   'font.cpp',
   'glcheck.cpp',

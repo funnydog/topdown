@@ -4,6 +4,7 @@ GameState::GameState(StateStack &stack, const Context &context)
 	: State(stack, context)
 	, mWindow(*context.window)
 	, mTarget(*context.target)
+	, mWorld(context)
 {
 }
 
@@ -23,5 +24,9 @@ void
 GameState::draw()
 {
 	mTarget.clear();
+	mTarget.beginBatch();
+	mWorld.draw(mTarget);
+	mTarget.endBatch();
+	mTarget.drawBatch();
 	mWindow.display();
 }

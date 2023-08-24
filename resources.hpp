@@ -14,6 +14,9 @@ enum class TextureID
 {
 	TitleScreen,
 	Explosion,
+	// world textures
+	Entities,
+	Desert,
 };
 
 enum class FontID
