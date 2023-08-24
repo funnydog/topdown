@@ -6,6 +6,7 @@
 #include "clock.hpp"
 
 #include "titlestate.hpp"
+#include "gamestate.hpp"
 
 namespace
 {
@@ -122,14 +123,13 @@ Application::render()
 	// TODO: window.clear();
 
 	mStateStack.draw();
-
-	mWindow.display();
 }
 
 void
 Application::registerStates()
 {
 	mStateStack.registerState<TitleState>(StateID::Title);
+	mStateStack.registerState<GameState>(StateID::GamePlay);
 }
 
 void

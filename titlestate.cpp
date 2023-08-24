@@ -53,8 +53,7 @@ TitleState::handleEvent(const Event &event)
 	    && ev->key != GLFW_KEY_ESCAPE)
 	{
 		requestStackPop();
-		// TODO:
-		// requesStackPush(StateID::Menu);
+		requestStackPush(StateID::GamePlay);
 		return true;
 	}
 	return false;
@@ -76,4 +75,6 @@ TitleState::draw()
 	}
 	target.endBatch();
 	target.drawBatch();
+
+	mContext.window->display();
 }
