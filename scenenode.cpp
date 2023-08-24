@@ -1,3 +1,4 @@
+#include "category.hpp"
 #include "scenenode.hpp"
 
 SceneNode::SceneNode()
@@ -205,4 +206,10 @@ SceneNode::draw(RenderTarget &target) const
 void
 SceneNode::drawCurrent(RenderTarget &) const
 {
+}
+
+unsigned
+SceneNode::getCategory() const
+{
+	return Category::Scene;
 }

@@ -47,6 +47,8 @@ public:
 	void update(Time dt);
 	void draw(RenderTarget &target) const;
 
+	virtual unsigned getCategory() const;
+
 protected:
 	virtual void updateCurrent(Time dt);
 	virtual void drawCurrent(RenderTarget &target) const;
