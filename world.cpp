@@ -43,8 +43,7 @@ World::buildScene()
 	mSceneLayers[Background]->attachChild(std::move(background));
 
 	auto player = std::make_unique<Aircraft>(Aircraft::Eagle, mTextures);
-	player->setPosition({320, 240});
-	player->setAcceleration({0.f, -10.f});
+	player->setPosition(mSpawnPosition);
 	mPlayer = player.get();
 	mSceneLayers[Air]->attachChild(std::move(player));
 
@@ -67,14 +66,32 @@ World::getCommandQueue()
 void
 World::update(Time dt)
 {
+	mPlayer->setVelocity({0.f, 0.f});
+
 	while (!mCommandQueue.empty())
 	{
 		mSceneGraph.onCommand(mCommandQueue.front(), dt);
 		mCommandQueue.pop();
 	}
 
+	// after processing the commands adapt the player velocity
+	auto velocity = mPlayer->getVelocity();
+	if (velocity.x == 0.f && velocity.y == 0.f)
+	{
+		mPlayer->setVelocity(velocity * 1.f/std::sqrt(2.f));
+	}
+
 	mSceneGraph.update(dt);
 	mSceneGraph.updateDirtyFlags();
+
+	// after updating the entities adapt the player position to
+	// the view
+	const float borderDistance = 40.f;
+	auto position = mPlayer->getPosition();
+	auto size = mWorldView.getSize();
+	position.x = std::clamp(position.x, borderDistance, size.x - borderDistance);
+	position.y = std::clamp(position.y, borderDistance, size.y - borderDistance);
+	mPlayer->setPosition(position);
 }
 
 void
