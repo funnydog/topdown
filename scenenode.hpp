@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 
+#include "command.hpp"
 #include "rendertarget.hpp"
 #include "time.hpp"
 
@@ -44,6 +45,7 @@ public:
 	virtual bool isDestroyed() const;
 	virtual bool isMarkedForRemoval() const;
 
+	void onCommand(const Command &command, Time dt);
 	void update(Time dt);
 	void draw(RenderTarget &target) const;
 

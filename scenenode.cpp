@@ -180,6 +180,19 @@ SceneNode::isMarkedForRemoval() const
 }
 
 void
+SceneNode::onCommand(const Command &command, Time dt)
+{
+	if ((command.category & getCategory()) != 0)
+	{
+		command.action(*this, dt);
+	}
+	for(auto &child: mChildren)
+	{
+		child->onCommand(command, dt);
+	}
+}
+
+void
 SceneNode::update(Time dt)
 {
 	updateCurrent(dt);
