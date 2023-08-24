@@ -51,5 +51,11 @@ void
 World::draw(RenderTarget &target)
 {
 	// TODO: mTarget.setView(mWorldView);
-	mSceneGraph.draw(target);
+	for (auto layer: mSceneLayers)
+	{
+		target.beginBatch();
+		layer->draw(target);
+		target.endBatch();
+		target.drawBatch();
+	}
 }

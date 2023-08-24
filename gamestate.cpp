@@ -9,8 +9,9 @@ GameState::GameState(StateStack &stack, const Context &context)
 }
 
 bool
-GameState::update(Time)
+GameState::update(Time dt)
 {
+	mWorld.update(dt);
 	return true;
 }
 
@@ -23,10 +24,6 @@ GameState::handleEvent(const Event &)
 void
 GameState::draw()
 {
-	mTarget.clear();
-	mTarget.beginBatch();
 	mWorld.draw(mTarget);
-	mTarget.endBatch();
-	mTarget.drawBatch();
 	mWindow.display();
 }
