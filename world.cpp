@@ -9,6 +9,7 @@ World::World(const State::Context &context)
 	, mTextures()
 	, mSceneGraph()
 	, mSceneLayers{}
+	, mCommandQueue()
 	, mWorldBounds({0, 0}, {mWorldView.getSize()})
 	, mPlayer(nullptr)
 	, mSpawnPosition(mWorldView.getSize().x * 0.5f)
@@ -60,6 +61,12 @@ World::buildScene()
 void
 World::update(Time dt)
 {
+	while (!mCommandQueue.empty())
+	{
+		mSceneGraph.onCommand(mCommandQueue.front(), dt);
+		mCommandQueue.pop();
+	}
+
 	mSceneGraph.update(dt);
 	mSceneGraph.updateDirtyFlags();
 }
