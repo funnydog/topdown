@@ -25,5 +25,4 @@ void
 GameState::draw()
 {
 	mWorld.draw(mTarget);
-	mWindow.display();
 }

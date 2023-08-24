@@ -120,9 +120,8 @@ Application::update(Time dt)
 void
 Application::render()
 {
-	// TODO: window.clear();
-
 	mStateStack.draw();
+	mWindow.display();
 }
 
 void

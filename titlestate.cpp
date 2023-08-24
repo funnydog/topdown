@@ -75,6 +75,4 @@ TitleState::draw()
 	}
 	target.endBatch();
 	target.drawBatch();
-
-	mContext.window->display();
 }
