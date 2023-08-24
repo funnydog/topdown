@@ -15,8 +15,13 @@ public:
 
 	int getHitPoints() const;
 
+	glm::vec2 getVelocity() const;
 	void setVelocity(glm::vec2 velocity);
+
+	glm::vec2 getAcceleration() const;
 	void setAcceleration(glm::vec2 acceleration);
+
+	void accelerate(glm::vec2 dv);
 
 	virtual bool isDestroyed() const override;
 	virtual bool isMarkedForRemoval() const override;

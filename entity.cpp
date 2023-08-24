@@ -38,16 +38,34 @@ Entity::getHitPoints() const
 	return mHitPoints;
 }
 
+glm::vec2
+Entity::getVelocity() const
+{
+	return mVelocity;
+}
+
 void
 Entity::setVelocity(glm::vec2 velocity)
 {
 	mVelocity = velocity;
 }
 
+glm::vec2
+Entity::getAcceleration() const
+{
+	return mAcceleration;
+}
+
 void
 Entity::setAcceleration(glm::vec2 acceleration)
 {
 	mAcceleration = acceleration;
+}
+
+void
+Entity::accelerate(glm::vec2 dv)
+{
+	mVelocity += dv;
 }
 
 bool
