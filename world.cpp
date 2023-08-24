@@ -73,19 +73,32 @@ World::update(Time dt)
 		mSceneGraph.onCommand(mCommandQueue.front(), dt);
 		mCommandQueue.pop();
 	}
+	adaptPlayerVelocity();
 
-	// after processing the commands adapt the player velocity
+	mSceneGraph.update(dt);
+	mSceneGraph.updateDirtyFlags();
+
+	adaptPlayerPosition();
+}
+
+void
+World::adaptPlayerVelocity()
+{
+	// after processing the input the player could move in
+	// diagonal directions: normalize the speed to keep the
+	// magnitude constant
 	auto velocity = mPlayer->getVelocity();
 	if (velocity.x == 0.f && velocity.y == 0.f)
 	{
 		mPlayer->setVelocity(velocity * 1.f/std::sqrt(2.f));
 	}
+}
 
-	mSceneGraph.update(dt);
-	mSceneGraph.updateDirtyFlags();
-
-	// after updating the entities adapt the player position to
-	// the view
+void
+World::adaptPlayerPosition()
+{
+	// after processing the entities the player position could be
+	// outside the allowed area
 	const float borderDistance = 40.f;
 	auto position = mPlayer->getPosition();
 	auto size = mWorldView.getSize();
