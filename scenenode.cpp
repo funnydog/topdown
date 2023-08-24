@@ -50,7 +50,6 @@ SceneNode::setOrigin(glm::vec2 origin)
 {
 	mOrigin = origin;
 	mTransformDirty = true;
-	mWorldTransformDirty = true;
 }
 
 glm::vec2
@@ -64,7 +63,6 @@ SceneNode::setPosition(glm::vec2 position)
 {
 	mPosition = position;
 	mTransformDirty = true;
-	mWorldTransformDirty = true;
 }
 
 glm::vec2
@@ -78,7 +76,6 @@ SceneNode::setScale(glm::vec2 scale)
 {
 	mScale = scale;
 	mTransformDirty = true;
-	mWorldTransformDirty = true;
 }
 
 float
@@ -92,7 +89,6 @@ SceneNode::setRotation(float rotation)
 {
 	mRotation = rotation;
 	mTransformDirty = true;
-	mWorldTransformDirty = true;
 }
 
 void
@@ -111,6 +107,16 @@ void
 SceneNode::rotate(float angle)
 {
 	setRotation(mRotation + angle);
+}
+
+void
+SceneNode::updateDirtyFlags(bool dirty)
+{
+	mWorldTransformDirty = dirty || mTransformDirty;
+	for (auto &child: mChildren)
+	{
+		child->updateDirtyFlags(mWorldTransformDirty);
+	}
 }
 
 const glm::mat4&
@@ -145,10 +151,15 @@ SceneNode::getWorldTransform() const
 	if (mWorldTransformDirty)
 	{
 		mWorldTransformDirty = false;
-		mWorldTransform = mParent
-			? mParent->getWorldTransform()
-			: glm::mat4(1.f)
-			* getTransform();
+		if (mParent)
+		{
+			mWorldTransform = mParent->getWorldTransform()
+				* getTransform();
+		}
+		else
+		{
+			mWorldTransform = getTransform();
+		}
 	}
 
 	return mWorldTransform;

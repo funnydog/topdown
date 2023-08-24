@@ -36,6 +36,8 @@ public:
 	void scale(glm::vec2 factors);
 	void rotate(float angle);
 
+	void updateDirtyFlags(bool dirty = false);
+
 	const glm::mat4& getTransform() const;
 	const glm::mat4& getWorldTransform() const;
 
