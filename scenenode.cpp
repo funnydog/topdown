@@ -3,6 +3,7 @@
 
 SceneNode::SceneNode()
 	: mChildren()
+	, mParent(nullptr)
 	, mOrigin(0.f)
 	, mPosition(0.f)
 	, mScale(1.f)
