@@ -2,6 +2,8 @@
 
 #include <glm/gtx/transform.hpp>
 
+#include <GLFW/glfw3.h>
+
 #include "font.hpp"
 #include "glcheck.hpp"
 #include "resourceholder.hpp"
@@ -9,36 +11,52 @@
 
 TitleState::TitleState(StateStack &stack, const Context &context)
 	: State(stack, context)
-	, mText(context.fonts->get(FontID::Title), "TopDown Scroller!")
-	, mSprite(context.textures->get(TextureID::Explosion))
-	, mRectangle({100, 100}, Color::fromRGBA(200, 0, 150, 120))
+	, mTextures()
+	, mBackground()
+	, mText(context.fonts->get(FontID::Title),
+		"Press a key to start!",
+		Color::White)
+	, mRectangle()
+	, mShowText(true)
+	, mElapsedTime(Time::Zero)
 {
-	const auto halfSize = mText.getSize() * 0.5f;
-	mText.setOrigin(halfSize);
-	mText.move({320.f, 240.f});
+	mTextures.load(TextureID::TitleScreen, "assets/textures/pillars.jpg");
+	mBackground.setTexture(mTextures.get(TextureID::TitleScreen));
 
-	const auto spriteHalfSize = mSprite.getSize() * 0.5f;
-	mSprite.setOrigin(spriteHalfSize);
-	mSprite.move({100.f, 100.f});
+	mText.setOrigin(mText.getSize() * 0.5f);
 
+	glm::vec2 windowSize = context.window->getSize();
+	mText.move(windowSize * glm::vec2(0.5f, 0.8f));
+
+	mRectangle.setColor(Color::fromRGBA(50, 50, 50, 150));
+	mRectangle.setSize(mText.getSize() * 1.2f);
 	mRectangle.setOrigin(mRectangle.getSize() * 0.5f);
-	mRectangle.move({200.f, 200.f});
+	mRectangle.move(windowSize * glm::vec2(0.5f, 0.8f));
 }
 
 bool
-TitleState::update(Time)
+TitleState::update(Time dt)
 {
-	mText.rotate(1.f);
-	mSprite.rotate(-1.f);
-	mRectangle.rotate(2.f);
+	mElapsedTime += dt;
+	if (mElapsedTime >= Time::seconds(1))
+	{
+		mElapsedTime -= Time::seconds(1);
+		mShowText = !mShowText;
+	}
 	return true;
 }
 
 bool
 TitleState::handleEvent(const Event &event)
 {
-	// event not handled for now
-	(void)event;
+	if (const auto ev(std::get_if<KeyPressed>(&event)); ev
+	    && ev->key != GLFW_KEY_ESCAPE)
+	{
+		requestStackPop();
+		// TODO:
+		// requesStackPush(StateID::Menu);
+		return true;
+	}
 	return false;
 }
 
@@ -48,9 +66,14 @@ TitleState::draw()
 	auto &target = *mContext.target;
 	target.clear();
 	target.beginBatch();
-	mSprite.draw(target, glm::mat4(1.f));
-	mText.draw(target, glm::mat4(1.f));
-	mRectangle.draw(target, glm::mat4(1.f));
+
+	glm::mat4 identity(1.f);
+	mBackground.draw(target, identity);
+	mRectangle.draw(target, identity);
+	if (mShowText)
+	{
+		mText.draw(target, identity);
+	}
 	target.endBatch();
 	target.drawBatch();
 }

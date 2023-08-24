@@ -1,5 +1,6 @@
 #pragma once
 
+#include "resources.hpp"
 #include "rectangleshape.hpp"
 #include "sprite.hpp"
 #include "state.hpp"
@@ -14,7 +15,10 @@ public:
 	virtual bool handleEvent(const Event &event) override;
 	virtual void draw() override;
 private:
-	Text mText;
-	Sprite mSprite;
+	TextureHolder  mTextures;
+	Sprite         mBackground;
+	Text           mText;
 	RectangleShape mRectangle;
+	bool           mShowText;
+	Time           mElapsedTime;
 };

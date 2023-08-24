@@ -12,6 +12,7 @@ enum class StateID
 
 enum class TextureID
 {
+	TitleScreen,
 	Explosion,
 };
 
