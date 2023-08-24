@@ -94,10 +94,19 @@ void
 RenderTarget::beginBatch()
 {
 	mVertices.clear();
+	mChannelMap.clear();
 	*mChannelTail = mFreeChannels;
 	mFreeChannels = mChannelList;
 	mChannelList = mCurrent = nullptr;
 	mChannelTail = &mChannelList;
+}
+
+void
+RenderTarget::addNewLayer()
+{
+	// NOTE: by deleting the texture->channel association
+	// we force to build another set of channels.
+	mChannelMap.clear();
 }
 
 void
@@ -217,22 +226,17 @@ RenderTarget::setTexture(const Texture *texture)
 	}
 
 	// look for a channel with the same texture
-	DrawChannel *channel;
-	for (channel = mChannelList; channel; channel = channel->next)
+	if (auto it = mChannelMap.find(texture); it != mChannelMap.end())
 	{
-		if (channel->texture == texture)
-		{
-			break;
-		}
+		// channel found
+		mCurrent = it->second;
 	}
-
-	// or create a new one if it doesn't exist
-	if (!channel)
+	else
 	{
-		channel = newChannel(texture, mVertices.size());
+		// or add a new one
+		mCurrent = newChannel(texture, mVertices.size());
+		mChannelMap[texture] = mCurrent;
 	}
-
-	mCurrent = channel;
 }
 
 std::uint16_t

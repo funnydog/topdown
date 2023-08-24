@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <unordered_map>
 #include <vector>
 
 #include "color.hpp"
@@ -44,6 +44,11 @@ public:
 	 * Clear the buffer for a new list.
 	 */
 	void beginBatch();
+
+	/**
+	 * Force a new draw command
+	 */
+	void addNewLayer();
 
 	/**
 	 * Merge the index buffers and fix the idxOffsets before
@@ -99,6 +104,7 @@ private:
 
 	std::vector<Vertex>        mVertices;
 	std::vector<std::uint16_t> mIndices;
+	std::unordered_map<const Texture *, DrawChannel*> mChannelMap;
 
 	DrawChannel  *mChannelList;
 	DrawChannel **mChannelTail;
