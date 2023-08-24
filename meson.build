@@ -20,6 +20,7 @@ srcs = [
   'entity.cpp',
   # game
   'world.cpp',
+  'aircraft.cpp',
   # graphics
   'font.cpp',
   'glcheck.cpp',
