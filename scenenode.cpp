@@ -165,6 +165,18 @@ SceneNode::getWorldTransform() const
 	return mWorldTransform;
 }
 
+bool
+SceneNode::isDestroyed() const
+{
+	return false;
+}
+
+bool
+SceneNode::isMarkedForRemoval() const
+{
+	return false;
+}
+
 void
 SceneNode::update(Time dt)
 {

@@ -41,6 +41,9 @@ public:
 	const glm::mat4& getTransform() const;
 	const glm::mat4& getWorldTransform() const;
 
+	virtual bool isDestroyed() const;
+	virtual bool isMarkedForRemoval() const;
+
 	void update(Time dt);
 	void draw(RenderTarget &target) const;
 

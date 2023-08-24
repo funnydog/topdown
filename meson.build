@@ -17,6 +17,7 @@ srcs = [
   # scenenodes
   'scenenode.cpp',
   'spritenode.cpp',
+  'entity.cpp',
   # game
   'world.cpp',
   # graphics
