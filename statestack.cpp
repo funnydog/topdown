@@ -42,7 +42,7 @@ StateStack::handleEvent(const Event &event)
 	}
 	applyPendingChanges();
 
-       return handled;
+	return handled;
 }
 
 void
