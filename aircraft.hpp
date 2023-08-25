@@ -19,6 +19,9 @@ public:
 		 const TextureHolder &textures,
 		 const FontHolder &fonts);
 
+	bool isAllied() const;
+	void fire();
+
 	float getSpeed() const;
 
 	virtual Category getCategory() const override;
@@ -26,8 +29,13 @@ private:
 	virtual void updateCurrent(Time dt, CommandQueue &commands) override;
 	virtual void drawCurrent(RenderTarget &target) const override;
 
+	void createBullets(SceneNode &node, const TextureHolder &textures);
+
 private:
-	Type mType;
-	Sprite mSprite;
+	Type      mType;
+	Sprite    mSprite;
 	TextNode *mHealthDisplay;
+	bool      mIsFiring;
+	Time      mFireCountdown;
+	Command   mFireCommand;
 };

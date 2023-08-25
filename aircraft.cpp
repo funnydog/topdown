@@ -1,5 +1,6 @@
 #include "aircraft.hpp"
 #include "category.hpp"
+#include "projectile.hpp"
 #include "resourceholder.hpp"
 
 namespace
@@ -41,6 +42,9 @@ Aircraft::Aircraft(Type type, const TextureHolder &textures, const FontHolder &f
 	: Entity(Table[type].hitpoints)
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
+	, mIsFiring(false)
+	, mFireCountdown(Time::Zero)
+	, mFireCommand{}
 {
 	mSprite.setOrigin(mSprite.getSize() * 0.5f);
 
@@ -48,6 +52,23 @@ Aircraft::Aircraft(Type type, const TextureHolder &textures, const FontHolder &f
 	healthDisplay->setPosition({0.f, 50.f});
 	mHealthDisplay = healthDisplay.get();
 	attachChild(std::move(healthDisplay));
+
+	mFireCommand.category = Category::SceneAir;
+	mFireCommand.action = [this, &textures](auto &node, Time) {
+		createBullets(node, textures);
+	};
+}
+
+bool
+Aircraft::isAllied() const
+{
+	return mType == Eagle;
+}
+
+void
+Aircraft::fire()
+{
+	mIsFiring = true;
 }
 
 float
@@ -82,6 +103,19 @@ Aircraft::updateCurrent(Time dt, CommandQueue &commands)
 	}
 	mHealthDisplay->setString(std::to_string(getHitPoints()) + " HP");
 
+	// check if we can fire the bullets
+	if (mIsFiring && mFireCountdown <= Time::Zero)
+	{
+		commands.push(mFireCommand);
+		mFireCountdown += Time::seconds(0.5f);
+		mIsFiring = false;
+	}
+	else if (mFireCountdown > Time::Zero)
+	{
+		mIsFiring = false;
+		mFireCountdown -= dt;
+	}
+
 	Entity::updateCurrent(dt, commands);
 }
 
@@ -89,4 +123,28 @@ void
 Aircraft::drawCurrent(RenderTarget &target) const
 {
 	mSprite.draw(target, getWorldTransform());
+}
+
+void
+Aircraft::createBullets(SceneNode &node, const TextureHolder &textures)
+{
+	Projectile::Type type;
+	glm::vec2 direction(0.f);
+	if (isAllied())
+	{
+		type = Projectile::PlayerBullet;
+		direction.y = -1.f;
+	}
+	else
+	{
+		type = Projectile::EnemyBullet;
+		direction.y = 1.f;
+	}
+
+	auto bullet = std::make_unique<Projectile>(type, textures);
+	glm::vec2 offset = {0.f, 0.5f * mSprite.getSize().y};
+
+	bullet->setPosition(getPosition() + offset * direction);
+	bullet->setVelocity(direction * bullet->getSpeed());
+	node.attachChild(std::move(bullet));
 }
