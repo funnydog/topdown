@@ -30,7 +30,7 @@ struct AircraftData
 	{
 		40,
 		50.f,
-		TextureID::Entities, {{228, 0}, {50, 59}},
+		TextureID::Entities, {{228, 0}, {60, 60}},
 		Category::Enemy,
 		false,
 	},
