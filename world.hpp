@@ -26,8 +26,10 @@ private:
 	void loadFonts();
 	void loadTextures();
 	void buildScene();
+
 	void adaptPlayerVelocity();
 	void adaptPlayerPosition();
+	void scrollBackground(Time dt);
 
 private:
 	enum Layer

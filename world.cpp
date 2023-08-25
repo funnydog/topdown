@@ -84,13 +84,7 @@ World::getCommandQueue()
 void
 World::update(Time dt)
 {
-	auto scroll = glm::vec2(0.f, 1.f) * mScrollSpeed * dt.asSeconds();
-	mMapPosition += scroll;
-	mBackground->move(scroll);
-	if (mBackground->getPosition().y > 0.f)
-	{
-		mBackground->move({0, -480.f});
-	}
+	scrollBackground(dt);
 
 	mPlayer->setVelocity({0.f, 0.f});
 
@@ -131,6 +125,18 @@ World::adaptPlayerPosition()
 	position.x = std::clamp(position.x, borderDistance, size.x - borderDistance);
 	position.y = std::clamp(position.y, borderDistance, size.y - borderDistance);
 	mPlayer->setPosition(position);
+}
+
+void
+World::scrollBackground(Time dt)
+{
+	auto scroll = glm::vec2(0.f, 1.f) * mScrollSpeed * dt.asSeconds();
+	mMapPosition += scroll;
+	mBackground->move(scroll);
+	if (mBackground->getPosition().y > 0.f)
+	{
+		mBackground->move({0, -480.f});
+	}
 }
 
 void
