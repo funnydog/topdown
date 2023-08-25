@@ -282,6 +282,7 @@ RenderTarget::getPrimIndex(unsigned idxCount, unsigned vtxCount)
 	if (index + vtxCount > UINT16_MAX)
 	{
 		mCurrent = newChannel(mCurrent->texture, mVertices.size());
+		mChannelMap[mCurrent->texture] = mCurrent;
 		index = 0;
 	}
 
