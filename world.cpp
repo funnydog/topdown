@@ -13,6 +13,7 @@ World::World(const State::Context &context)
 	, mCommandQueue()
 	, mWorldBounds({0, 0}, {mWorldView.getSize()})
 	, mPlayer(nullptr)
+	, mBackground(nullptr)
 	, mSpawnPosition(mWorldView.getSize().x * 0.5f)
 	, mScrollSpeed(50.f)
 {
@@ -46,8 +47,13 @@ World::buildScene()
 		mSceneGraph.attachChild(std::move(layer));
 	}
 
-	auto background = std::make_unique<SpriteNode>(
-		mTextures.get(TextureID::Desert));
+	auto &desert = mTextures.get(TextureID::Desert);
+	desert.setRepeated(true);
+	IntRect bgSize(mWorldBounds);
+	bgSize.size.y *= 2;
+
+	auto background = std::make_unique<SpriteNode>(desert, bgSize);
+	mBackground = background.get();
 	mSceneLayers[Background]->attachChild(std::move(background));
 
 	auto player = std::make_unique<Aircraft>(
@@ -77,6 +83,12 @@ World::getCommandQueue()
 void
 World::update(Time dt)
 {
+	mBackground->move(glm::vec2(0.f, 1.f) * 30.f * dt.asSeconds());
+	if (mBackground->getPosition().y > 0.f)
+	{
+		mBackground->move({0, -480.f});
+	}
+
 	mPlayer->setVelocity({0.f, 0.f});
 
 	while (!mCommandQueue.empty())
@@ -122,6 +134,7 @@ void
 World::draw(RenderTarget &target)
 {
 	// TODO: mTarget.setView(mWorldView);
+	target.clear();
 	for (auto layer: mSceneLayers)
 	{
 		layer->draw(target);
