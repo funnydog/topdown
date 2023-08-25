@@ -46,13 +46,13 @@ public:
 	virtual bool isMarkedForRemoval() const;
 
 	void onCommand(const Command &command, Time dt);
-	void update(Time dt);
+	void update(Time dt, CommandQueue &commands);
 	void draw(RenderTarget &target) const;
 
 	virtual unsigned getCategory() const;
 
 protected:
-	virtual void updateCurrent(Time dt);
+	virtual void updateCurrent(Time dt, CommandQueue &commands);
 	virtual void drawCurrent(RenderTarget &target) const;
 
 private:

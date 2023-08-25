@@ -81,7 +81,7 @@ Entity::isMarkedForRemoval() const
 }
 
 void
-Entity::updateCurrent(Time dt)
+Entity::updateCurrent(Time dt, CommandQueue &)
 {
 	auto seconds = dt.asSeconds();
 	mVelocity += mAcceleration * seconds;

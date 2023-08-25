@@ -27,7 +27,7 @@ public:
 	virtual bool isMarkedForRemoval() const override;
 
 protected:
-	virtual void updateCurrent(Time dt) override;
+	virtual void updateCurrent(Time dt, CommandQueue &commands) override;
 
 private:
 	int       mHitPoints;

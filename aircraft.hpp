@@ -23,7 +23,7 @@ public:
 
 	virtual unsigned getCategory() const override;
 private:
-	virtual void updateCurrent(Time dt) override;
+	virtual void updateCurrent(Time dt, CommandQueue &commands) override;
 	virtual void drawCurrent(RenderTarget &target) const override;
 
 private:

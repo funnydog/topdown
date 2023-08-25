@@ -193,17 +193,17 @@ SceneNode::onCommand(const Command &command, Time dt)
 }
 
 void
-SceneNode::update(Time dt)
+SceneNode::update(Time dt, CommandQueue &commands)
 {
-	updateCurrent(dt);
+	updateCurrent(dt, commands);
 	for (auto &child: mChildren)
 	{
-		child->update(dt);
+		child->update(dt, commands);
 	}
 }
 
 void
-SceneNode::updateCurrent(Time)
+SceneNode::updateCurrent(Time, CommandQueue &)
 {
 }
 

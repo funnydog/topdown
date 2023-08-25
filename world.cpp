@@ -113,7 +113,7 @@ World::update(Time dt)
 	}
 	adaptPlayerVelocity();
 
-	mSceneGraph.update(dt);
+	mSceneGraph.update(dt, mCommandQueue);
 	mSceneGraph.updateDirtyFlags();
 
 	adaptPlayerPosition();
