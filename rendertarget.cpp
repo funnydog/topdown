@@ -166,13 +166,23 @@ RenderTarget::draw()
 			2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex),
 			reinterpret_cast<GLvoid*>(offsetof(Vertex, color))));
 
+	const Texture *currentTexture = nullptr;
 	for (auto channel = mChannelList; channel; channel = channel->next)
 	{
+		// skip empty channels
 		if (!channel->texture || channel->idxBuffer.empty())
 		{
 			continue;
 		}
-		Texture::bind(channel->texture, 0);
+
+		// dont bind against the same texture
+		if (currentTexture != channel->texture)
+		{
+			currentTexture = channel->texture;
+			Texture::bind(channel->texture, 0);
+		}
+
+		// draw
 		glCheck(glDrawElementsBaseVertex(
 				GL_TRIANGLES,
 				channel->idxBuffer.size(),
@@ -180,9 +190,11 @@ RenderTarget::draw()
 				reinterpret_cast<GLvoid*>(channel->idxOffset),
 				channel->vtxOffset));
 	}
+
 	glCheck(glDisableVertexAttribArray(2));
 	glCheck(glDisableVertexAttribArray(1));
 	glCheck(glDisableVertexAttribArray(0));
+
 	glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
