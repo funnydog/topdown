@@ -70,7 +70,8 @@ World::buildScene()
 {
 	for (int i = 0; i < LayerCount; i++)
 	{
-		auto layer = std::make_unique<SceneNode>();
+		auto layer = std::make_unique<SceneNode>(
+			i == Air ? Category::SceneAir : Category::None);
 		mSceneLayers[i] = layer.get();
 		mSceneGraph.attachChild(std::move(layer));
 	}
