@@ -65,7 +65,7 @@ Aircraft::getCategory() const
 void
 Aircraft::updateCurrent(Time dt)
 {
-	Entity::updateCurrent(dt);
+	// update the roll animation
 	if (Table[mType].hasRollAnimation)
 	{
 		auto rect = Table[mType].textureRect;
@@ -81,6 +81,7 @@ Aircraft::updateCurrent(Time dt)
 		mSprite.setTextureRect(rect);
 	}
 	mHealthDisplay->setString(std::to_string(getHitPoints()) + " HP");
+	Entity::updateCurrent(dt);
 }
 
 void
