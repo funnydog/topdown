@@ -6,7 +6,14 @@
 Sprite::Sprite()
 	: mTexture(nullptr)
 	, mVertices()
-	, mSize()
+	, mTextureStart(0.f)
+	, mTextureEnd(1.f)
+	, mFrameSize(1.f)
+	, mFrameIndex(0)
+	, mFrameCount(1)
+	, mFrameDelay(Time::Zero)
+	, mElapsedTime(Time::Zero)
+	, mRepeat(false)
 {
 	for (auto &vertex: mVertices)
 	{
@@ -28,62 +35,139 @@ Sprite::Sprite(const Texture &texture, const IntRect &rect)
 }
 
 void
+Sprite::updateSize(glm::vec2 size)
+{
+	mVertices[1].pos.y = size.y;
+	mVertices[2].pos.x = size.x;
+	mVertices[3].pos = size;
+}
+
+void
+Sprite::updateUV(glm::vec2 topLeft, glm::vec2 bottomRight)
+{
+	mVertices[0].uv = topLeft;
+	mVertices[1].uv = {topLeft.x, bottomRight.y};
+	mVertices[2].uv = {bottomRight.x, topLeft.y};
+	mVertices[3].uv = bottomRight;
+}
+
+void
 Sprite::setTexture(const Texture &texture)
 {
 	mTexture = &texture;
-
-	mVertices[0].uv = {0.f, 0.f};
-	mVertices[1].uv = {0.f, 1.f};
-	mVertices[2].uv = {1.f, 0.f};
-	mVertices[3].uv = {1.f, 1.f};
-
-	mSize = {texture.getWidth(), texture.getHeight()};
-	mVertices[1].pos.y = mSize.y;
-	mVertices[2].pos.x = mSize.x;
-	mVertices[3].pos = mSize;
+	updateSize({texture.getWidth(), texture.getHeight()});
+	updateUV(mTextureStart, mTextureEnd);
 }
 
 void
 Sprite::setTextureRect(const IntRect &rect)
 {
+	updateSize(rect.size);
 	if (!mTexture)
 	{
-		for (int i = 0; i < 4; i++)
-		{
-			mVertices[i].uv = {0.f, 0.f};
-		}
+		updateUV({0.f, 0.f}, {0.f, 0.f});
+		return;
 	}
-	else
-	{
-		const float textureWidth = static_cast<float>(mTexture->getWidth());
-		const float textureHeight = static_cast<float>(mTexture->getHeight());
 
-		const float x0 = static_cast<float>(rect.pos.x) / textureWidth;
-		const float y0 = static_cast<float>(rect.pos.y) / textureHeight;
-		const float x1 = x0 + static_cast<float>(rect.size.x) / textureWidth;
-		const float y1 = y0 + static_cast<float>(rect.size.y) / textureHeight;
+	const float textureWidth = static_cast<float>(mTexture->getWidth());
+	const float textureHeight = static_cast<float>(mTexture->getHeight());
 
-		mVertices[0].uv = { x0, y0 };
-		mVertices[1].uv = { x0, y1 };
-		mVertices[2].uv = { x1, y0 };
-		mVertices[3].uv = { x1, y1 };
-	}
-	mSize = rect.size;
-	mVertices[1].pos.y = mSize.y;
-	mVertices[2].pos.x = mSize.x;
-	mVertices[3].pos = mSize;
+	mTextureStart = glm::vec2(
+		static_cast<float>(rect.pos.x) / textureWidth,
+		static_cast<float>(rect.pos.y) / textureHeight);
+
+	mTextureEnd = mTextureStart + glm::vec2(
+		static_cast<float>(rect.size.x) / textureWidth,
+		static_cast<float>(rect.size.y) / textureHeight);
+
+	updateUV(mTextureStart, mTextureEnd);
 }
 
 glm::vec2
 Sprite::getSize() const
 {
-	return mSize;
+	return mVertices[3].pos;
+}
+
+void
+Sprite::setFrameSize(glm::ivec2 frameSize)
+{
+	updateSize(frameSize);
+	mFrameSize = {
+		static_cast<float>(frameSize.x) / mTexture->getWidth(),
+		static_cast<float>(frameSize.y) / mTexture->getHeight()
+	};
+	updateUV(mTextureStart, mTextureStart + mFrameSize);
+}
+
+void
+Sprite::setFrameCount(unsigned frameCount)
+{
+	mFrameCount = frameCount;
+}
+
+void
+Sprite::setFrameDelay(Time frameDelay)
+{
+	mFrameDelay = frameDelay;
+}
+
+bool
+Sprite::isRepeating() const
+{
+	return mRepeat;
+}
+
+void
+Sprite::setRepeating(bool repeating)
+{
+	mRepeat = repeating;
+}
+
+void
+Sprite::restart()
+{
+	mFrameIndex = 0;
+	mElapsedTime = Time::Zero;
+	updateUV(mTextureStart, mTextureStart + mFrameSize);
+}
+
+void
+Sprite::update(Time dt)
+{
+	glm::vec2 pos = mVertices[0].uv;
+	mElapsedTime += dt;
+	while (mElapsedTime >= mFrameDelay && mFrameIndex < mFrameCount)
+	{
+		mElapsedTime -= mFrameDelay;
+
+		pos.x += mFrameSize.x;
+		if (pos.x + mFrameSize.x > mTextureEnd.x)
+		{
+			pos.x = mTextureStart.x;
+			pos.y += mFrameSize.y;
+			if (pos.y + mFrameSize.y > mTextureEnd.y)
+			{
+				pos.y = mTextureStart.y;
+			}
+		}
+
+		mFrameIndex++;
+		if (mFrameIndex >= mFrameCount && mRepeat)
+		{
+			mFrameIndex = 0;
+		}
+	}
+	if (pos != mVertices[0].uv)
+	{
+		updateUV(pos, pos + mFrameSize);
+	}
 }
 
 void
 Sprite::draw(RenderTarget &target, const glm::mat4 &transform) const
 {
-	if (!mTexture)
+	if (!mTexture || mFrameIndex == mFrameCount)
 	{
 		return;
 	}
