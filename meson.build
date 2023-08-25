@@ -14,6 +14,7 @@ srcs = [
   'statestack.cpp',
   'titlestate.cpp',
   'gamestate.cpp',
+  'pausestate.cpp',
   # scenenodes
   'scenenode.cpp',
   'spritenode.cpp',
