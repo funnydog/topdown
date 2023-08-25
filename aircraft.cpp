@@ -17,12 +17,17 @@ struct AircraftData
 };
 }
 
-Aircraft::Aircraft(Type type, const TextureHolder &textures)
+Aircraft::Aircraft(Type type, const TextureHolder &textures, const FontHolder &fonts)
 	: Entity(Table[type].hitpoints)
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
 {
 	mSprite.setOrigin(mSprite.getSize() * 0.5f);
+
+	auto healthDisplay = std::make_unique<TextNode>(fonts.get(FontID::Body));
+	healthDisplay->setPosition({0.f, 50.f});
+	mHealthDisplay = healthDisplay.get();
+	attachChild(std::move(healthDisplay));
 }
 
 unsigned
@@ -49,6 +54,7 @@ Aircraft::updateCurrent(Time dt)
 		}
 		mSprite.setTextureRect(rect);
 	}
+	mHealthDisplay->setString(std::to_string(getHitPoints()) + " HP");
 }
 
 void

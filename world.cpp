@@ -7,6 +7,7 @@
 World::World(const State::Context &context)
 	: mWorldView(context.target->getDefaultView())
 	, mTextures()
+	, mFonts()
 	, mSceneGraph()
 	, mSceneLayers{}
 	, mCommandQueue()
@@ -15,10 +16,17 @@ World::World(const State::Context &context)
 	, mSpawnPosition(mWorldView.getSize().x * 0.5f)
 	, mScrollSpeed(50.f)
 {
+	loadFonts();
 	loadTextures();
 	buildScene();
 
 	// redundant mWorldView.setCenter(mSpawnPosition);
+}
+
+void
+World::loadFonts()
+{
+	mFonts.load(FontID::Body, "assets/fonts/belligerent.ttf", 18);
 }
 
 void
@@ -42,16 +50,19 @@ World::buildScene()
 		mTextures.get(TextureID::Desert));
 	mSceneLayers[Background]->attachChild(std::move(background));
 
-	auto player = std::make_unique<Aircraft>(Aircraft::Eagle, mTextures);
+	auto player = std::make_unique<Aircraft>(
+		Aircraft::Eagle, mTextures, mFonts);
 	player->setPosition(mSpawnPosition);
 	mPlayer = player.get();
 	mSceneLayers[Air]->attachChild(std::move(player));
 
-	auto left = std::make_unique<Aircraft>(Aircraft::Raptor, mTextures);
+	auto left = std::make_unique<Aircraft>(
+		Aircraft::Raptor, mTextures, mFonts);
 	left->setPosition({-80.f, 50.f});
 	mPlayer->attachChild(std::move(left));
 
-	auto right = std::make_unique<Aircraft>(Aircraft::Raptor, mTextures);
+	auto right = std::make_unique<Aircraft>(
+		Aircraft::Raptor, mTextures, mFonts);
 	right->setPosition({80.f, 50.f});
 	mPlayer->attachChild(std::move(right));
 

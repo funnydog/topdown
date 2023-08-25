@@ -23,6 +23,7 @@ public:
 	void draw(RenderTarget &target);
 
 private:
+	void loadFonts();
 	void loadTextures();
 	void buildScene();
 	void adaptPlayerVelocity();
@@ -38,6 +39,7 @@ private:
 private:
 	View           mWorldView;
 	TextureHolder  mTextures;
+	FontHolder     mFonts;
 
 	SceneNode      mSceneGraph;
 	std::array<SceneNode*, LayerCount> mSceneLayers;

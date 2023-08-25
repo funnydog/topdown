@@ -3,6 +3,7 @@
 #include "entity.hpp"
 #include "sprite.hpp"
 #include "resources.hpp"
+#include "textnode.hpp"
 
 class Aircraft: public Entity
 {
@@ -13,7 +14,9 @@ public:
 		Raptor,
 	};
 public:
-	explicit Aircraft(Type type, const TextureHolder &textures);
+	Aircraft(Type type,
+		 const TextureHolder &textures,
+		 const FontHolder &fonts);
 
 	virtual unsigned getCategory() const override;
 
@@ -24,4 +27,5 @@ private:
 private:
 	Type mType;
 	Sprite mSprite;
+	TextNode *mHealthDisplay;
 };
