@@ -24,7 +24,7 @@ bool
 PauseState::update(Time)
 {
 	// do nothing
-	return false;
+	return true;
 }
 
 bool
