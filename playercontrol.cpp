@@ -27,16 +27,16 @@ void
 PlayerControl::setDefaultActionBindings()
 {
 	mActionBinding[MoveUp].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-		aircraft.accelerate({0, -180.f});
+		aircraft.accelerate(glm::vec2(0.f, -1.f) * aircraft.getSpeed());
 	});
 	mActionBinding[MoveDown].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-		aircraft.accelerate({0, +180.f});
+		aircraft.accelerate(glm::vec2(0.f, 1.f) * aircraft.getSpeed());
 	});
 	mActionBinding[MoveLeft].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-		aircraft.accelerate({-180.f, 0.f});
+		aircraft.accelerate(glm::vec2(-1.f, 0.f) * aircraft.getSpeed());
 	});
 	mActionBinding[MoveRight].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
-		aircraft.accelerate({+180.f, 0.f});
+		aircraft.accelerate(glm::vec2(1.f, 0.f) * aircraft.getSpeed());
 	});
 	mActionBinding[PrintPosition].action = [](SceneNode &s, Time) {
 		std::cout << s.getPosition().x << ","
