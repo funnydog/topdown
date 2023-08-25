@@ -11,8 +11,7 @@
 
 TitleState::TitleState(StateStack &stack, const Context &context)
 	: State(stack, context)
-	, mTextures()
-	, mBackground()
+	, mBackground(context.textures->get(TextureID::TitleScreen))
 	, mText(context.fonts->get(FontID::Title),
 		"Press a key to start!",
 		Color::White)
@@ -20,9 +19,6 @@ TitleState::TitleState(StateStack &stack, const Context &context)
 	, mShowText(true)
 	, mElapsedTime(Time::Zero)
 {
-	mTextures.load(TextureID::TitleScreen, "assets/textures/pillars.jpg");
-	mBackground.setTexture(mTextures.get(TextureID::TitleScreen));
-
 	mText.setOrigin(mText.getSize() * 0.5f);
 
 	glm::vec2 windowSize = context.window->getSize();

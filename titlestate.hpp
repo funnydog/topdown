@@ -15,7 +15,6 @@ public:
 	virtual bool handleEvent(const Event &event) override;
 	virtual void draw() override;
 private:
-	TextureHolder  mTextures;
 	Sprite         mBackground;
 	Text           mText;
 	RectangleShape mRectangle;
