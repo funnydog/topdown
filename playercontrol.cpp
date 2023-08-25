@@ -20,6 +20,7 @@ PlayerControl::setDefaultKeyBindings()
 	mKeyBinding[GLFW_KEY_DOWN] = MoveDown;
 	mKeyBinding[GLFW_KEY_LEFT] = MoveLeft;
 	mKeyBinding[GLFW_KEY_RIGHT] = MoveRight;
+	mKeyBinding[GLFW_KEY_SPACE] = FireBullet;
 	mKeyBinding[GLFW_KEY_P] = PrintPosition;
 }
 
@@ -37,6 +38,9 @@ PlayerControl::setDefaultActionBindings()
 	});
 	mActionBinding[MoveRight].action = derivedAction<Aircraft>([](Aircraft &aircraft, Time) {
 		aircraft.accelerate(glm::vec2(1.f, 0.f) * aircraft.getSpeed());
+	});
+	mActionBinding[FireBullet].action = derivedAction<Aircraft>([](auto &aircraft, Time) {
+		aircraft.fire();
 	});
 	mActionBinding[PrintPosition].action = [](SceneNode &s, Time) {
 		std::cout << s.getPosition().x << ","

@@ -16,6 +16,7 @@ public:
 		MoveRight,
 		MoveUp,
 		MoveDown,
+		FireBullet,
 		PrintPosition,
 	};
 public:
