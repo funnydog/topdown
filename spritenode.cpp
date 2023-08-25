@@ -11,11 +11,6 @@ SpriteNode::SpriteNode(const Texture &texture, const IntRect &rect)
 }
 
 void
-SpriteNode::updateCurrent(Time)
-{
-}
-
-void
 SpriteNode::drawCurrent(RenderTarget &target) const
 {
 	mSprite.draw(target, getWorldTransform());

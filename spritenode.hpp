@@ -10,7 +10,6 @@ public:
 	SpriteNode(const Texture &texture, const IntRect &rect);
 
 private:
-	virtual void updateCurrent(Time dt) override;
 	virtual void drawCurrent(RenderTarget &target) const override;
 
 private:
