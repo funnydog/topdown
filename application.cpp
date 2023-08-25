@@ -6,6 +6,7 @@
 #include "clock.hpp"
 
 #include "titlestate.hpp"
+#include "menustate.hpp"
 #include "gamestate.hpp"
 #include "pausestate.hpp"
 
@@ -32,7 +33,7 @@ Application::Application()
 {
 	mEventQueue.registerWindow(mWindow);
 
-	mTextures.load(TextureID::Explosion, "assets/textures/explosion.png");
+	mTextures.load(TextureID::TitleScreen, "assets/textures/pillars.jpg");
 
 	mFonts.load(FontID::Title, "assets/fonts/belligerent.ttf", 48);
 	mFonts.load(FontID::Body, "assets/fonts/belligerent.ttf", 26);
@@ -130,6 +131,7 @@ void
 Application::registerStates()
 {
 	mStateStack.registerState<TitleState>(StateID::Title);
+	mStateStack.registerState<MenuState>(StateID::Menu);
 	mStateStack.registerState<GameState>(StateID::GamePlay);
 	mStateStack.registerState<PauseState>(StateID::Pause);
 }
