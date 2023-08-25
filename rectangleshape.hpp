@@ -6,6 +6,8 @@
 #include "transformable.hpp"
 #include "vertex.hpp"
 
+class RenderTarget;
+
 class RectangleShape: public Transformable
 {
 public:
