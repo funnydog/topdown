@@ -29,7 +29,6 @@ public:
 	bool handleEvent(const Event &event, CommandQueue &commands);
 	void handleRealtimeInput(const Window &window, CommandQueue &command);
 
-
 private:
 	void setDefaultActionBindings();
 	static bool isRealtimeAction(Action action);
