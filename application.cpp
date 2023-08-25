@@ -7,6 +7,7 @@
 
 #include "titlestate.hpp"
 #include "gamestate.hpp"
+#include "pausestate.hpp"
 
 namespace
 {
@@ -130,6 +131,7 @@ Application::registerStates()
 {
 	mStateStack.registerState<TitleState>(StateID::Title);
 	mStateStack.registerState<GameState>(StateID::GamePlay);
+	mStateStack.registerState<PauseState>(StateID::Pause);
 }
 
 void

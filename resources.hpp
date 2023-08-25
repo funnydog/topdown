@@ -8,6 +8,7 @@ enum class StateID
 	Settings,
 	GamePlay,
 	GameOver,
+	Pause,
 };
 
 enum class TextureID
