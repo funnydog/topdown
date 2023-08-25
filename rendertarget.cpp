@@ -91,6 +91,14 @@ RenderTarget::clear(Color color)
 }
 
 void
+RenderTarget::addLayer()
+{
+	// NOTE: by deleting the texture->channel association
+	// we force to build another set of channels.
+	mChannelMap.clear();
+}
+
+void
 RenderTarget::beginBatch()
 {
 	mVertices.clear();
@@ -99,14 +107,6 @@ RenderTarget::beginBatch()
 	mFreeChannels = mChannelList;
 	mChannelList = mCurrent = nullptr;
 	mChannelTail = &mChannelList;
-}
-
-void
-RenderTarget::addNewLayer()
-{
-	// NOTE: by deleting the texture->channel association
-	// we force to build another set of channels.
-	mChannelMap.clear();
 }
 
 void
@@ -123,7 +123,7 @@ RenderTarget::endBatch()
 }
 
 void
-RenderTarget::drawBatch() const
+RenderTarget::draw()
 {
 	if (!mChannelList)
 	{

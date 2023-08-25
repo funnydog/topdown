@@ -115,8 +115,8 @@ World::draw(RenderTarget &target)
 	for (auto layer: mSceneLayers)
 	{
 		layer->draw(target);
-		target.addNewLayer();
+		target.addLayer();
 	}
 	target.endBatch();
-	target.drawBatch();
+	target.draw();
 }

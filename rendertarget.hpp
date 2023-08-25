@@ -48,18 +48,18 @@ public:
 	/**
 	 * Force a new draw command
 	 */
-	void addNewLayer();
 
 	/**
 	 * Merge the index buffers and fix the idxOffsets before
 	 * drawing the batch.
 	 */
 	void endBatch();
+	void addLayer();
 
 	/**
 	 * Send the blob of vertices to the GPU.
 	 */
-	void drawBatch() const;
+	void draw();
 
 	/**
 	 * Set the texture for the next primitive.

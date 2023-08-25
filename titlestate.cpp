@@ -74,5 +74,5 @@ TitleState::draw()
 		mText.draw(target, identity);
 	}
 	target.endBatch();
-	target.drawBatch();
+	target.draw();
 }
