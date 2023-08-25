@@ -30,6 +30,7 @@ private:
 	void adaptPlayerVelocity();
 	void adaptPlayerPosition();
 	void scrollBackground(Time dt);
+	void spawnEnemies();
 
 private:
 	enum Layer
@@ -48,10 +49,11 @@ private:
 
 	CommandQueue   mCommandQueue;
 
-	FloatRect  mWorldBounds;
-	Aircraft  *mPlayer;
-	SceneNode *mBackground;
-	glm::vec2  mMapPosition;
-	glm::vec2  mSpawnPosition;
-	float      mScrollSpeed;
+	FloatRect    mWorldBounds;
+	Aircraft    *mPlayer;
+	SceneNode   *mBackground;
+	glm::vec2    mMapPosition;
+	glm::vec2    mSpawnPosition;
+	std::size_t  mSpawnIndex;
+	float        mScrollSpeed;
 };
