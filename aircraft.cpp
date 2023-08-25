@@ -18,7 +18,7 @@ struct AircraftData
 }
 
 Aircraft::Aircraft(Type type, const TextureHolder &textures)
-	: Entity(100)
+	: Entity(Table[type].hitpoints)
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
 {
