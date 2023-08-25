@@ -64,17 +64,6 @@ World::buildScene()
 	player->setPosition(mSpawnPosition);
 	mPlayer = player.get();
 	mSceneLayers[Air]->attachChild(std::move(player));
-
-	auto left = std::make_unique<Aircraft>(
-		Aircraft::Raptor, mTextures, mFonts);
-	left->setPosition({-80.f, 50.f});
-	mPlayer->attachChild(std::move(left));
-
-	auto right = std::make_unique<Aircraft>(
-		Aircraft::Raptor, mTextures, mFonts);
-	right->setPosition({80.f, 50.f});
-	mPlayer->attachChild(std::move(right));
-
 }
 
 CommandQueue&
