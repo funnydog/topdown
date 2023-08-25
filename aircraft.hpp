@@ -12,6 +12,7 @@ public:
 	{
 		Eagle,
 		Raptor,
+		Avenger,
 	};
 public:
 	Aircraft(Type type,

@@ -27,6 +27,13 @@ struct AircraftData
 		Category::Enemy,
 		false,
 	},
+	{
+		40,
+		50.f,
+		TextureID::Entities, {{228, 0}, {50, 59}},
+		Category::Enemy,
+		false,
+	},
 };
 }
 
