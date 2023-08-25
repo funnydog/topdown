@@ -49,7 +49,7 @@ TitleState::handleEvent(const Event &event)
 	    && ev->key != GLFW_KEY_ESCAPE)
 	{
 		requestStackPop();
-		requestStackPush(StateID::GamePlay);
+		requestStackPush(StateID::Menu);
 		return true;
 	}
 	return false;

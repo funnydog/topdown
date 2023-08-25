@@ -36,7 +36,7 @@ PauseState::handleEvent(const Event &event)
 		{
 		case GLFW_KEY_BACKSPACE:
 			requestStackClear();
-			requestStackPush(StateID::Title);
+			requestStackPush(StateID::Menu);
 			break;
 		default:
 			requestStackPop();
