@@ -64,7 +64,6 @@ TitleState::draw()
 {
 	auto &target = *mContext.target;
 	target.clear();
-	target.beginBatch();
 
 	glm::mat4 identity(1.f);
 	mBackground.draw(target, identity);
@@ -73,6 +72,5 @@ TitleState::draw()
 	{
 		mText.draw(target, identity);
 	}
-	target.endBatch();
 	target.draw();
 }

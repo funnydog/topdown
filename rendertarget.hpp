@@ -41,19 +41,8 @@ public:
 	void clear(Color = Color::Black);
 
 	/**
-	 * Clear the buffer for a new list.
-	 */
-	void beginBatch();
-
-	/**
 	 * Force a new draw command
 	 */
-
-	/**
-	 * Merge the index buffers and fix the idxOffsets before
-	 * drawing the batch.
-	 */
-	void endBatch();
 	void addLayer();
 
 	/**
@@ -97,6 +86,8 @@ private:
 
 private:
 	DrawChannel *newChannel(const Texture *texture, unsigned vtxOffset);
+	void beginBatch();
+	void endBatch();
 
 private:
 	View mDefaultView;
@@ -106,6 +97,7 @@ private:
 	std::vector<std::uint16_t> mIndices;
 	std::unordered_map<const Texture *, DrawChannel*> mChannelMap;
 
+	bool mIsBatching;
 	DrawChannel  *mChannelList;
 	DrawChannel **mChannelTail;
 	DrawChannel  *mCurrent;

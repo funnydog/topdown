@@ -111,12 +111,10 @@ void
 World::draw(RenderTarget &target)
 {
 	// TODO: mTarget.setView(mWorldView);
-	target.beginBatch();
 	for (auto layer: mSceneLayers)
 	{
 		layer->draw(target);
 		target.addLayer();
 	}
-	target.endBatch();
 	target.draw();
 }

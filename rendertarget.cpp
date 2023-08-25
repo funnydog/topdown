@@ -9,7 +9,8 @@
 #include "window.hpp"
 
 RenderTarget::RenderTarget(const Window &window)
-	: mChannelList(nullptr)
+	: mIsBatching(true)
+	, mChannelList(nullptr)
 	, mChannelTail(&mChannelList)
 	, mCurrent(nullptr)
 	, mFreeChannels(nullptr)
@@ -130,6 +131,12 @@ RenderTarget::draw()
 		return;
 	}
 
+	if (mIsBatching)
+	{
+		mIsBatching = false;
+		endBatch();
+	}
+
 	Shader::bind(&mShader);
 	ShaderUniform projection = mShader.getUniform("Projection");
 	projection.set(mView.getTransform());
@@ -225,6 +232,13 @@ RenderTarget::setTexture(const Texture *texture)
 		return;
 	}
 
+	// switch to batching state if needed
+	if (!mIsBatching)
+	{
+		mIsBatching = true;
+		beginBatch();
+	}
+
 	// look for a channel with the same texture
 	if (auto it = mChannelMap.find(texture); it != mChannelMap.end())
 	{
@@ -242,9 +256,12 @@ RenderTarget::setTexture(const Texture *texture)
 std::uint16_t
 RenderTarget::getPrimIndex(unsigned idxCount, unsigned vtxCount)
 {
-	// ensure we have a current channel
+	// ensure we have a current channel and the rendertarget is in
+	// batching state.
 	if (!mCurrent)
 	{
+		mIsBatching = true;
+		beginBatch();
 		mCurrent = newChannel(&mWhiteTexture, 0);
 	}
 
