@@ -1,8 +1,9 @@
 #include "category.hpp"
 #include "scenenode.hpp"
 
-SceneNode::SceneNode()
-	: mChildren()
+SceneNode::SceneNode(Category::Type category)
+	: mCategory(category)
+	, mChildren()
 	, mParent(nullptr)
 	, mOrigin(0.f)
 	, mPosition(0.f)
@@ -225,5 +226,5 @@ SceneNode::drawCurrent(RenderTarget &) const
 unsigned
 SceneNode::getCategory() const
 {
-	return Category::Scene;
+	return mCategory;
 }

@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 
+#include "category.hpp"
 #include "command.hpp"
 #include "rendertarget.hpp"
 #include "time.hpp"
@@ -15,7 +16,7 @@ public:
 	typedef std::unique_ptr<SceneNode> Ptr;
 
 public:
-	SceneNode();
+	explicit SceneNode(Category::Type category = Category::None);
 	virtual ~SceneNode() = default;
 
 	void attachChild(Ptr child);
@@ -56,6 +57,7 @@ protected:
 	virtual void drawCurrent(RenderTarget &target) const;
 
 private:
+	Category::Type    mCategory;
 	std::vector<Ptr>  mChildren;
 	SceneNode        *mParent;
 
