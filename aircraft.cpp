@@ -45,6 +45,7 @@ Aircraft::Aircraft(Type type, const TextureHolder &textures, const FontHolder &f
 	, mIsFiring(false)
 	, mFireCountdown(Time::Zero)
 	, mFireCommand{}
+	, mFireSpreadLevel(1)
 {
 	mSprite.setOrigin(mSprite.getSize() * 0.5f);
 
@@ -70,6 +71,22 @@ Aircraft::fire()
 {
 	mIsFiring = true;
 }
+
+void
+Aircraft::increaseSpread()
+{
+	if (mFireSpreadLevel < 3)
+	{
+		mFireSpreadLevel++;
+	}
+}
+
+void
+Aircraft::resetSpread()
+{
+	mFireSpreadLevel = 1;
+}
+
 
 float
 Aircraft::getSpeed() const
@@ -124,27 +141,50 @@ Aircraft::drawCurrent(RenderTarget &target) const
 {
 	mSprite.draw(target, getWorldTransform());
 }
-
 void
-Aircraft::createBullets(SceneNode &node, const TextureHolder &textures)
+Aircraft::createProjectile(
+	SceneNode &node, const TextureHolder &textures,
+	float xOffset, float yOffset)
 {
 	Projectile::Type type;
-	glm::vec2 direction(0.f);
+	float direction;
 	if (isAllied())
 	{
 		type = Projectile::PlayerBullet;
-		direction.y = -1.f;
+		direction = -1.f;
 	}
 	else
 	{
 		type = Projectile::EnemyBullet;
-		direction.y = 1.f;
+		direction = 1.f;
 	}
 
 	auto bullet = std::make_unique<Projectile>(type, textures);
-	glm::vec2 offset = {0.f, 0.5f * mSprite.getSize().y};
+	glm::vec2 offset = glm::vec2(xOffset, yOffset * direction) * mSprite.getSize();
 
-	bullet->setPosition(getPosition() + offset * direction);
-	bullet->setVelocity(direction * bullet->getSpeed());
+	bullet->setPosition(getPosition() + offset);
+	bullet->setVelocity(glm::vec2(0.f, direction) * bullet->getSpeed());
 	node.attachChild(std::move(bullet));
+}
+
+void
+Aircraft::createBullets(SceneNode &node, const TextureHolder &textures)
+{
+	switch (mFireSpreadLevel)
+	{
+	case 1:
+		createProjectile(node, textures, 0.f, 0.5f);
+		break;
+
+	case 2:
+		createProjectile(node, textures, -.33f, .33f);
+		createProjectile(node, textures, +.33f, .33f);
+		break;
+
+	case 3:
+		createProjectile(node, textures, -0.5f, .33f);
+		createProjectile(node, textures,  0.0f, .50f);
+		createProjectile(node, textures, +0.5f, .33f);
+		break;
+	}
 }

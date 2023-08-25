@@ -22,6 +22,9 @@ public:
 	bool isAllied() const;
 	void fire();
 
+	void increaseSpread();
+	void resetSpread();
+
 	float getSpeed() const;
 
 	virtual Category getCategory() const override;
@@ -29,6 +32,8 @@ private:
 	virtual void updateCurrent(Time dt, CommandQueue &commands) override;
 	virtual void drawCurrent(RenderTarget &target) const override;
 
+	void createProjectile(SceneNode &node, const TextureHolder &textures,
+			      float xOffset, float yOffset);
 	void createBullets(SceneNode &node, const TextureHolder &textures);
 
 private:
@@ -38,4 +43,5 @@ private:
 	bool      mIsFiring;
 	Time      mFireCountdown;
 	Command   mFireCommand;
+	int       mFireSpreadLevel;
 };
