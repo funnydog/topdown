@@ -81,13 +81,13 @@ Font::draw(RenderTarget &target, const glm::mat4 &transform,
 	}
 
 	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> cv;
-	float x = 0.f;
-	target.setTexture(&mTexture);
 	for (auto codepoint: cv.from_bytes(text))
 	{
 		getGlyph(codepoint);
 	}
 
+	target.setTexture(&mTexture);
+	float x = 0.f;
 	for (auto codepoint: cv.from_bytes(text))
 	{
 		const auto &glyph = getGlyph(codepoint);
