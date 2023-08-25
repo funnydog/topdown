@@ -17,7 +17,7 @@ Sprite::Sprite()
 {
 	for (auto &vertex: mVertices)
 	{
-		vertex = {{0.f, 0.f}, {0.f, 0.f}, Color::White};
+		vertex.color = Color::White;
 	}
 }
 
