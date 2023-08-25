@@ -7,13 +7,26 @@ namespace
 struct AircraftData
 {
 	int       hitpoints;
+	float     speed;
 	TextureID texture;
 	IntRect   textureRect;
 	unsigned  category;
 	bool      hasRollAnimation;
 } Table[] = {
-	{ 100, TextureID::Entities, {{0, 0}, {48, 64}}, Category::Player, true  },
-	{  20, TextureID::Entities, {{144,0}, {84,64}}, Category::Enemy,  false },
+	{
+		100,
+		180.f,
+		TextureID::Entities, {{0, 0}, {48, 64}},
+		Category::Player,
+		true,
+	},
+	{
+		20,
+		80.f,
+		TextureID::Entities, {{144, 0}, {84, 64}},
+		Category::Enemy,
+		false,
+	},
 };
 }
 
@@ -28,6 +41,12 @@ Aircraft::Aircraft(Type type, const TextureHolder &textures, const FontHolder &f
 	healthDisplay->setPosition({0.f, 50.f});
 	mHealthDisplay = healthDisplay.get();
 	attachChild(std::move(healthDisplay));
+}
+
+float
+Aircraft::getSpeed() const
+{
+	return Table[mType].speed;
 }
 
 unsigned
