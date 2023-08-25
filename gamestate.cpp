@@ -1,3 +1,5 @@
+#include <GLFW/glfw3.h>
+
 #include "gamestate.hpp"
 #include "playercontrol.hpp"
 
@@ -21,7 +23,13 @@ GameState::update(Time dt)
 bool
 GameState::handleEvent(const Event &event)
 {
-	if (mControl.handleEvent(event, mWorld.getCommandQueue()))
+	if (const auto ep(std::get_if<KeyPressed>(&event));
+	    ep && ep->key == GLFW_KEY_ESCAPE)
+	{
+		requestStackPush(StateID::Pause);
+		return true;
+	}
+	else if (mControl.handleEvent(event, mWorld.getCommandQueue()))
 	{
 		return true;
 	}
