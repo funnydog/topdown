@@ -49,6 +49,7 @@ private:
 	FloatRect  mWorldBounds;
 	Aircraft  *mPlayer;
 	SceneNode *mBackground;
+	glm::vec2  mMapPosition;
 	glm::vec2  mSpawnPosition;
 	float      mScrollSpeed;
 };
