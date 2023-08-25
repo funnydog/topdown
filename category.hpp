@@ -8,6 +8,8 @@ enum class Category
 	Enemy            = 1 << 2,
 	PlayerProjectile = 1 << 3,
 	EnemyProjectile  = 1 << 4,
+
+	Projectile = PlayerProjectile | EnemyProjectile,
 };
 
 constexpr bool operator&(Category lhs, Category rhs)
