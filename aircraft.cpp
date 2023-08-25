@@ -10,7 +10,7 @@ struct AircraftData
 	float     speed;
 	TextureID texture;
 	IntRect   textureRect;
-	unsigned  category;
+	Category  category;
 	bool      hasRollAnimation;
 } Table[] = {
 	{
@@ -56,7 +56,7 @@ Aircraft::getSpeed() const
 	return Table[mType].speed;
 }
 
-unsigned
+Category
 Aircraft::getCategory() const
 {
 	return Table[mType].category;

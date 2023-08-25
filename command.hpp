@@ -12,7 +12,7 @@ class SceneNode;
 struct Command
 {
 	std::function<void(SceneNode&, Time)> action;
-	unsigned category = Category::None;
+	Category category = Category::None;
 };
 
 template <typename Object, typename Function>

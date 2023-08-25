@@ -16,7 +16,7 @@ public:
 	typedef std::unique_ptr<SceneNode> Ptr;
 
 public:
-	explicit SceneNode(Category::Type category = Category::None);
+	explicit SceneNode(Category category = Category::None);
 	virtual ~SceneNode() = default;
 
 	void attachChild(Ptr child);
@@ -50,14 +50,14 @@ public:
 	void update(Time dt, CommandQueue &commands);
 	void draw(RenderTarget &target) const;
 
-	virtual unsigned getCategory() const;
+	virtual Category getCategory() const;
 
 protected:
 	virtual void updateCurrent(Time dt, CommandQueue &commands);
 	virtual void drawCurrent(RenderTarget &target) const;
 
 private:
-	Category::Type    mCategory;
+	Category          mCategory;
 	std::vector<Ptr>  mChildren;
 	SceneNode        *mParent;
 
