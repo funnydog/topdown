@@ -15,7 +15,9 @@ World::World(const State::Context &context)
 	, mPlayer(nullptr)
 	, mBackground(nullptr)
 	, mMapPosition()
-	, mSpawnPosition(mWorldView.getSize().x * 0.5f)
+	, mSpawnPosition(
+		mWorldView.getSize().x * 0.5f,
+		mWorldView.getSize().y * 0.8f)
 	, mScrollSpeed(50.f)
 {
 	loadFonts();
