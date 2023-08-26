@@ -98,6 +98,16 @@ World::getCommandQueue()
 	return mCommandQueue;
 }
 
+FloatRect
+World::getBattlefieldRect() const
+{
+	constexpr glm::vec2 margin(100.f, 100.f);
+	return {
+		mWorldView.getCenter() - mWorldView.getSize() * 0.5f - margin,
+		mWorldView.getSize() + margin * 2.f,
+	};
+}
+
 void
 World::update(Time dt)
 {

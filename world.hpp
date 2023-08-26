@@ -27,6 +27,7 @@ private:
 	void loadTextures();
 	void buildScene();
 
+	FloatRect getBattlefieldRect() const;
 	void adaptPlayerVelocity();
 	void adaptPlayerPosition();
 	void scrollBackground(Time dt);
