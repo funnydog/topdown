@@ -47,7 +47,7 @@ Aircraft::Aircraft(Type type, const TextureHolder &textures, const FontHolder &f
 	, mFireCommand{}
 	, mFireSpreadLevel(1)
 {
-	mSprite.setOrigin(mSprite.getSize() * 0.5f);
+	mSprite.centerOrigin();
 
 	auto healthDisplay = std::make_unique<TextNode>(fonts.get(FontID::Body));
 	healthDisplay->setPosition({0.f, 50.f});

@@ -27,6 +27,8 @@ public:
 	bool isRepeating() const;
 	void setRepeating(bool repeating);
 
+	void centerOrigin();
+
 	void restart();
 	void update(Time dt);
 

@@ -31,7 +31,7 @@ Projectile::Projectile(Type type, const TextureHolder &textures)
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
 {
-	mSprite.setOrigin(mSprite.getSize() * 0.5f);
+	mSprite.centerOrigin();
 }
 
 Category

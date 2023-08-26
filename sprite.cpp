@@ -125,6 +125,12 @@ Sprite::setRepeating(bool repeating)
 }
 
 void
+Sprite::centerOrigin()
+{
+	setOrigin(glm::ivec2(getSize() * 0.5f));
+}
+
+void
 Sprite::restart()
 {
 	mFrameIndex = 0;
