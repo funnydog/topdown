@@ -21,6 +21,8 @@ public:
 	Color getColor() const;
 	void setColor(Color color);
 
+	void centerOrigin();
+
 	void draw(RenderTarget &target, const glm::mat4 &transform) const;
 
 private:

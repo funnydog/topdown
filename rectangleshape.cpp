@@ -41,6 +41,12 @@ RectangleShape::setColor(Color color)
 }
 
 void
+RectangleShape::centerOrigin()
+{
+	setOrigin(getSize() * 0.5f);
+}
+
+void
 RectangleShape::draw(RenderTarget &target, const glm::mat4 &transform) const
 {
 	glm::mat4 tr = transform * getTransform();

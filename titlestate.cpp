@@ -26,7 +26,7 @@ TitleState::TitleState(StateStack &stack, const Context &context)
 
 	mRectangle.setColor(Color::fromRGBA(50, 50, 50, 150));
 	mRectangle.setSize(mText.getSize() * 1.2f);
-	mRectangle.setOrigin(mRectangle.getSize() * 0.5f);
+	mRectangle.centerOrigin();
 	mRectangle.move(windowSize * glm::vec2(0.5f, 0.8f));
 }
 
