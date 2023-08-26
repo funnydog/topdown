@@ -46,6 +46,8 @@ public:
 	virtual bool isDestroyed() const;
 	virtual bool isMarkedForRemoval() const;
 
+	void removeDeadChildren();
+
 	void onCommand(const Command &command, Time dt);
 	void update(Time dt, CommandQueue &commands);
 	void draw(RenderTarget &target) const;

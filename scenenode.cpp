@@ -181,6 +181,22 @@ SceneNode::isMarkedForRemoval() const
 }
 
 void
+SceneNode::removeDeadChildren()
+{
+	auto deadBegin = std::remove_if(
+		mChildren.begin(),
+		mChildren.end(),
+		[](const auto &node) -> bool {
+			return node->isMarkedForRemoval();
+		});
+	mChildren.erase(deadBegin, mChildren.end());
+	for (auto &child: mChildren)
+	{
+		child->removeDeadChildren();
+	}
+}
+
+void
 SceneNode::onCommand(const Command &command, Time dt)
 {
 	if ((command.category & getCategory()) != 0)
