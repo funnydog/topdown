@@ -10,6 +10,7 @@ enum class Category
 	EnemyProjectile  = 1 << 4,
 
 	Projectile = PlayerProjectile | EnemyProjectile,
+	RemoveIfOutside = Projectile | Enemy,
 };
 
 constexpr bool operator&(Category lhs, Category rhs)
