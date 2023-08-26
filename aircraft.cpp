@@ -74,7 +74,10 @@ Aircraft::isAllied() const
 void
 Aircraft::fire()
 {
-	mIsFiring = true;
+	if (Table[mType].fireInterval != Time::Zero)
+	{
+		mIsFiring = true;
+	}
 }
 
 void
@@ -140,6 +143,11 @@ Aircraft::updateCurrent(Time dt, CommandQueue &commands)
 	mHealthDisplay->setString(std::to_string(getHitPoints()) + " HP");
 
 	// check if we can fire the bullets
+	if (!isAllied())
+	{
+		fire();
+	}
+
 	if (mIsFiring && mFireCountdown <= Time::Zero)
 	{
 		commands.push(mFireCommand);
