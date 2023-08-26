@@ -109,6 +109,21 @@ World::getBattlefieldRect() const
 }
 
 void
+World::removeOutsideBattlefield()
+{
+	Command command;
+	command.category = Category::RemoveIfOutside;
+	command.action = derivedAction<Entity>([this](auto &e, Time) {
+		auto battlefield = getBattlefieldRect();
+		if (!battlefield.contains(e.getPosition()))
+		{
+			e.remove();
+		}
+	});
+	mCommandQueue.push(command);
+}
+
+void
 World::update(Time dt)
 {
 	scrollBackground(dt);

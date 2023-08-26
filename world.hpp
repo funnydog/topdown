@@ -28,6 +28,8 @@ private:
 	void buildScene();
 
 	FloatRect getBattlefieldRect() const;
+	void removeOutsideBattlefield();
+
 	void adaptPlayerVelocity();
 	void adaptPlayerPosition();
 	void scrollBackground(Time dt);
