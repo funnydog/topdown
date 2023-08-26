@@ -143,6 +143,9 @@ World::update(Time dt)
 	mSceneGraph.updateDirtyFlags();
 
 	adaptPlayerPosition();
+
+	removeOutsideBattlefield();
+	mSceneGraph.removeDeadChildren();
 }
 
 void
