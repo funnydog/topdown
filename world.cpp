@@ -111,11 +111,11 @@ World::getBattlefieldRect() const
 void
 World::removeOutsideBattlefield()
 {
+	auto battleRect = getBattlefieldRect();
 	Command command;
 	command.category = Category::RemoveIfOutside;
-	command.action = derivedAction<Entity>([this](auto &e, Time) {
-		auto battlefield = getBattlefieldRect();
-		if (!battlefield.contains(e.getPosition()))
+	command.action = derivedAction<Entity>([battleRect](auto &e, Time) {
+		if (!battleRect.contains(e.getPosition()))
 		{
 			e.remove();
 		}
