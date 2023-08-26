@@ -45,6 +45,12 @@ Text::setColor(Color color)
 	mColor = color;
 }
 
+void
+Text::centerOrigin()
+{
+	setOrigin(getSize() * 0.5f);
+}
+
 glm::vec2
 Text::getSize() const
 {

@@ -20,6 +20,8 @@ public:
 	Color getColor() const;
 	void setColor(Color color);
 
+	void centerOrigin();
+
 	glm::vec2 getSize() const;
 
 	void draw(RenderTarget &target, const glm::mat4 &transform) const;

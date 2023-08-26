@@ -12,8 +12,8 @@ PauseState::PauseState(StateStack &stack, const Context &context)
 		context.fonts->get(FontID::Body),
 		"Press Backspace to return to the main menu")
 {
-	mPausedText.setOrigin(mPausedText.getSize() * 0.5f);
-	mInstructionText.setOrigin(mInstructionText.getSize() * 0.5f);
+	mPausedText.centerOrigin();
+	mInstructionText.centerOrigin();
 
 	glm::vec2 size = context.window->getSize();
 	mPausedText.setPosition(size * 0.5f);

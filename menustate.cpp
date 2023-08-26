@@ -18,12 +18,12 @@ MenuState::MenuState(StateStack &stack, const Context &context)
 	auto &font = context.fonts->get(FontID::Title);
 
 	auto playPtr = std::make_unique<Text>(font, "Play");
-	playPtr->setOrigin(playPtr->getSize() * 0.5f);
+	playPtr->centerOrigin();
 	playPtr->setPosition(windowSize * 0.5f);
 	mOptions[Play] = std::move(playPtr);
 
 	auto exitPtr = std::make_unique<Text>(font, "Exit");
-	exitPtr->setOrigin(exitPtr->getSize() * 0.5f);
+	exitPtr->centerOrigin();
 	exitPtr->setPosition(mOptions[Play]->getPosition() + glm::vec2(0.f, 80.f));
 	mOptions[Exit] = std::move(exitPtr);
 

@@ -16,7 +16,7 @@ void
 TextNode::setString(const std::string &text)
 {
 	mText.setString(text);
-	mText.setOrigin(mText.getSize() * 0.5f);
+	mText.centerOrigin();
 }
 
 Color
