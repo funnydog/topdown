@@ -25,6 +25,9 @@ public:
 	void increaseSpread();
 	void resetSpread();
 
+	void increaseRate();
+	void resetRate();
+
 	float getSpeed() const;
 
 	virtual Category getCategory() const override;
@@ -44,4 +47,5 @@ private:
 	Time      mFireCountdown;
 	Command   mFireCommand;
 	int       mFireSpreadLevel;
+	int       mFireRateLevel;
 };

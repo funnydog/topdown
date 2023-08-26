@@ -46,6 +46,7 @@ Aircraft::Aircraft(Type type, const TextureHolder &textures, const FontHolder &f
 	, mFireCountdown(Time::Zero)
 	, mFireCommand{}
 	, mFireSpreadLevel(1)
+	, mFireRateLevel(1)
 {
 	mSprite.centerOrigin();
 
@@ -87,6 +88,20 @@ Aircraft::resetSpread()
 	mFireSpreadLevel = 1;
 }
 
+void
+Aircraft::increaseRate()
+{
+	if (mFireRateLevel < 3)
+	{
+		mFireRateLevel++;
+	}
+}
+
+void
+Aircraft::resetRate()
+{
+	mFireRateLevel = 0;
+}
 
 float
 Aircraft::getSpeed() const
@@ -124,7 +139,7 @@ Aircraft::updateCurrent(Time dt, CommandQueue &commands)
 	if (mIsFiring && mFireCountdown <= Time::Zero)
 	{
 		commands.push(mFireCommand);
-		mFireCountdown += Time::seconds(0.5f);
+		mFireCountdown += Time::seconds(1.f / (mFireRateLevel + 1));
 		mIsFiring = false;
 	}
 	else if (mFireCountdown > Time::Zero)
