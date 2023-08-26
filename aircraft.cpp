@@ -12,6 +12,7 @@ struct AircraftData
 	TextureID texture;
 	IntRect   textureRect;
 	Category  category;
+	Time      fireInterval;
 	bool      hasRollAnimation;
 } Table[] = {
 	{
@@ -19,6 +20,7 @@ struct AircraftData
 		180.f,
 		TextureID::Entities, {{0, 0}, {48, 64}},
 		Category::Player,
+		Time::seconds(0.5f),
 		true,
 	},
 	{
@@ -26,6 +28,7 @@ struct AircraftData
 		80.f,
 		TextureID::Entities, {{144, 0}, {84, 64}},
 		Category::Enemy,
+		Time::Zero,
 		false,
 	},
 	{
@@ -33,6 +36,7 @@ struct AircraftData
 		50.f,
 		TextureID::Entities, {{228, 0}, {60, 60}},
 		Category::Enemy,
+		Time::seconds(2.f),
 		false,
 	},
 };
@@ -46,7 +50,7 @@ Aircraft::Aircraft(Type type, const TextureHolder &textures, const FontHolder &f
 	, mFireCountdown(Time::Zero)
 	, mFireCommand{}
 	, mFireSpreadLevel(1)
-	, mFireRateLevel(1)
+	, mFireRateLevel(0)
 {
 	mSprite.centerOrigin();
 
@@ -76,7 +80,7 @@ Aircraft::fire()
 void
 Aircraft::increaseSpread()
 {
-	if (mFireSpreadLevel < 3)
+	if (mFireSpreadLevel < 2)
 	{
 		mFireSpreadLevel++;
 	}
@@ -85,7 +89,7 @@ Aircraft::increaseSpread()
 void
 Aircraft::resetSpread()
 {
-	mFireSpreadLevel = 1;
+	mFireSpreadLevel = 0;
 }
 
 void
@@ -139,7 +143,7 @@ Aircraft::updateCurrent(Time dt, CommandQueue &commands)
 	if (mIsFiring && mFireCountdown <= Time::Zero)
 	{
 		commands.push(mFireCommand);
-		mFireCountdown += Time::seconds(1.f / (mFireRateLevel + 1));
+		mFireCountdown += Table[mType].fireInterval / (mFireRateLevel + 1);
 		mIsFiring = false;
 	}
 	else if (mFireCountdown > Time::Zero)
