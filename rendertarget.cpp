@@ -232,6 +232,13 @@ RenderTarget::newChannel(const Texture *texture, unsigned vtxOffset)
 void
 RenderTarget::setTexture(const Texture *texture)
 {
+	// switch to batching state if needed
+	if (!mIsBatching)
+	{
+		mIsBatching = true;
+		beginBatch();
+	}
+
 	// the null texture means a white texture;
 	if (!texture)
 	{
@@ -242,13 +249,6 @@ RenderTarget::setTexture(const Texture *texture)
 	if (mCurrent && mCurrent->texture == texture)
 	{
 		return;
-	}
-
-	// switch to batching state if needed
-	if (!mIsBatching)
-	{
-		mIsBatching = true;
-		beginBatch();
 	}
 
 	// look for a channel with the same texture
