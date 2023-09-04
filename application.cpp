@@ -39,7 +39,9 @@ Application::Application()
 	mFonts.load(FontID::Body, "assets/fonts/belligerent.ttf", 26);
 
 	registerStates();
+
 	mStateStack.pushState(StateID::Title);
+	mStateStack.update(Time::Zero);
 }
 
 void
