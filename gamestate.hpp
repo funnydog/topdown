@@ -15,6 +15,6 @@ public:
 private:
 	Window        &mWindow;
 	RenderTarget  &mTarget;
-	PlayerControl &mControl;
+	// PlayerControl &mControl;
 	World          mWorld;
 };

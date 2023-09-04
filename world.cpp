@@ -1,6 +1,7 @@
 #include <GLFW/glfw3.h>
 
 #include "world.hpp"
+#include "font.hpp"
 #include "texture.hpp"
 
 namespace
@@ -93,6 +94,12 @@ World::World(const State::Context &context)
 	, mWorldView(context.target->getDefaultView())
 	, mTextures()
 	, mFonts()
+	, mBackground{}
+	, mBackgroundPos{}
+	, mEntities()
+	, mFreeList()
+	, mPlayerEntity(0)
+	, mPlayerFire(false)
 	, mCommandQueue()
 	, mWorldBounds({0, 0}, {mWorldView.getSize()})
 	, mMapPosition()
@@ -150,6 +157,18 @@ World::getBattlefieldRect() const
 }
 
 void
+World::fireBullet()
+{
+	mPlayerFire = true;
+}
+
+void
+World::setPlayerVelocity(glm::vec2 velocity)
+{
+	mEntities[mPlayerEntity].phy.vel = velocity;
+}
+
+void
 World::update(Time dt)
 {
 	// player input
@@ -170,11 +189,19 @@ World::update(Time dt)
 	{
 		playerVel.x += 180.f;
 	}
-	if (playerVel.x != 0.f && playerVel.y != 0.f)
+
+	if (mWindow->isKeyPressed(GLFW_KEY_SPACE))
 	{
-		playerVel.x *= 1.0f * std::sqrt(2.f);
+		mPlayerFire = true;
 	}
 
+	// adjust the speed
+	if (playerVel.x != 0.f && playerVel.y != 0.f)
+	{
+		playerVel.x *= 1.0f / std::sqrt(2.f);
+	}
+
+	// adjust the sprite
 	if (playerVel.x < 0.f)
 	{
 		mEntities[mPlayerEntity].drw.uvPos.x = mEntities[mPlayerEntity].drw.uvSize.x;
@@ -188,6 +215,21 @@ World::update(Time dt)
 		mEntities[mPlayerEntity].drw.uvPos.x = 0.f;
 	}
 	mEntities[mPlayerEntity].phy.vel = playerVel - glm::vec2(0.f, 1.f) * mScrollSpeed;
+
+	auto &player = mEntities[mPlayerEntity];
+
+	player.fire.elapsed += dt;
+	if (mPlayerFire &&  player.fire.elapsed >= player.fire.interval)
+	{
+		mPlayerFire = false;
+		player.fire.elapsed = Time::Zero;
+		makeEntity(EntityType::PlayerBullet,
+			   player.drw.size * glm::vec2(0.5f, 0.f) + player.phy.pos);
+	}
+	else if (player.fire.elapsed < player.fire.interval)
+	{
+		mPlayerFire = false;
+	}
 
 	// map update
 	scrollBackground(dt);
@@ -281,7 +323,7 @@ World::spawnEnemies()
 }
 
 void
-World::drawDrawable(RenderTarget &target, const Drawable &drw, glm::vec2 pos)
+World::draw(RenderTarget &target, const Drawable &drw, glm::vec2 pos)
 {
 	const std::uint16_t indices[] = { 0, 1, 2, 1, 3, 2 };
 	const glm::vec2 units[] = {
@@ -310,7 +352,7 @@ World::draw(RenderTarget &target)
 	target.clear();
 
 	// draw the background
-	drawDrawable(target, mBackground, mBackgroundPos);
+	draw(target, mBackground, mBackgroundPos);
 
 	// draw the drawables
 	for (auto &e: mEntities)
@@ -318,7 +360,7 @@ World::draw(RenderTarget &target)
 		if ((e.components & (Comp::Physics|Comp::Drawable)) ==
 		    (Comp::Physics|Comp::Drawable))
 		{
-			drawDrawable(target, e.drw, e.phy.pos);
+			draw(target, e.drw, e.phy.pos);
 		}
 	}
 	target.draw();
@@ -340,7 +382,7 @@ World::makeEntity(EntityType et, glm::vec2 pos)
 		idx = mFreeList.back();
 		mFreeList.pop_back();
 	}
-	Entity2 &e = mEntities[idx];
+	Entity &e = mEntities[idx];
 
 	e.type = et;
 	e.components = Table[type].components;

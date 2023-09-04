@@ -3,11 +3,12 @@
 #include <array>
 #include <vector>
 
-#include "aircraft.hpp"
 #include "command.hpp"
 #include "rendertarget.hpp"
 #include "resources.hpp"
 #include "resourceholder.hpp"
+#include "font.hpp"
+#include "texture.hpp"
 #include "state.hpp"
 #include "time.hpp"
 #include "view.hpp"
@@ -67,7 +68,7 @@ enum class EntityType
 	EnemyBullet,
 };
 
-struct Entity2
+struct Entity
 {
 	EntityType type;
 	unsigned components;
@@ -89,6 +90,9 @@ public:
 	void update(Time dt);
 	void draw(RenderTarget &target);
 
+	void fireBullet();
+	void setPlayerVelocity(glm::vec2 velocity);
+
 private:
 	void loadFonts();
 	void loadTextures();
@@ -100,7 +104,7 @@ private:
 	void spawnEnemies();
 
 	std::size_t makeEntity(EntityType type, glm::vec2 pos);
-	void drawDrawable(RenderTarget &target, const Drawable &drw, glm::vec2 pos);
+	void draw(RenderTarget &target, const Drawable &drw, glm::vec2 pos);
 
 private:
 	enum Layer
@@ -118,10 +122,11 @@ private:
 	Drawable       mBackground;
 	glm::vec2      mBackgroundPos;
 
-	std::vector<Entity2> mEntities;
+	std::vector<Entity> mEntities;
 	std::vector<std::size_t> mFreeList;
 
 	std::size_t  mPlayerEntity;
+	bool         mPlayerFire;
 	CommandQueue mCommandQueue;
 	FloatRect    mWorldBounds;
 	glm::vec2    mMapPosition;

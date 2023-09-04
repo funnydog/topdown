@@ -17,15 +17,15 @@ srcs = [
   'gamestate.cpp',
   'pausestate.cpp',
   # scenenodes
-  'scenenode.cpp',
-  'spritenode.cpp',
-  'textnode.cpp',
-  'entity.cpp',
+  # 'scenenode.cpp',
+  # 'spritenode.cpp',
+  # 'textnode.cpp',
+  # 'entity.cpp',
   # game
   'world.cpp',
-  'aircraft.cpp',
-  'projectile.cpp',
-  'playercontrol.cpp',
+  # 'aircraft.cpp',
+  # 'projectile.cpp',
+  # 'playercontrol.cpp',
   # graphics
   'font.cpp',
   'glcheck.cpp',
