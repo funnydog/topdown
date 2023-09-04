@@ -175,6 +175,24 @@ Texture::loadFromFile(const std::filesystem::path &path)
 	return result;
 }
 
+glm::vec2
+Texture::getSize() const
+{
+	glm::vec2 size(0.f);
+	if (mTexture)
+	{
+		GLint width = 0;
+		GLint height = 0;
+		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+		glCheck(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width));
+		glCheck(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+		size.x = static_cast<float>(width);
+		size.y = static_cast<float>(height);
+	}
+	return size;
+}
+
 unsigned
 Texture::getWidth() const
 {
