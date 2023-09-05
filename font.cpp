@@ -86,38 +86,44 @@ Font::draw(RenderTarget &target, const glm::mat4 &transform,
 		getGlyph(codepoint);
 	}
 
+	static const std::uint16_t indices[] = { 0, 1, 2, 1, 3, 2 };
+	static const glm::vec2 unit[] = {
+		{ 0.f, 0.f },
+		{ 0.f, 1.f },
+		{ 1.f, 0.f },
+		{ 1.f, 1.f },
+	};
+	Vertex vertices[4];
+
 	target.setTexture(&mTexture);
-	float x = 0.f;
+	glm::vec2 pos(0.f);
 	for (auto codepoint: cv.from_bytes(text))
 	{
 		const auto &glyph = getGlyph(codepoint);
-		x += glyph.bearing.x;
-		float y = mLineHeight - glyph.bearing.y;
-		auto p0 = glm::vec2(transform * glm::vec4(x, y, 0, 1));
-		auto p1 = glm::vec2(transform * glm::vec4(x, y + glyph.size.y, 0, 1));
-		auto p2 = glm::vec2(transform * glm::vec4(x + glyph.size.x, y, 0, 1));
-		auto p3 = glm::vec2(transform * glm::vec4(x + glyph.size.x, y + glyph.size.y, 0, 1));
-		Vertex vertices[] = {
-			{ p0, glyph.topLeft, color },
-			{ p1, {glyph.topLeft.x, glyph.bottomRight.y}, color },
-			{ p2, {glyph.bottomRight.x, glyph.topLeft.y}, color },
-			{ p3, glyph.bottomRight, color },
-		};
-		const std::uint16_t indices[] = { 0, 1, 2, 1, 3, 2 };
+		pos.x += glyph.bearing.x;
+		pos.y = mLineHeight - glyph.bearing.y;
+
+		for (int i = 0; i < 4; i++)
+		{
+			vertices[i].pos = glm::vec2(
+				transform * glm::vec4(glyph.size * unit[i] + pos, 0.f, 1.f));
+			vertices[i].uv = glyph.uvSize * unit[i] + glyph.uvPos;
+			vertices[i].color = color;
+		}
 
 		unsigned base = target.getPrimIndex(6, 4);
 		target.addIndices(base, indices + 0, indices + 6);
 		target.addVertices(vertices + 0, vertices + 4);
 
-		x += glyph.advance - glyph.bearing.x;
+		pos.x += glyph.advance - glyph.bearing.x;
 	}
 }
 
 glm::vec2
 Font::getSize(const std::string &text) const
 {
-	int width = 0;
-	int height = 0;
+	float width = 0;
+	float height = 0;
 	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> cv;
 	for (auto codepoint: cv.from_bytes(text))
 	{
@@ -155,8 +161,8 @@ Font::resizeTexture(unsigned newWidth, unsigned newHeight) const
 	};
 	for (auto &[codepoint, glyph]: mGlyphs)
 	{
-		glyph.topLeft *= scale;
-		glyph.bottomRight *= scale;
+		glyph.uvPos *= scale;
+		glyph.uvSize *= scale;
 	}
 }
 
@@ -253,15 +259,15 @@ Font::getGlyph(char32_t codepoint) const
 	bmHeight -= 2 * PADDING;
 
 	Glyph glyph;
-	glyph.topLeft.x = static_cast<float>(mPositionX + PADDING) / texWidth;
-	glyph.topLeft.y = static_cast<float>(mPositionY + PADDING) / texHeight;
-	glyph.bottomRight.x = glyph.topLeft.x + static_cast<float>(bmWidth) / texWidth;
-	glyph.bottomRight.y = glyph.topLeft.y + static_cast<float>(bmHeight) / texHeight;
+	glyph.uvPos.x = static_cast<float>(mPositionX + PADDING) / texWidth;
+	glyph.uvPos.y = static_cast<float>(mPositionY + PADDING) / texHeight;
+	glyph.uvSize.x = static_cast<float>(bmWidth) / texWidth;
+	glyph.uvSize.y = static_cast<float>(bmHeight) / texHeight;
 
-	glyph.size = glm::ivec2(bmWidth, bmHeight);
-	glyph.bearing = glm::ivec2(mFace->glyph->bitmap_left,
-				   mFace->glyph->bitmap_top);
-	glyph.advance = mFace->glyph->advance.x >> 6;
+	glyph.size = glm::vec2(bmWidth, bmHeight);
+	glyph.bearing = glm::vec2(mFace->glyph->bitmap_left,
+				  mFace->glyph->bitmap_top);
+	glyph.advance = static_cast<float>(mFace->glyph->advance.x) / 64.f;
 
 	const auto [it, success] = mGlyphs.insert(std::make_pair(codepoint, std::move(glyph)));
 	if (!success)

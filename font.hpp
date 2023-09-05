@@ -31,11 +31,11 @@ public:
 private:
 	struct Glyph
 	{
-		glm::vec2 topLeft;
-		glm::vec2 bottomRight;
-		glm::ivec2 size;
-		glm::ivec2 bearing;
-		int advance;
+		glm::vec2 uvPos;
+		glm::vec2 uvSize;
+		glm::vec2 size;
+		glm::vec2 bearing;
+		float advance;
 	};
 
 	void resizeTexture(unsigned newWidth, unsigned newHeight) const;
