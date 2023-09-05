@@ -93,16 +93,17 @@ Font::draw(RenderTarget &target, const glm::mat4 &transform,
 		{ 1.f, 0.f },
 		{ 1.f, 1.f },
 	};
-	Vertex vertices[4];
-
 	target.setTexture(&mTexture);
 	glm::vec2 pos(0.f);
 	for (auto codepoint: cv.from_bytes(text))
 	{
+		unsigned base = target.getPrimIndex(6, 4);
+		target.addIndices(base, indices + 0, indices + 6);
+		Vertex *vertices = target.getVertexArray(4);
+
 		const auto &glyph = getGlyph(codepoint);
 		pos.x += glyph.bearing.x;
 		pos.y = mLineHeight - glyph.bearing.y;
-
 		for (int i = 0; i < 4; i++)
 		{
 			vertices[i].pos = glm::vec2(
@@ -110,11 +111,6 @@ Font::draw(RenderTarget &target, const glm::mat4 &transform,
 			vertices[i].uv = glyph.uvSize * unit[i] + glyph.uvPos;
 			vertices[i].color = color;
 		}
-
-		unsigned base = target.getPrimIndex(6, 4);
-		target.addIndices(base, indices + 0, indices + 6);
-		target.addVertices(vertices + 0, vertices + 4);
-
 		pos.x += glyph.advance - glyph.bearing.x;
 	}
 }

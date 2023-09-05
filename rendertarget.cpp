@@ -293,14 +293,10 @@ RenderTarget::getPrimIndex(unsigned idxCount, unsigned vtxCount)
 	return index;
 }
 
-void
-RenderTarget::addIndex(std::uint16_t index)
+Vertex*
+RenderTarget::getVertexArray(unsigned vtxCount)
 {
-	mCurrent->idxBuffer.push_back(index);
-}
-
-void
-RenderTarget::addVertex(const Vertex &vertex)
-{
-	mVertices.push_back(vertex);
+	auto size = mVertices.size();
+	mVertices.resize(size + vtxCount);
+	return &mVertices[size];
 }

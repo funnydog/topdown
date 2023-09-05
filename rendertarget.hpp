@@ -61,13 +61,11 @@ public:
 	 */
 	std::uint16_t getPrimIndex(unsigned idxCount, unsigned vtxCount);
 
-	void addIndex(std::uint16_t index);
-
-	void addVertex(const Vertex &vertex);
-
 	template <typename Iterator> void addIndices(unsigned base, Iterator start, Iterator end);
 
 	template <typename Iterator> void addVertices(Iterator start, Iterator end);
+
+	Vertex* getVertexArray(unsigned vtxCount);
 
 	void setCanvas(const Canvas &canvas);
 

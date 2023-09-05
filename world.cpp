@@ -325,24 +325,23 @@ World::spawnEnemies()
 void
 World::draw(RenderTarget &target, const Drawable &drw, glm::vec2 pos)
 {
-	const std::uint16_t indices[] = { 0, 1, 2, 1, 3, 2 };
-	const glm::vec2 units[] = {
+	static const std::uint16_t indices[] = { 0, 1, 2, 1, 3, 2 };
+	static const glm::vec2 unit[] = {
 		{ 0.f, 0.f },
 		{ 0.f, 1.f },
 		{ 1.f, 0.f },
 		{ 1.f, 1.f },
 	};
-	Vertex vertices[4];
-	for (int i = 0; i < 4; i++)
-	{
-		vertices[i].pos = units[i] * drw.size + pos;
-		vertices[i].uv = units[i] * drw.uvSize + drw.uvPos;
-		vertices[i].color = Color::White;
-	}
 	target.setTexture(drw.texture);
 	auto base = target.getPrimIndex(6, 4);
 	target.addIndices(base, indices + 0, indices + 6);
-	target.addVertices(vertices + 0, vertices + 4);
+	auto vertices = target.getVertexArray(4);
+	for (int i = 0; i < 4; i++)
+	{
+		vertices[i].pos = unit[i] * drw.size + pos;
+		vertices[i].uv = unit[i] * drw.uvSize + drw.uvPos;
+		vertices[i].color = Color::White;
+	}
 }
 
 void
