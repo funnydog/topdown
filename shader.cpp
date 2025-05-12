@@ -106,7 +106,7 @@ Shader::~Shader()
 {
 	if (mProgram)
 	{
-		glDeleteProgram(mProgram);
+		glCheck(glDeleteProgram(mProgram));
 	}
 }
 
