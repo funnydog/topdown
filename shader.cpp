@@ -111,7 +111,7 @@ Shader::~Shader()
 }
 
 void
-Shader::attach(const std::string &source, ShaderType shaderType)
+Shader::attachString(const std::string &source, ShaderType shaderType)
 {
 	if (!mProgram)
 	{
@@ -153,7 +153,7 @@ Shader::attach(const std::string &source, ShaderType shaderType)
 void
 Shader::attachFile(const std::filesystem::path &filename, ShaderType shaderType)
 {
-	attach(Utility::loadFile(filename), shaderType);
+	attachString(Utility::loadFile(filename), shaderType);
 }
 
 void

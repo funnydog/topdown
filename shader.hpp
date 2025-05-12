@@ -48,7 +48,7 @@ public:
 	Shader();
 	~Shader();
 
-	void attach(const std::string &source, ShaderType shaderType);
+	void attachString(const std::string &source, ShaderType shaderType);
 	void attachFile(const std::filesystem::path &filename, ShaderType shaderType);
 	void link();
 
