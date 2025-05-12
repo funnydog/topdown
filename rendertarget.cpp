@@ -139,7 +139,7 @@ RenderTarget::draw()
 
 	Shader::bind(&mShader);
 	ShaderUniform projection = mShader.getUniform("Projection");
-	projection.set(mView.getTransform());
+	projection.setMatrix4(mView.getTransform());
 
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
 	glCheck(glBufferData(GL_ARRAY_BUFFER,

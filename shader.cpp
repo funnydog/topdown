@@ -14,13 +14,87 @@ ShaderUniform::ShaderUniform(int location)
 }
 
 void
-ShaderUniform::set(const glm::mat4 &matrix)
+ShaderUniform::setFloat(float value) const noexcept
 {
-	glCheck(glUniformMatrix4fv(
-			mLocation,
-			1,
-			GL_FALSE,
-			glm::value_ptr(matrix)));
+	glCheck(glUniform1f(mLocation, value));
+}
+
+void
+ShaderUniform::setFloat1fv(const float *floats, size_t size) const noexcept
+{
+	glCheck(glUniform1fv(mLocation, size, floats));
+}
+
+void
+ShaderUniform::setInteger(int value) const noexcept
+{
+	glCheck(glUniform1i(mLocation, value));
+}
+
+void
+ShaderUniform::setInteger1iv(const int *ints, size_t size) const noexcept
+{
+	glCheck(glUniform1iv(mLocation, size, ints));
+}
+
+void
+ShaderUniform::setVector2f(float x, float y) const noexcept
+{
+	glCheck(glUniform2f(mLocation, x, y));
+}
+
+void
+ShaderUniform::setVector2f(const glm::vec2 &value) const noexcept
+{
+	glCheck(glUniform2fv(mLocation, 1, glm::value_ptr(value)));
+}
+
+void
+ShaderUniform::setVector2fv(const float floats[][2], size_t size) const noexcept
+{
+	glCheck(glUniform2fv(mLocation, size, floats[0]));
+}
+
+void
+ShaderUniform::setVector3f(float x, float y, float z) const noexcept
+{
+	glCheck(glUniform3f(mLocation, x, y, z));
+}
+
+void
+ShaderUniform::setVector3f(const glm::vec3 &value) const noexcept
+{
+	glCheck(glUniform3fv(mLocation, 1, glm::value_ptr(value)));
+}
+
+void
+ShaderUniform::setVector3fv(const float floats[][3], size_t size) const noexcept
+{
+	glCheck(glUniform3fv(mLocation, size, floats[0]));
+}
+
+void
+ShaderUniform::setVector4f(float x, float y, float z, float w) const noexcept
+{
+	glCheck(glUniform4f(mLocation, x, y, z, w));
+}
+
+void
+ShaderUniform::setVector4f(const glm::vec4 &value) const noexcept
+{
+	glCheck(glUniform4fv(mLocation, 1, glm::value_ptr(value)));
+}
+
+void
+ShaderUniform::setVector4fv(const float floats[][4], size_t size) const noexcept
+{
+	glCheck(glUniform4fv(mLocation, size, floats[0]));
+}
+
+void
+ShaderUniform::setMatrix4(const glm::mat4 &value) const noexcept
+{
+	glCheck(glUniformMatrix4fv(mLocation, 1, GL_FALSE, glm::value_ptr(value)));
 }
 
 Shader::Shader()
