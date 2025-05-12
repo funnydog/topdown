@@ -137,7 +137,7 @@ RenderTarget::draw()
 		endBatch();
 	}
 
-	Shader::bind(&mShader);
+	mShader.use();
 	ShaderUniform projection = mShader.getUniform("Projection");
 	projection.setMatrix4(mView.getTransform());
 
@@ -197,8 +197,6 @@ RenderTarget::draw()
 
 	glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-
-	Shader::bind(nullptr);
 }
 
 RenderTarget::DrawChannel *

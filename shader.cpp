@@ -173,6 +173,12 @@ Shader::link()
 	}
 }
 
+void
+Shader::use() const noexcept
+{
+	glCheck(glUseProgram(mProgram));
+}
+
 ShaderUniform
 Shader::getUniform(const std::string &name) const
 {
@@ -182,10 +188,4 @@ Shader::getUniform(const std::string &name) const
 		throw std::runtime_error(name + " uniform not found");
 	}
 	return ShaderUniform(location);
-}
-
-void
-Shader::bind(const Shader *shader)
-{
-	glUseProgram(shader ? shader->mProgram : 0);
 }

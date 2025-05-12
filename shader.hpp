@@ -52,9 +52,9 @@ public:
 	void attachFile(const std::filesystem::path &filename, ShaderType shaderType);
 	void link();
 
-	ShaderUniform getUniform(const std::string &name) const;
+	void use() const noexcept;
 
-	static void bind(const Shader *shader);
+	ShaderUniform getUniform(const std::string &name) const;
 private:
 	void checkCompilation();
 	void checkLink();
