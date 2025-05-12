@@ -52,8 +52,8 @@ void
 RenderTarget::initialize()
 {
 	mWhiteTexture.create(1, 1, &Color::White);
-	mShader.attachFile("assets/shaders/default.vert", ShaderType::Vertex);
-	mShader.attachFile("assets/shaders/default.frag", ShaderType::Fragment);
+	mShader.attachFile(ShaderType::Vertex, "assets/shaders/default.vert");
+	mShader.attachFile(ShaderType::Fragment, "assets/shaders/default.frag");
 	mShader.link();
 
 	glm::vec2 size = mCanvas->getSize();

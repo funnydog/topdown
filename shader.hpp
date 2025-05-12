@@ -48,8 +48,8 @@ public:
 	Shader();
 	~Shader();
 
-	void attachString(const std::string &source, ShaderType shaderType);
-	void attachFile(const std::filesystem::path &filename, ShaderType shaderType);
+	void attachString(ShaderType type, const std::string &source);
+	void attachFile(ShaderType type, const std::filesystem::path &filename);
 	void link() const;
 
 	void use() const noexcept;
