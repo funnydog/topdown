@@ -23,6 +23,8 @@ public:
 	void update(const Texture &other, unsigned x = 0, unsigned y = 0);
 
 	bool loadFromFile(const std::filesystem::path &path);
+	void bind() const noexcept;
+	void bind(int textureUnit) const noexcept;
 
 	glm::vec2 getSize() const;
 
@@ -34,8 +36,6 @@ public:
 
 	bool isSmooth() const;
 	void setSmooth(bool smooth);
-
-	static void bind(const Texture *texture, unsigned sampler) noexcept;
 
 private:
 	unsigned mTexture;

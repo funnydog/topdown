@@ -179,7 +179,7 @@ RenderTarget::draw()
 		if (currentTexture != channel->texture)
 		{
 			currentTexture = channel->texture;
-			Texture::bind(channel->texture, 0);
+			currentTexture->bind(0);
 		}
 
 		// draw

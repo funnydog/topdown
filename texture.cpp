@@ -175,6 +175,19 @@ Texture::loadFromFile(const std::filesystem::path &path)
 	return result;
 }
 
+void
+Texture::bind() const noexcept
+{
+	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+}
+
+void
+Texture::bind(int textureUnit) const noexcept
+{
+	glCheck(glActiveTexture(GL_TEXTURE0 + textureUnit));
+	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+}
+
 glm::vec2
 Texture::getSize() const
 {
@@ -257,20 +270,4 @@ Texture::setSmooth(bool smooth)
 	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFiltering));
 	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFiltering));
 	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-}
-
-void
-Texture::bind(const Texture *texture, unsigned sampler) noexcept
-{
-	assert(sampler < 16 && "Sampler value out of bounds");
-	if (texture)
-	{
-		glActiveTexture(GL_TEXTURE0 + sampler);
-		glBindTexture(GL_TEXTURE_2D, texture->mTexture);
-	}
-	else
-	{
-		glActiveTexture(GL_TEXTURE0 + sampler);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
 }
