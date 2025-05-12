@@ -8,7 +8,7 @@
 #include "stb_image.h"
 
 Texture::Texture()
-	: mTexture(0)
+	: mTexture(-1U)
 {
 }
 
@@ -31,13 +31,9 @@ Texture::create(unsigned width, unsigned height, const void *pixels, bool repeat
 	}
 
 	// TODO: check for NPOT support and max size support
-	if (!mTexture)
+	if (mTexture == -1U)
 	{
 		glCheck(glGenTextures(1, &mTexture));
-		if (!mTexture)
-		{
-			return false;
-		}
 	}
 	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
 	glCheck(glTexImage2D(
@@ -74,24 +70,21 @@ Texture::update(const void *pixels, unsigned x, unsigned y, unsigned w, unsigned
 	assert(x + w <= getWidth() && "Destination x coordinate is outside of the texture");
 	assert(y + h <= getHeight() && "Destination y coordinate is outside of the texture");
 
-	if (pixels == nullptr || mTexture == 0)
+	if (mTexture != -1U)
 	{
-		return;
+		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+		glCheck(glTexSubImage2D(
+			        GL_TEXTURE_2D,
+			        0,
+			        static_cast<GLint>(x),
+			        static_cast<GLint>(y),
+			        static_cast<GLsizei>(w),
+			        static_cast<GLsizei>(h),
+			        GL_RGBA,
+			        GL_UNSIGNED_BYTE,
+			        pixels));
+		glCheck(glFlush());
 	}
-
-	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
-	glCheck(glTexSubImage2D(
-			GL_TEXTURE_2D,
-			0,
-			static_cast<GLint>(x),
-			static_cast<GLint>(y),
-			static_cast<GLsizei>(w),
-			static_cast<GLsizei>(h),
-			GL_RGBA,
-			GL_UNSIGNED_BYTE,
-			pixels));
-	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-	glCheck(glFlush());
 }
 
 void
