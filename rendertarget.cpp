@@ -23,14 +23,10 @@ RenderTarget::RenderTarget(const Window &window)
 
 RenderTarget::~RenderTarget()
 {
-	if (mEBO)
-	{
-		glDeleteBuffers(1, &mEBO);
-	}
-	if (mVBO)
-	{
-		glDeleteBuffers(1, &mVBO);
-	}
+	glCheck(glBindVertexArray(0));
+	glCheck(glDeleteVertexArrays(1, &mTextureVAO));
+	glCheck(glDeleteBuffers(1, &mEBO));
+	glCheck(glDeleteBuffers(1, &mVBO));
 
 	beginBatch();
 	DrawChannel *channel = mFreeChannels;
@@ -52,17 +48,41 @@ void
 RenderTarget::initialize()
 {
 	mWhiteTexture.create(1, 1, &Color::White);
-	mShader.attachFile(ShaderType::Vertex, "assets/shaders/default.vert");
-	mShader.attachFile(ShaderType::Fragment, "assets/shaders/default.frag");
-	mShader.link();
+	mTextureShader.attachFile(ShaderType::Vertex, "assets/shaders/default.vert");
+	mTextureShader.attachFile(ShaderType::Fragment, "assets/shaders/default.frag");
+	mTextureShader.link();
 
 	glm::vec2 size = mCanvas->getSize();
 	mDefaultView.setCenter(size * 0.5f);
 	mDefaultView.setSize(size);
 	mView = mDefaultView;
 
+	// bind a buffer to allow calling glVertexAttribPointer()
 	glCheck(glGenBuffers(1, &mVBO));
+	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
+
 	glCheck(glGenBuffers(1, &mEBO));
+	glCheck(glGenVertexArrays(1, &mTextureVAO));
+
+	// setup the data layout for mTextureVAO
+	glCheck(glBindVertexArray(mTextureVAO));
+	glCheck(glEnableVertexAttribArray(0));
+	glCheck(glVertexAttribPointer(
+			0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+			reinterpret_cast<GLvoid*>(offsetof(Vertex, pos))));
+	glCheck(glEnableVertexAttribArray(1));
+	glCheck(glVertexAttribPointer(
+			1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+			reinterpret_cast<GLvoid*>(offsetof(Vertex, uv))));
+	glCheck(glEnableVertexAttribArray(2));
+	glCheck(glVertexAttribPointer(
+			2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex),
+			reinterpret_cast<GLvoid*>(offsetof(Vertex, color))));
+
+	// configure the shaders
+	mTextureShader.use();
+	ShaderUniform projection = mTextureShader.getUniform("Projection");
+	projection.setMatrix4(mView.getTransform());
 }
 
 const View&
@@ -137,10 +157,7 @@ RenderTarget::draw()
 		endBatch();
 	}
 
-	mShader.use();
-	ShaderUniform projection = mShader.getUniform("Projection");
-	projection.setMatrix4(mView.getTransform());
-
+	glCheck(glBindVertexArray(mTextureVAO));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
 	glCheck(glBufferData(GL_ARRAY_BUFFER,
 			     mVertices.size() * sizeof(mVertices[0]),
@@ -153,18 +170,7 @@ RenderTarget::draw()
 			     mIndices.data(),
 			     GL_STREAM_DRAW));
 
-	glCheck(glEnableVertexAttribArray(0));
-	glCheck(glVertexAttribPointer(
-			0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			reinterpret_cast<GLvoid*>(offsetof(Vertex, pos))));
-	glCheck(glEnableVertexAttribArray(1));
-	glCheck(glVertexAttribPointer(
-			1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			reinterpret_cast<GLvoid*>(offsetof(Vertex, uv))));
-	glCheck(glEnableVertexAttribArray(2));
-	glCheck(glVertexAttribPointer(
-			2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex),
-			reinterpret_cast<GLvoid*>(offsetof(Vertex, color))));
+	mTextureShader.use();
 
 	const Texture *currentTexture = nullptr;
 	for (auto channel = mChannelList; channel; channel = channel->next)
@@ -190,13 +196,6 @@ RenderTarget::draw()
 				reinterpret_cast<GLvoid*>(channel->idxOffset),
 				channel->vtxOffset));
 	}
-
-	glCheck(glDisableVertexAttribArray(2));
-	glCheck(glDisableVertexAttribArray(1));
-	glCheck(glDisableVertexAttribArray(0));
-
-	glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-	glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
 RenderTarget::DrawChannel *

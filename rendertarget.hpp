@@ -104,7 +104,8 @@ private:
 	const Canvas *mCanvas;
 
 	Texture  mWhiteTexture;
-	Shader   mShader;
+	Shader   mTextureShader;
+	unsigned mTextureVAO;
 	unsigned mVBO;
 	unsigned mEBO;
 };
