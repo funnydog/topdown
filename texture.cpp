@@ -21,12 +21,33 @@ Texture::~Texture()
 }
 
 bool
+Texture::loadFromFile(const std::filesystem::path &path)
+{
+	int width, height, channels;
+	auto *pixels = stbi_load(path.c_str(), &width, &height, &channels, 4);
+	if (pixels == nullptr)
+	{
+		std::cerr << "Texture::loadFromFile() - Unable to load "
+		          << path.string() << std::endl;
+		return false;
+	}
+	bool result = create(width, height, pixels);
+	stbi_image_free(pixels);
+	if (!result)
+	{
+		std::cerr << "Texture::loadFromFile() - Unable to create "
+		          << path.string() << std::endl;
+	}
+	return result;
+}
+
+bool
 Texture::create(unsigned width, unsigned height, const void *pixels, bool repeat, bool smooth)
 {
 	if (width == 0 || height == 0)
 	{
-		std::cerr << "Failed to create the texture, invalid size ("
-			  << width << ", " << height << ")" << std::endl;
+		std::cerr << "Texture::create() - Invalid texture size ("
+		          << width << ", " << height << ")" << std::endl;
 		return false;
 	}
 
@@ -37,15 +58,15 @@ Texture::create(unsigned width, unsigned height, const void *pixels, bool repeat
 	}
 	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
 	glCheck(glTexImage2D(
-			GL_TEXTURE_2D,
-			0,
-			GL_RGBA,
-			static_cast<GLsizei>(width),
-			static_cast<GLsizei>(height),
-			0,
-			GL_RGBA,
-			GL_UNSIGNED_BYTE,
-			pixels));
+		        GL_TEXTURE_2D,
+		        0,
+		        GL_RGBA,
+		        static_cast<GLsizei>(width),
+		        static_cast<GLsizei>(height),
+		        0,
+		        GL_RGBA,
+		        GL_UNSIGNED_BYTE,
+		        pixels));
 
 	GLint parameter = repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE;
 	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, parameter));
@@ -67,8 +88,8 @@ Texture::update(const void *pixels)
 void
 Texture::update(const void *pixels, unsigned x, unsigned y, unsigned w, unsigned h)
 {
-	assert(x + w <= getWidth() && "Destination x coordinate is outside of the texture");
-	assert(y + h <= getHeight() && "Destination y coordinate is outside of the texture");
+	assert(x + w <= getWidth() && "X target outside the texture");
+	assert(y + h <= getHeight() && "Y target outside the texture");
 
 	if (mTexture != -1U)
 	{
@@ -94,12 +115,10 @@ Texture::update(const Texture &other, unsigned x, unsigned y)
 	auto dstHeight = getHeight();
 	auto srcWidth = other.getWidth();
 	auto srcHeight = other.getHeight();
-	assert(x + srcWidth <= dstWidth
-	       && "Destination x coordinate is outside of the texture");
-	assert(y + srcHeight <= dstHeight
-	       && "Destination y coordinate is outside of the texture");
+	assert(x + srcWidth <= dstWidth && "X target outside the texture");
+	assert(y + srcHeight <= dstHeight && "Y target outside the texture");
 
-	if (!mTexture || !other.mTexture)
+	if (mTexture == -1U || other.mTexture == -1U)
 	{
 		return;
 	}
@@ -108,23 +127,19 @@ Texture::update(const Texture &other, unsigned x, unsigned y)
 	glCheck(glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &oldReadFB));
 	glCheck(glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &oldDrawFB));
 
-	GLuint sourceFB, destFB;
-	glCheck(glGenFramebuffers(1, &sourceFB));
-	glCheck(glGenFramebuffers(1, &destFB));
+	GLuint readFB, drawFB;
+	glCheck(glGenFramebuffers(1, &readFB));
+	glCheck(glGenFramebuffers(1, &drawFB));
 
-	if (!sourceFB || !destFB)
-	{
-		throw std::runtime_error("Texture::update() - cannot create framebuffer objects");
-	}
 
-	glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, sourceFB));
+	glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, readFB));
 	glCheck(glFramebufferTexture2D(GL_READ_FRAMEBUFFER,
 				       GL_COLOR_ATTACHMENT0,
 				       GL_TEXTURE_2D,
 				       other.mTexture,
 				       0));
 
-	glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, destFB));
+	glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, drawFB));
 	glCheck(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER,
 				       GL_COLOR_ATTACHMENT0,
 				       GL_TEXTURE_2D,
@@ -136,7 +151,8 @@ Texture::update(const Texture &other, unsigned x, unsigned y)
 	if (sourceStatus != GL_FRAMEBUFFER_COMPLETE
 	    && destStatus != GL_FRAMEBUFFER_COMPLETE)
 	{
-		throw std::runtime_error("Framebuffers not complete");
+		throw std::runtime_error("Texture::update()"
+		                         " - Framebuffers not complete");
 	}
 
 	glCheck(glBlitFramebuffer(
@@ -148,24 +164,18 @@ Texture::update(const Texture &other, unsigned x, unsigned y)
 	glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, oldReadFB));
 	glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, oldDrawFB));
 
-	glCheck(glDeleteFramebuffers(1, &destFB));
-	glCheck(glDeleteFramebuffers(1, &sourceFB));
+	glCheck(glDeleteFramebuffers(1, &readFB));
+	glCheck(glDeleteFramebuffers(1, &drawFB));
 }
 
-bool
-Texture::loadFromFile(const std::filesystem::path &path)
+void
+Texture::destroy() noexcept
 {
-	int width, height, channels;
-	auto *pixels = stbi_load(path.c_str(), &width, &height, &channels, 4);
-	if (!pixels)
+	if (mTexture != -1U)
 	{
-		std::cerr << "Texture::loadFromFile - Cannot load " << path.string()
-			  << std::endl;
-		return false;
+		glCheck(glDeleteTextures(1, &mTexture));
+		mTexture = -1U;
 	}
-	bool result = create(width, height, pixels);
-	stbi_image_free(pixels);
-	return result;
 }
 
 void

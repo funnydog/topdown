@@ -16,13 +16,17 @@ public:
 	Texture(Texture &&other) noexcept = default;
 	Texture& operator=(Texture &&other) noexcept = default;
 
+	bool loadFromFile(const std::filesystem::path &path);
+
 	bool create(unsigned width, unsigned height,
-		    const void *pixels=nullptr, bool repeat=false, bool smooth=false);
+	            const void *pixels=nullptr,
+	            bool repeat=false, bool smooth=false);
+
 	void update(const void *pixels);
 	void update(const void *pixels, unsigned x, unsigned y, unsigned w, unsigned h);
 	void update(const Texture &other, unsigned x = 0, unsigned y = 0);
 
-	bool loadFromFile(const std::filesystem::path &path);
+	void destroy() noexcept;
 	void bind() const noexcept;
 	void bind(int textureUnit) const noexcept;
 
