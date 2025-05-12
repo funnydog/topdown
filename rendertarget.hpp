@@ -15,7 +15,7 @@ class Window;
 class RenderTarget
 {
 public:
-	RenderTarget(const Window &window);
+	explicit RenderTarget(const Window &window);
 	~RenderTarget();
 
 	/**
