@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 
 #include <GLFW/glfw3.h>
