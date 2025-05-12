@@ -157,7 +157,7 @@ Shader::attachFile(const std::filesystem::path &filename, ShaderType shaderType)
 }
 
 void
-Shader::link()
+Shader::link() const
 {
 	glCheck(glLinkProgram(mProgram));
 

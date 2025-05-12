@@ -50,7 +50,7 @@ public:
 
 	void attachString(const std::string &source, ShaderType shaderType);
 	void attachFile(const std::filesystem::path &filename, ShaderType shaderType);
-	void link();
+	void link() const;
 
 	void use() const noexcept;
 
