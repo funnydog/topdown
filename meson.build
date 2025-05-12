@@ -45,17 +45,11 @@ srcs = [
   'window.cpp',
 ]
 
-libfreetype2 = dependency('freetype2')
-libglm = dependency('glm')
-libglew = dependency('glew')
-libglfw3 = dependency('glfw3')
-
-deps = [
-  libfreetype2,
-  libglm,
-  libglew,
-  libglfw3,
-]
+deps = []
+deps += dependency('freetype2')
+deps += dependency('glm')
+deps += dependency('glew')
+deps += dependency('glfw3')
 
 exe = executable(
   'topdown',
