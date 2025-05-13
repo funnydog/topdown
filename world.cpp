@@ -91,7 +91,7 @@ static const struct EntityData
 
 World::World(const State::Context &context)
 	: mWindow(context.window)
-	, mWorldView(context.target->getDefaultView())
+	, mWorldView()
 	, mTextures()
 	, mFonts()
 	, mBackground{}
@@ -101,14 +101,17 @@ World::World(const State::Context &context)
 	, mPlayerEntity(0)
 	, mPlayerFire(false)
 	, mCommandQueue()
-	, mWorldBounds({0, 0}, {mWorldView.getSize()})
+	, mWorldBounds()
 	, mMapPosition()
-	, mSpawnPosition(
-		mWorldView.getSize().x * 0.5f,
-		mWorldView.getSize().y * 0.8f)
 	, mSpawnIndex(0)
 	, mScrollSpeed(50.f)
 {
+	glm::vec2 size = mWindow->getSize();
+	mWorldView.setCenter(size * 0.5f);
+	mWorldView.setSize(size);
+	mWorldBounds.size = mWorldView.getSize();
+	mSpawnPosition = mWorldView.getSize() * glm::vec2(0.5f, 0.8f);
+
 	loadFonts();
 	loadTextures();
 	buildScene();

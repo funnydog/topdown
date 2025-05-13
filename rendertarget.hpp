@@ -8,7 +8,6 @@
 #include "shader.hpp"
 #include "texture.hpp"
 #include "vertex.hpp"
-#include "view.hpp"
 
 class Window;
 class Font;
@@ -20,11 +19,6 @@ public:
 	~RenderTarget();
 
 	void setViewport(unsigned width, unsigned height);
-
-	/**
-	 * Get the default View associated with the RenderTarget.
-	 */
-	const View& getDefaultView() const;
 
 	/**
 	 * Clear the target with the given @color.
@@ -105,9 +99,6 @@ private:
 	void endBatch();
 
 private:
-	View mDefaultView;
-	View mView;
-
 	std::vector<std::uint16_t> mIndices;
 	std::vector<PosUV>         mPosUV;
 	std::vector<PosUVColor>    mPosUVColor;

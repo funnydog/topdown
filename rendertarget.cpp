@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include <GL/glew.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "color.hpp"
 #include "font.hpp"
@@ -119,24 +120,16 @@ RenderTarget::~RenderTarget()
 }
 
 void
-RenderTarget::setViewport(unsigned w, unsigned h)
+RenderTarget::setViewport(unsigned width, unsigned height)
 {
-	glm::vec2 size(w, h);
-	mDefaultView.setCenter(size * 0.5f);
-	mDefaultView.setSize(size);
-	mView = mDefaultView;
-
-	auto &mat4 = mView.getTransform();
+	glm::mat4 proj = glm::ortho(
+		0.0f, static_cast<GLfloat>(width),
+		static_cast<GLfloat>(height), 0.0f,
+		-1.0f, 1.0f);
 	mTextureShader.use();
-	mTextureShader.getUniform("Projection").setMatrix4(mat4);
+	mTextureShader.getUniform("Projection").setMatrix4(proj);
 	mUniformColorShader.use();
-	mUniformColorShader.getUniform("projection").setMatrix4(mat4);
-}
-
-const View&
-RenderTarget::getDefaultView() const
-{
-	return mDefaultView;
+	mUniformColorShader.getUniform("projection").setMatrix4(proj);
 }
 
 void
