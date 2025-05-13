@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <string>
 
-#include "rendertarget.hpp"
 #include "font.hpp"
 
 namespace
@@ -98,50 +97,6 @@ Font::getSize(const std::string &text)
 		width += glyph.advance;
 	}
 	return { width, height };
-}
-
-void
-Font::draw(RenderTarget &target, const glm::mat4 &transform,
-	   const std::string &text, Color color)
-{
-	if (text.empty())
-	{
-		return;
-	}
-
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> cv;
-	for (auto codepoint: cv.from_bytes(text))
-	{
-		getGlyph(codepoint);
-	}
-
-	static const std::uint16_t indices[] = { 0, 1, 2, 1, 3, 2 };
-	static const glm::vec2 unit[] = {
-		{ 0.f, 0.f },
-		{ 0.f, 1.f },
-		{ 1.f, 0.f },
-		{ 1.f, 1.f },
-	};
-	target.setTexture(&mTexture);
-	glm::vec2 pos(0.f);
-	for (auto codepoint: cv.from_bytes(text))
-	{
-		unsigned base = target.getPrimIndex(6, 4);
-		target.addIndices(base, indices + 0, indices + 6);
-		Vertex *vertices = target.getVertexArray(4);
-
-		const auto &glyph = getGlyph(codepoint);
-		pos.x += glyph.bearing.x;
-		pos.y = mLineHeight - glyph.bearing.y;
-		for (int i = 0; i < 4; i++)
-		{
-			vertices[i].pos = glm::vec2(
-				transform * glm::vec4(glyph.size * unit[i] + pos, 0.f, 1.f));
-			vertices[i].uv = glyph.uvSize * unit[i] + glyph.uvPos;
-			vertices[i].color = color;
-		}
-		pos.x += glyph.advance - glyph.bearing.x;
-	}
 }
 
 void

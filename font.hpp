@@ -12,8 +12,6 @@
 #include "color.hpp"
 #include "texture.hpp"
 
-class RenderTarget;
-
 struct Glyph
 {
 	glm::vec2 uvPos;
@@ -43,8 +41,6 @@ public:
 	const Texture &getTexture() const;
 	float getLineHeight() const;
 
-	void draw(RenderTarget &target, const glm::mat4 &transform,
-		  const std::string &text, Color color);
 private:
 	void resizeTexture(unsigned newWidth, unsigned newHeight);
 
