@@ -32,7 +32,6 @@ public:
 protected:
 	GLFWwindow *mWindow;
 	glm::ivec2  mSize;
-	unsigned    mVAO;
 
 	friend class EventQueue;
 };

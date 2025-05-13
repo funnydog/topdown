@@ -9,7 +9,6 @@
 Window::Window(const std::string &title, unsigned width, unsigned height)
 	: mWindow(nullptr)
 	, mSize{width, height}
-	, mVAO(0)
 {
 	if (!glfwInit())
 	{
@@ -43,15 +42,10 @@ Window::Window(const std::string &title, unsigned width, unsigned height)
 	glCheck(glEnable(GL_BLEND));
 	glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	glCheck(glClearColor(0.f, 0.2f, 0.4f, 1.0f));
-
-	glCheck(glGenVertexArrays(1, &mVAO));
-	glCheck(glBindVertexArray(mVAO));
 }
 
 Window::~Window()
 {
-	glCheck(glBindVertexArray(0));
-	glCheck(glDeleteVertexArrays(1, &mVAO));
 	glfwDestroyWindow(mWindow);
 	glfwTerminate();
 }
