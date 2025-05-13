@@ -10,6 +10,7 @@
 #include "glcheck.hpp"
 #include "rendertarget.hpp"
 #include "window.hpp"
+#include "world.hpp"
 
 namespace
 {
@@ -488,6 +489,34 @@ RenderTarget::draw(const Texture &texture, glm::vec2 pos)
 
 	mTextureShader.use();
 	texture.bind(0);
+	glCheck(glBindVertexArray(mPosUVVAO));
+	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
+	glCheck(glBufferData(GL_ARRAY_BUFFER,
+	                     mPosUV.size() * sizeof(mPosUV[0]),
+	                     mPosUV.data(),
+	                     GL_STREAM_DRAW));
+
+	drawBuffers();
+}
+
+void
+RenderTarget::draw(const Drawable &drw, glm::vec2 pos)
+{
+	mPosUV.clear();
+	startBatch();
+	reserve(4, indices);
+	for (auto unit : units)
+	{
+		PosUV v;
+		v.pos = unit * drw.size + pos;
+		v.uv = unit * drw.uvSize + drw.uvPos;
+		mPosUV.push_back(v);
+	}
+	saveBatch();
+
+	mTextureShader.use();
+	drw.texture->bind(0);
+
 	glCheck(glBindVertexArray(mPosUVVAO));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
 	glCheck(glBufferData(GL_ARRAY_BUFFER,

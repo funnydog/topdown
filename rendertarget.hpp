@@ -12,6 +12,7 @@
 class Window;
 class Font;
 class RectangleShape;
+struct Drawable;
 
 class RenderTarget
 {
@@ -57,6 +58,7 @@ public:
 	void draw(const std::string &text, glm::vec2 pos, Font &font, Color color);
 	void draw(const RectangleShape &rect);
 	void draw(const Texture &texture, glm::vec2 pos);
+	void draw(const Drawable &drw, glm::vec2 pos);
 
 protected:
 	void initialize();
