@@ -9,10 +9,10 @@
 class Text: public Transformable
 {
 public:
-	explicit Text(const Font &font, const std::string &string = "", Color color = Color::White);
+	explicit Text(Font &font, const std::string &string = "", Color color = Color::White);
 
 	const Font &getFont() const;
-	void setFont(const Font &font);
+	void setFont(Font &font);
 
 	const std::string& getString() const;
 	void setString(const std::string &string);
@@ -27,7 +27,7 @@ public:
 	void draw(RenderTarget &target, const glm::mat4 &transform) const;
 
 private:
-	const Font  *mFont;
+	Font        *mFont;
 	std::string  mString;
 	Color        mColor;
 };

@@ -83,7 +83,7 @@ Font::destroy()
 }
 
 glm::vec2
-Font::getSize(const std::string &text) const
+Font::getSize(const std::string &text)
 {
 	float width = 0;
 	float height = 0;
@@ -102,7 +102,7 @@ Font::getSize(const std::string &text) const
 
 void
 Font::draw(RenderTarget &target, const glm::mat4 &transform,
-	   const std::string &text, Color color) const
+	   const std::string &text, Color color)
 {
 	if (text.empty())
 	{
@@ -145,7 +145,7 @@ Font::draw(RenderTarget &target, const glm::mat4 &transform,
 }
 
 void
-Font::resizeTexture(unsigned newWidth, unsigned newHeight) const
+Font::resizeTexture(unsigned newWidth, unsigned newHeight)
 {
 	auto oldWidth = mTexture.getWidth();
 	auto oldHeight = mTexture.getHeight();
@@ -168,7 +168,7 @@ Font::resizeTexture(unsigned newWidth, unsigned newHeight) const
 }
 
 const Glyph&
-Font::getGlyph(char32_t codepoint) const
+Font::getGlyph(char32_t codepoint)
 {
 	if (const auto it = mGlyphs.find(codepoint); it != mGlyphs.end())
 	{

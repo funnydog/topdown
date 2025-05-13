@@ -2,7 +2,7 @@
 
 #include "text.hpp"
 
-Text::Text(const Font &font, const std::string &string, Color color)
+Text::Text(Font &font, const std::string &string, Color color)
 	: mFont(&font)
 	, mString(string)
 	, mColor(color)
@@ -16,7 +16,7 @@ Text::getFont() const
 }
 
 void
-Text::setFont(const Font &font)
+Text::setFont(Font &font)
 {
 	mFont = &font;
 }

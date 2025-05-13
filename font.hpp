@@ -37,25 +37,25 @@ public:
 	bool loadFromFile(const std::filesystem::path &path, unsigned size);
 	void destroy();
 
-	glm::vec2 getSize(const std::string &text) const;
+	glm::vec2 getSize(const std::string &text);
 
-	const Glyph &getGlyph(char32_t codepoint) const;
+	const Glyph &getGlyph(char32_t codepoint);
 	const Texture &getTexture() const;
 	float getLineHeight() const;
 
 	void draw(RenderTarget &target, const glm::mat4 &transform,
-		  const std::string &text, Color color) const;
+		  const std::string &text, Color color);
 private:
-	void resizeTexture(unsigned newWidth, unsigned newHeight) const;
+	void resizeTexture(unsigned newWidth, unsigned newHeight);
 
 private:
-	mutable std::unordered_map<char32_t, Glyph> mGlyphs;
-	mutable std::vector<std::uint8_t> mPixelBuffer;
-	mutable Texture mTexture;
+	std::unordered_map<char32_t, Glyph> mGlyphs;
+	std::vector<std::uint8_t> mPixelBuffer;
+	Texture mTexture;
 	FT_Library mFT;
-	mutable FT_Face mFace;
+	FT_Face mFace;
 	float mLineHeight;
-	mutable int mPositionX;
-	mutable int mPositionY;
-	mutable int mMaxHeight;
+	int mPositionX;
+	int mPositionY;
+	int mMaxHeight;
 };
