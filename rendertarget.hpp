@@ -22,17 +22,6 @@ public:
 	void setViewport(unsigned width, unsigned height);
 
 	/**
-	 * Get the View associated with the RenderTarget.
-	 */
-	const View& getView() const;
-
-	/**
-	 * Set the View associated with the RenderTarget.
-	 * @param[in] view
-	 */
-	void setView(const View &view);
-
-	/**
 	 * Get the default View associated with the RenderTarget.
 	 */
 	const View& getDefaultView() const;

@@ -139,18 +139,6 @@ RenderTarget::getDefaultView() const
 	return mDefaultView;
 }
 
-const View&
-RenderTarget::getView() const
-{
-	return mView;
-}
-
-void
-RenderTarget::setView(const View &view)
-{
-	mView = view;
-}
-
 void
 RenderTarget::clear(Color color)
 {
