@@ -7,7 +7,6 @@
 #include "color.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
-#include "vertex.hpp"
 
 class Window;
 class Font;
@@ -28,40 +27,10 @@ public:
 	 */
 	void clear(Color = Color::Black);
 
-	/**
-	 * Force a new draw command
-	 */
-	void addLayer();
-
-	/**
-	 * Send the blob of vertices to the GPU.
-	 */
-	void draw();
-
-	/**
-	 * Set the texture for the next primitive.
-	 */
-	void setTexture(const Texture *texture);
-
-	/**
-	 * Get the base index for the primitive and reserve space in
-	 * the vertex and index buffers.
-	 */
-	std::uint16_t getPrimIndex(unsigned idxCount, unsigned vtxCount);
-
-	template <typename Iterator> void addIndices(unsigned base, Iterator start, Iterator end);
-
-	template <typename Iterator> void addVertices(Iterator start, Iterator end);
-
-	Vertex* getVertexArray(unsigned vtxCount);
-
 	void draw(const std::string &text, glm::vec2 pos, Font &font, Color color);
 	void draw(const RectangleShape &rect);
 	void draw(const Texture &texture, glm::vec2 pos);
 	void draw(const Drawable &drw, glm::vec2 pos);
-
-protected:
-	void initialize();
 
 private:
 	struct PosUV
@@ -90,20 +59,6 @@ private:
 	void drawBuffers() const;
 
 private:
-	struct DrawChannel
-	{
-		const Texture *texture;
-		unsigned vtxOffset;
-		unsigned idxOffset;
-		std::vector<std::uint16_t> idxBuffer;
-		DrawChannel *next;
-	};
-
-	DrawChannel *newChannel(const Texture *texture, unsigned vtxOffset);
-	void beginBatch();
-	void endBatch();
-
-private:
 	std::vector<std::uint16_t> mIndices;
 	std::vector<PosUV>         mPosUV;
 	std::vector<PosUVColor>    mPosUVColor;
@@ -114,39 +69,12 @@ private:
 	unsigned mIndexOffset;
 	unsigned mIndexCount;
 
-	std::vector<Vertex>        mVertices;
-	std::unordered_map<const Texture *, DrawChannel*> mChannelMap;
-
-	bool mIsBatching;
-	DrawChannel  *mChannelList;
-	DrawChannel **mChannelTail;
-	DrawChannel  *mCurrent;
-	DrawChannel  *mFreeChannels;
-
 	Texture  mWhiteTexture;
 	Shader   mTextureShader;
 	Shader   mUniformColorShader;
 
-	unsigned mTextureVAO;
 	unsigned mPosUVVAO;
 	unsigned mPosUVColorVAO;
 	unsigned mVBO;
 	unsigned mEBO;
 };
-
-template <typename Iterator>
-void
-RenderTarget::addIndices(unsigned base, Iterator start, Iterator end)
-{
-	for (; start != end; ++start)
-	{
-		mCurrent->idxBuffer.push_back(base + *start);
-	}
-}
-
-template <typename Iterator>
-void
-RenderTarget::addVertices(Iterator start, Iterator end)
-{
-	mVertices.insert(mVertices.end(), start, end);
-}
