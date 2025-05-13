@@ -11,6 +11,7 @@
 
 class Window;
 class Font;
+class RectangleShape;
 
 class RenderTarget
 {
@@ -54,6 +55,7 @@ public:
 	Vertex* getVertexArray(unsigned vtxCount);
 
 	void draw(const std::string &text, glm::vec2 pos, Font &font, Color color);
+	void draw(const RectangleShape &rect);
 
 protected:
 	void initialize();

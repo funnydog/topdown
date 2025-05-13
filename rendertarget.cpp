@@ -6,6 +6,7 @@
 
 #include "color.hpp"
 #include "font.hpp"
+#include "rectangleshape.hpp"
 #include "glcheck.hpp"
 #include "rendertarget.hpp"
 #include "window.hpp"
@@ -423,6 +424,38 @@ RenderTarget::draw(const std::string &text, glm::vec2 pos, Font &font, Color col
 		}
 		pos.x += g.advance - g.bearing.x;
 		pos.y += g.bearing.y;
+	}
+	saveBatch();
+
+	glCheck(glBindVertexArray(mPosUVVAO));
+	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
+	glCheck(glBufferData(GL_ARRAY_BUFFER,
+	                     mPosUV.size() * sizeof(mPosUV[0]),
+	                     mPosUV.data(),
+	                     GL_STREAM_DRAW));
+
+	drawBuffers();
+}
+
+void
+RenderTarget::draw(const RectangleShape &rect)
+{
+	mUniformColorShader.use();
+	mUniformColorShader.getUniform("uniformColor").setVector4f(rect.getColor());
+	mWhiteTexture.bind(0);
+	mPosUV.clear();
+	startBatch();
+	reserve(4, indices);
+
+	auto transform = rect.getTransform();
+	auto size = rect.getSize();
+	for (auto unit : units)
+	{
+		PosUV v;
+		glm::vec4 pos = glm::vec4(unit * size, 0.f, 1.f);
+		v.pos = transform * pos;
+		v.uv = unit;
+		mPosUV.push_back(v);
 	}
 	saveBatch();
 
