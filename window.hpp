@@ -4,16 +4,14 @@
 
 #include <glm/glm.hpp>
 
-#include "canvas.hpp"
-
 struct GLFWwindow;
 class EventQueue;
 
-class Window: public Canvas
+class Window
 {
 public:
 	Window(const std::string &title, unsigned width, unsigned height);
-	virtual ~Window() override;
+	~Window();
 
 	Window(const Window &) = delete;
 	void operator=(const Window &) = delete;
@@ -24,8 +22,7 @@ public:
 	void close();
 	bool isClosed() const;
 
-	virtual glm::ivec2 getSize() const override;
-	virtual bool setActive(bool active) override;
+	glm::ivec2 getSize() const;
 
 	bool isKeyPressed(int key) const;
 

@@ -10,7 +10,6 @@
 #include "vertex.hpp"
 #include "view.hpp"
 
-class Canvas;
 class Window;
 class Font;
 
@@ -70,8 +69,6 @@ public:
 	template <typename Iterator> void addVertices(Iterator start, Iterator end);
 
 	Vertex* getVertexArray(unsigned vtxCount);
-
-	void setCanvas(const Canvas &canvas);
 
 	void draw(const std::string &text, glm::vec2 pos, Font &font, Color color);
 

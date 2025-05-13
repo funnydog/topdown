@@ -79,9 +79,3 @@ Window::getSize() const
 {
 	return mSize;
 }
-
-bool
-Window::setActive(bool active)
-{
-	return active;
-}
