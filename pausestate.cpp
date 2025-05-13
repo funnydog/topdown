@@ -42,10 +42,7 @@ PauseState::draw()
 {
 	auto &target = *mContext.target;
 
-	glm::mat4 identity(1.f);
-	mBackground.draw(target, identity);
-	target.draw();
-
+	target.draw(mBackground);
 	target.draw("Game Paused", {200.f, 200.f},
 	            mContext.fonts->get(FontID::Title),
 	            Color::White);

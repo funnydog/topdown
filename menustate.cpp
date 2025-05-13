@@ -75,9 +75,9 @@ MenuState::draw()
 	glm::mat4 identity(1.f);
 
 	mBackground.draw(target, identity);
-	mRectangle.draw(target, identity);
 	target.draw();
 
+	target.draw(mRectangle);
 	glm::vec2 pos(300.f, 240.f);
 	unsigned i = 0;
 	for (const auto &option: Options)
