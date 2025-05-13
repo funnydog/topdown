@@ -104,7 +104,6 @@ private:
 	void spawnEnemies();
 
 	std::size_t makeEntity(EntityType type, glm::vec2 pos);
-	void draw(RenderTarget &target, const Drawable &drw, glm::vec2 pos);
 
 private:
 	enum Layer
