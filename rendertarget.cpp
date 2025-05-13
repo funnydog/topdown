@@ -48,6 +48,7 @@ void
 RenderTarget::initialize()
 {
 	mWhiteTexture.create(1, 1, &Color::White);
+	mTextureShader.create();
 	mTextureShader.attachFile(ShaderType::Vertex, "assets/shaders/default.vert");
 	mTextureShader.attachFile(ShaderType::Fragment, "assets/shaders/default.frag");
 	mTextureShader.link();

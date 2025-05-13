@@ -46,10 +46,12 @@ class Shader
 {
 public:
 	Shader();
-	~Shader();
 
-	void attachString(ShaderType type, const std::string &source);
-	void attachFile(ShaderType type, const std::filesystem::path &filename);
+	void create();
+	void destroy();
+
+	void attachString(ShaderType type, const std::string &source) const;
+	void attachFile(ShaderType type, const std::filesystem::path &filename) const;
 	void link() const;
 
 	void use() const noexcept;

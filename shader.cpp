@@ -102,7 +102,14 @@ Shader::Shader()
 {
 }
 
-Shader::~Shader()
+void
+Shader::create()
+{
+	mProgram = glCreateProgram();
+}
+
+void
+Shader::destroy()
 {
 	if (mProgram)
 	{
@@ -111,12 +118,9 @@ Shader::~Shader()
 }
 
 void
-Shader::attachString(ShaderType shaderType, const std::string &source)
+Shader::attachString(ShaderType shaderType, const std::string &source) const
 {
-	if (!mProgram)
-	{
-		mProgram = glCreateProgram();
-	}
+	assert(mProgram != 0 && "Undefined program");
 
 	GLenum glType;
 	switch (shaderType)
@@ -151,7 +155,7 @@ Shader::attachString(ShaderType shaderType, const std::string &source)
 }
 
 void
-Shader::attachFile(ShaderType shaderType, const std::filesystem::path &filename)
+Shader::attachFile(ShaderType shaderType, const std::filesystem::path &filename) const
 {
 	attachString(shaderType, Utility::loadFile(filename));
 }
