@@ -23,7 +23,7 @@ const Time TimePerFrame = Time::microseconds(1000000ULL / 60ULL);
 Application::Application()
 	: mEventQueue()
 	, mWindow(PROJECT_NAME, WIDTH, HEIGHT)
-	, mRenderTarget(mWindow)
+	, mRenderTarget()
 	, mTextures()
 	, mFonts()
 	// , mPlayer()
@@ -31,6 +31,7 @@ Application::Application()
 	, mUpdateTime(Time::Zero)
 	, mNumFrames(0)
 {
+	mRenderTarget.setViewport(WIDTH, HEIGHT);
 	mEventQueue.registerWindow(mWindow);
 
 	mTextures.load(TextureID::TitleScreen, "assets/textures/pillars.jpg");
@@ -92,7 +93,7 @@ Application::processInput()
 		}
 		else if (const auto ev(std::get_if<WindowResized>(&event)); ev)
 		{
-			// TODO
+			mRenderTarget.setViewport(ev->width, ev->height);
 		}
 		else if (const auto ev(std::get_if<WindowClosed>(&event)); ev)
 		{

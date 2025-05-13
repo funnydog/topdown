@@ -20,7 +20,7 @@ static const glm::vec2 units[] = {
 };
 }
 
-RenderTarget::RenderTarget(const Window &window)
+RenderTarget::RenderTarget()
 	: mVertexOffset(0)
 	, mVertexCount(0)
 	, mIndexOffset(0)
@@ -30,51 +30,12 @@ RenderTarget::RenderTarget(const Window &window)
 	, mChannelTail(&mChannelList)
 	, mCurrent(nullptr)
 	, mFreeChannels(nullptr)
-	, mCanvas(&window)
 	, mTextureVAO(0)
 	, mPosUVVAO(0)
 	, mPosUVColorVAO(0)
 	, mVBO(0)
 	, mEBO(0)
 {
-	initialize();
-}
-
-RenderTarget::~RenderTarget()
-{
-	glCheck(glBindVertexArray(0));
-	glCheck(glDeleteVertexArrays(1, &mPosUVColorVAO));
-	glCheck(glDeleteVertexArrays(1, &mPosUVVAO));
-	glCheck(glDeleteVertexArrays(1, &mTextureVAO));
-	glCheck(glDeleteBuffers(1, &mEBO));
-	glCheck(glDeleteBuffers(1, &mVBO));
-
-	beginBatch();
-	DrawChannel *channel = mFreeChannels;
-	while (channel)
-	{
-		DrawChannel *next = channel->next;
-		delete channel;
-		channel = next;
-	}
-}
-
-void
-RenderTarget::setCanvas(const Canvas &canvas)
-{
-	mCanvas = &canvas;
-}
-
-void
-RenderTarget::initialize()
-{
-	glm::vec2 size = mCanvas->getSize();
-	mDefaultView.setCenter(size * 0.5f);
-	mDefaultView.setSize(size);
-	mView = mDefaultView;
-
-	auto &mat4 = mView.getTransform();
-
 	mWhiteTexture.create(1, 1, &Color::White);
 
         // shader creation and configuration
@@ -82,15 +43,11 @@ RenderTarget::initialize()
 	mTextureShader.attachFile(ShaderType::Vertex, "assets/shaders/default.vert");
 	mTextureShader.attachFile(ShaderType::Fragment, "assets/shaders/default.frag");
 	mTextureShader.link();
-	mTextureShader.use();
-	mTextureShader.getUniform("Projection").setMatrix4(mat4);
 
 	mUniformColorShader.create();
 	mUniformColorShader.attachFile(ShaderType::Vertex, "assets/shaders/simple.vs");
 	mUniformColorShader.attachFile(ShaderType::Fragment, "assets/shaders/uniformcolor.fs");
 	mUniformColorShader.link();
-	mUniformColorShader.use();
-	mUniformColorShader.getUniform("projection").setMatrix4(mat4);
 
 	// bind a buffer to allow calling glVertexAttribPointer()
 	glCheck(glGenBuffers(1, &mVBO));
@@ -140,6 +97,40 @@ RenderTarget::initialize()
 	glCheck(glVertexAttribPointer(
 		        2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(PosUVColor),
 		        reinterpret_cast<GLvoid*>(offsetof(PosUVColor, color))));
+}
+
+RenderTarget::~RenderTarget()
+{
+	glCheck(glBindVertexArray(0));
+	glCheck(glDeleteVertexArrays(1, &mPosUVColorVAO));
+	glCheck(glDeleteVertexArrays(1, &mPosUVVAO));
+	glCheck(glDeleteVertexArrays(1, &mTextureVAO));
+	glCheck(glDeleteBuffers(1, &mEBO));
+	glCheck(glDeleteBuffers(1, &mVBO));
+
+	beginBatch();
+	DrawChannel *channel = mFreeChannels;
+	while (channel)
+	{
+		DrawChannel *next = channel->next;
+		delete channel;
+		channel = next;
+	}
+}
+
+void
+RenderTarget::setViewport(unsigned w, unsigned h)
+{
+	glm::vec2 size(w, h);
+	mDefaultView.setCenter(size * 0.5f);
+	mDefaultView.setSize(size);
+	mView = mDefaultView;
+
+	auto &mat4 = mView.getTransform();
+	mTextureShader.use();
+	mTextureShader.getUniform("Projection").setMatrix4(mat4);
+	mUniformColorShader.use();
+	mUniformColorShader.getUniform("projection").setMatrix4(mat4);
 }
 
 const View&

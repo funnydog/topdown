@@ -17,8 +17,10 @@ class Font;
 class RenderTarget
 {
 public:
-	explicit RenderTarget(const Window &window);
+	RenderTarget();
 	~RenderTarget();
+
+	void setViewport(unsigned width, unsigned height);
 
 	/**
 	 * Get the View associated with the RenderTarget.
@@ -138,8 +140,6 @@ private:
 	DrawChannel **mChannelTail;
 	DrawChannel  *mCurrent;
 	DrawChannel  *mFreeChannels;
-
-	const Canvas *mCanvas;
 
 	Texture  mWhiteTexture;
 	Shader   mTextureShader;
