@@ -43,6 +43,8 @@ RenderTarget::RenderTarget(const Window &window)
 RenderTarget::~RenderTarget()
 {
 	glCheck(glBindVertexArray(0));
+	glCheck(glDeleteVertexArrays(1, &mPosUVColorVAO));
+	glCheck(glDeleteVertexArrays(1, &mPosUVVAO));
 	glCheck(glDeleteVertexArrays(1, &mTextureVAO));
 	glCheck(glDeleteBuffers(1, &mEBO));
 	glCheck(glDeleteBuffers(1, &mVBO));
