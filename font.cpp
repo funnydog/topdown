@@ -29,7 +29,7 @@ roundUp2(unsigned v)
 Font::Font()
 	: mFT(nullptr)
 	, mFace(nullptr)
-	, mLineHeight(0)
+	, mLineHeight(0.f)
 	, mPositionX(0)
 	, mPositionY(0)
 	, mMaxHeight(0)
@@ -63,12 +63,41 @@ Font::loadFromFile(const std::filesystem::path &path, unsigned size)
 	}
 	FT_Set_Pixel_Sizes(mFace, 0, size);
 
-	mLineHeight = static_cast<int>((mFace->size->metrics.ascender -
-					mFace->size->metrics.descender) >> 6);
+	mLineHeight = static_cast<float>(
+		mFace->size->metrics.ascender -
+		mFace->size->metrics.descender) / 64.f;
 	mGlyphs.clear();
 	mPositionX = mPositionY = mMaxHeight = 0;
 
 	return true;
+}
+
+void
+Font::destroy()
+{
+	FT_Done_Face(mFace);
+	FT_Done_FreeType(mFT);
+	mFace = nullptr;
+	mFT = nullptr;
+	mTexture.destroy();
+}
+
+glm::vec2
+Font::getSize(const std::string &text) const
+{
+	float width = 0;
+	float height = 0;
+	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> cv;
+	for (auto codepoint: cv.from_bytes(text))
+	{
+		const auto &glyph = getGlyph(codepoint);
+		if (height < glyph.size.y + glyph.bearing.y)
+		{
+			height = glyph.size.y + glyph.bearing.y;
+		}
+		width += glyph.advance;
+	}
+	return { width, height };
 }
 
 void
@@ -115,30 +144,6 @@ Font::draw(RenderTarget &target, const glm::mat4 &transform,
 	}
 }
 
-glm::vec2
-Font::getSize(const std::string &text) const
-{
-	float width = 0;
-	float height = 0;
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> cv;
-	for (auto codepoint: cv.from_bytes(text))
-	{
-		const auto &glyph = getGlyph(codepoint);
-		if (height < glyph.size.y + glyph.bearing.y)
-		{
-			height = glyph.size.y + glyph.bearing.y;
-		}
-		width += glyph.advance;
-	}
-	return { width, height };
-}
-
-const Texture&
-Font::getTexture() const
-{
-	return mTexture;
-}
-
 void
 Font::resizeTexture(unsigned newWidth, unsigned newHeight) const
 {
@@ -162,7 +167,7 @@ Font::resizeTexture(unsigned newWidth, unsigned newHeight) const
 	}
 }
 
-const Font::Glyph&
+const Glyph&
 Font::getGlyph(char32_t codepoint) const
 {
 	if (const auto it = mGlyphs.find(codepoint); it != mGlyphs.end())
@@ -275,4 +280,16 @@ Font::getGlyph(char32_t codepoint) const
 	mPositionX += bmWidth + 2 * PADDING;
 
 	return it->second;
+}
+
+const Texture&
+Font::getTexture() const
+{
+	return mTexture;
+}
+
+float
+Font::getLineHeight() const
+{
+	return mLineHeight;
 }
