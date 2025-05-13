@@ -8,13 +8,6 @@ class Texture
 {
 public:
 	Texture();
-	~Texture();
-
-	Texture(const Texture &other) = delete;
-	Texture& operator=(const Texture &other) = delete;
-
-	Texture(Texture &&other) noexcept = default;
-	Texture& operator=(Texture &&other) noexcept = default;
 
 	bool loadFromFile(const std::filesystem::path &path);
 

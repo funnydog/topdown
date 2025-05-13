@@ -12,14 +12,6 @@ Texture::Texture()
 {
 }
 
-Texture::~Texture()
-{
-	if (mTexture)
-	{
-		glCheck(glDeleteTextures(1, &mTexture));
-	}
-}
-
 bool
 Texture::loadFromFile(const std::filesystem::path &path)
 {
