@@ -42,8 +42,8 @@ RenderTarget::RenderTarget()
 
         // shader creation and configuration
 	mTextureShader.create();
-	mTextureShader.attachFile(ShaderType::Vertex, "assets/shaders/default.vert");
-	mTextureShader.attachFile(ShaderType::Fragment, "assets/shaders/default.frag");
+	mTextureShader.attachFile(ShaderType::Vertex, "assets/shaders/simple.vs");
+	mTextureShader.attachFile(ShaderType::Fragment, "assets/shaders/texture.fs");
 	mTextureShader.link();
 
 	mUniformColorShader.create();
@@ -128,7 +128,7 @@ RenderTarget::setViewport(unsigned width, unsigned height)
 		static_cast<GLfloat>(height), 0.0f,
 		-1.0f, 1.0f);
 	mTextureShader.use();
-	mTextureShader.getUniform("Projection").setMatrix4(proj);
+	mTextureShader.getUniform("projection").setMatrix4(proj);
 	mUniformColorShader.use();
 	mUniformColorShader.getUniform("projection").setMatrix4(proj);
 }
@@ -459,6 +459,35 @@ RenderTarget::draw(const RectangleShape &rect)
 	}
 	saveBatch();
 
+	glCheck(glBindVertexArray(mPosUVVAO));
+	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
+	glCheck(glBufferData(GL_ARRAY_BUFFER,
+	                     mPosUV.size() * sizeof(mPosUV[0]),
+	                     mPosUV.data(),
+	                     GL_STREAM_DRAW));
+
+	drawBuffers();
+}
+
+void
+RenderTarget::draw(const Texture &texture, glm::vec2 pos)
+{
+	auto size = texture.getSize();
+
+	mPosUV.clear();
+	startBatch();
+	reserve(4, indices);
+	for (auto unit : units)
+	{
+		PosUV v;
+		v.pos = unit * size + pos;
+		v.uv = unit;
+		mPosUV.push_back(v);
+	}
+	saveBatch();
+
+	mTextureShader.use();
+	texture.bind(0);
 	glCheck(glBindVertexArray(mPosUVVAO));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
 	glCheck(glBufferData(GL_ARRAY_BUFFER,

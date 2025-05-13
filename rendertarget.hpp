@@ -56,6 +56,7 @@ public:
 
 	void draw(const std::string &text, glm::vec2 pos, Font &font, Color color);
 	void draw(const RectangleShape &rect);
+	void draw(const Texture &texture, glm::vec2 pos);
 
 protected:
 	void initialize();
