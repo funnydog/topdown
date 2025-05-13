@@ -4,30 +4,24 @@
 #include "rendertarget.hpp"
 #include "resourceholder.hpp"
 
+namespace
+{
+constexpr std::array Options =  {
+	"Play",
+	"Exit",
+};
+}
+
 MenuState::MenuState(StateStack &stack, const Context &context)
 	: State(stack, context)
+	, mFont(context.fonts->get(FontID::Title))
 	, mBackground(context.textures->get(TextureID::TitleScreen))
 	, mRectangle()
 	, mOptionIndex(Play)
-	, mOptions()
 {
 	glm::vec2 windowSize = context.window->getSize();
 	mRectangle.setSize(windowSize);
 	mRectangle.setColor(Color::fromRGBA(40, 40, 40, 100));
-
-	auto &font = context.fonts->get(FontID::Title);
-
-	auto playPtr = std::make_unique<Text>(font, "Play");
-	playPtr->centerOrigin();
-	playPtr->setPosition(windowSize * 0.5f);
-	mOptions[Play] = std::move(playPtr);
-
-	auto exitPtr = std::make_unique<Text>(font, "Exit");
-	exitPtr->centerOrigin();
-	exitPtr->setPosition(mOptions[Play]->getPosition() + glm::vec2(0.f, 80.f));
-	mOptions[Exit] = std::move(exitPtr);
-
-	updateOptions();
 }
 
 bool
@@ -67,7 +61,6 @@ MenuState::handleEvent(const Event &event)
 		default:
 			return false;
 		}
-		updateOptions();
 		return true;
 	}
 	return false;
@@ -83,21 +76,15 @@ MenuState::draw()
 
 	mBackground.draw(target, identity);
 	mRectangle.draw(target, identity);
-	for (const auto &option: mOptions)
-	{
-		option->draw(target, identity);
-	}
-
 	target.draw();
-}
 
-void
-MenuState::updateOptions()
-{
-	for (auto &option: mOptions)
+	glm::vec2 pos(300.f, 240.f);
+	unsigned i = 0;
+	for (const auto &option: Options)
 	{
-		option->setColor(Color::White);
+		Color color = i == mOptionIndex ? Color::Red : Color::White;
+		target.draw(option, pos, mFont, color);
+		pos.y += 80.f;
+		i++;
 	}
-
-	mOptions[mOptionIndex]->setColor(Color::Red);
 }

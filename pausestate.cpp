@@ -7,17 +7,7 @@
 PauseState::PauseState(StateStack &stack, const Context &context)
 	: State(stack, context)
 	, mBackground(context.window->getSize(), Color::fromRGBA(0, 0, 0, 150))
-	, mPausedText(context.fonts->get(FontID::Title), "Game Paused")
-	, mInstructionText(
-		context.fonts->get(FontID::Body),
-		"Press Backspace to return to the main menu")
 {
-	mPausedText.centerOrigin();
-	mInstructionText.centerOrigin();
-
-	glm::vec2 size = context.window->getSize();
-	mPausedText.setPosition(size * 0.5f);
-	mInstructionText.setPosition(size * glm::vec2(0.5f, 0.6f));
 }
 
 bool
@@ -54,8 +44,12 @@ PauseState::draw()
 
 	glm::mat4 identity(1.f);
 	mBackground.draw(target, identity);
-	mPausedText.draw(target, identity);
-	mInstructionText.draw(target, identity);
-
 	target.draw();
+
+	target.draw("Game Paused", {200.f, 200.f},
+	            mContext.fonts->get(FontID::Title),
+	            Color::White);
+	target.draw("Press Backspace to return to the main menu", {70.f, 280.f },
+	            mContext.fonts->get(FontID::Body),
+	            Color::White);
 }

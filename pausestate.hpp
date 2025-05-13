@@ -2,7 +2,6 @@
 
 #include "rectangleshape.hpp"
 #include "state.hpp"
-#include "text.hpp"
 
 class PauseState: public State
 {
@@ -15,6 +14,4 @@ public:
 
 private:
 	RectangleShape mBackground;
-	Text mPausedText;
-	Text mInstructionText;
 };

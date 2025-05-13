@@ -10,23 +10,27 @@
 #include "resourceholder.hpp"
 #include "titlestate.hpp"
 
+namespace
+{
+const std::string PressKey = "Press a key to start!";
+}
+
 TitleState::TitleState(StateStack &stack, const Context &context)
 	: State(stack, context)
+	, mFont(context.fonts->get(FontID::Title))
 	, mBackground(context.textures->get(TextureID::TitleScreen))
-	, mText(context.fonts->get(FontID::Title),
-		"Press a key to start!",
-		Color::White)
 	, mRectangle()
 	, mShowText(true)
 	, mElapsedTime(Time::Zero)
 {
-	mText.setOrigin(mText.getSize() * 0.5f);
-
 	glm::vec2 windowSize = context.window->getSize();
-	mText.move(windowSize * glm::vec2(0.5f, 0.8f));
+	glm::vec2 textSize = mFont.getSize(PressKey);
+
+	mTextPos = windowSize * glm::vec2(.5f, .8f);
+	mTextPos -= textSize * .5f;
 
 	mRectangle.setColor(Color::fromRGBA(50, 50, 50, 150));
-	mRectangle.setSize(mText.getSize() * 1.2f);
+	mRectangle.setSize(textSize * 1.2f);
 	mRectangle.centerOrigin();
 	mRectangle.move(windowSize * glm::vec2(0.5f, 0.8f));
 }
@@ -65,9 +69,10 @@ TitleState::draw()
 	glm::mat4 identity(1.f);
 	mBackground.draw(target, identity);
 	mRectangle.draw(target, identity);
+	target.draw();
+
 	if (mShowText)
 	{
-		mText.draw(target, identity);
+		target.draw(PressKey, mTextPos, mFont, Color::White);
 	}
-	target.draw();
 }

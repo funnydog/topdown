@@ -4,7 +4,6 @@
 #include "rectangleshape.hpp"
 #include "sprite.hpp"
 #include "state.hpp"
-#include "text.hpp"
 
 class TitleState: public State
 {
@@ -15,9 +14,10 @@ public:
 	virtual bool handleEvent(const Event &event) override;
 	virtual void draw() override;
 private:
+	Font          &mFont;
 	Sprite         mBackground;
-	Text           mText;
 	RectangleShape mRectangle;
+	glm::vec2      mTextPos;
 	bool           mShowText;
 	Time           mElapsedTime;
 };

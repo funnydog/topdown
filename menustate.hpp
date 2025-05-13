@@ -6,7 +6,6 @@
 #include "rectangleshape.hpp"
 #include "sprite.hpp"
 #include "state.hpp"
-#include "text.hpp"
 
 class MenuState: public State
 {
@@ -25,11 +24,8 @@ public:
 	virtual void draw() override;
 
 private:
-	void updateOptions();
-
-private:
+	Font          &mFont;
 	Sprite         mBackground;
 	RectangleShape mRectangle;
 	unsigned       mOptionIndex;
-	std::array<std::unique_ptr<Text>, OptionCount> mOptions;
 };
