@@ -4,9 +4,6 @@
 
 #include "color.hpp"
 #include "transformable.hpp"
-#include "vertex.hpp"
-
-class RenderTarget;
 
 class RectangleShape: public Transformable
 {
@@ -23,9 +20,7 @@ public:
 
 	void centerOrigin();
 
-	void draw(RenderTarget &target, const glm::mat4 &transform) const;
-
 private:
 	glm::vec2 mSize;
-	Vertex mVertices[4];
+	Color mColor;
 };
