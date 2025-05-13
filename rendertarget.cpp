@@ -82,8 +82,8 @@ RenderTarget::initialize()
 
 	// configure the shaders
 	mTextureShader.use();
-	ShaderUniform projection = mTextureShader.getUniform("Projection");
-	projection.setMatrix4(mView.getTransform());
+	mTextureShader.getUniform("Projection").setMatrix4(
+		mView.getTransform());
 }
 
 const View&
