@@ -27,7 +27,6 @@ srcs = [
   'rectangleshape.cpp',
   'rendertarget.cpp',
   'shader.cpp',
-  'sprite.cpp',
   'stb_image.cpp',
   'texture.cpp',
   'transformable.cpp',
