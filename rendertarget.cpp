@@ -4,17 +4,36 @@
 #include <GL/glew.h>
 
 #include "color.hpp"
+#include "font.hpp"
 #include "glcheck.hpp"
 #include "rendertarget.hpp"
 #include "window.hpp"
 
+namespace
+{
+static const std::uint16_t indices[] = { 0, 1, 2, 1, 3, 2 };
+static const glm::vec2 units[] = {
+	{ 0.f, 0.f },
+	{ 0.f, 1.f },
+	{ 1.f, 0.f },
+	{ 1.f, 1.f },
+};
+}
+
 RenderTarget::RenderTarget(const Window &window)
-	: mIsBatching(true)
+	: mVertexOffset(0)
+	, mVertexCount(0)
+	, mIndexOffset(0)
+	, mIndexCount(0)
+	, mIsBatching(true)
 	, mChannelList(nullptr)
 	, mChannelTail(&mChannelList)
 	, mCurrent(nullptr)
 	, mFreeChannels(nullptr)
 	, mCanvas(&window)
+	, mTextureVAO(0)
+	, mPosUVVAO(0)
+	, mPosUVColorVAO(0)
 	, mVBO(0)
 	, mEBO(0)
 {
@@ -47,25 +66,37 @@ RenderTarget::setCanvas(const Canvas &canvas)
 void
 RenderTarget::initialize()
 {
-	mWhiteTexture.create(1, 1, &Color::White);
-	mTextureShader.create();
-	mTextureShader.attachFile(ShaderType::Vertex, "assets/shaders/default.vert");
-	mTextureShader.attachFile(ShaderType::Fragment, "assets/shaders/default.frag");
-	mTextureShader.link();
-
 	glm::vec2 size = mCanvas->getSize();
 	mDefaultView.setCenter(size * 0.5f);
 	mDefaultView.setSize(size);
 	mView = mDefaultView;
 
+	auto &mat4 = mView.getTransform();
+
+	mWhiteTexture.create(1, 1, &Color::White);
+
+        // shader creation and configuration
+	mTextureShader.create();
+	mTextureShader.attachFile(ShaderType::Vertex, "assets/shaders/default.vert");
+	mTextureShader.attachFile(ShaderType::Fragment, "assets/shaders/default.frag");
+	mTextureShader.link();
+	mTextureShader.use();
+	mTextureShader.getUniform("Projection").setMatrix4(mat4);
+
+	mUniformColorShader.create();
+	mUniformColorShader.attachFile(ShaderType::Vertex, "assets/shaders/simple.vs");
+	mUniformColorShader.attachFile(ShaderType::Fragment, "assets/shaders/uniformcolor.fs");
+	mUniformColorShader.link();
+	mUniformColorShader.use();
+	mUniformColorShader.getUniform("projection").setMatrix4(mat4);
+
 	// bind a buffer to allow calling glVertexAttribPointer()
 	glCheck(glGenBuffers(1, &mVBO));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
-
 	glCheck(glGenBuffers(1, &mEBO));
-	glCheck(glGenVertexArrays(1, &mTextureVAO));
 
 	// setup the data layout for mTextureVAO
+	glCheck(glGenVertexArrays(1, &mTextureVAO));
 	glCheck(glBindVertexArray(mTextureVAO));
 	glCheck(glEnableVertexAttribArray(0));
 	glCheck(glVertexAttribPointer(
@@ -80,10 +111,33 @@ RenderTarget::initialize()
 			2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex),
 			reinterpret_cast<GLvoid*>(offsetof(Vertex, color))));
 
-	// configure the shaders
-	mTextureShader.use();
-	mTextureShader.getUniform("Projection").setMatrix4(
-		mView.getTransform());
+	// layout for PosUV
+	glCheck(glGenVertexArrays(1, &mPosUVVAO));
+	glCheck(glBindVertexArray(mPosUVVAO));
+	glCheck(glEnableVertexAttribArray(0));
+	glCheck(glVertexAttribPointer(
+		        0, 2, GL_FLOAT, GL_FALSE, sizeof(PosUV),
+		        reinterpret_cast<GLvoid*>(offsetof(PosUV, pos))));
+	glCheck(glEnableVertexAttribArray(1));
+	glCheck(glVertexAttribPointer(
+		        1, 2, GL_FLOAT, GL_FALSE, sizeof(PosUV),
+		        reinterpret_cast<GLvoid*>(offsetof(PosUV, uv))));
+
+	// layout for PosUVColor
+	glCheck(glGenVertexArrays(1, &mPosUVColorVAO));
+	glCheck(glBindVertexArray(mPosUVColorVAO));
+	glCheck(glEnableVertexAttribArray(0));
+	glCheck(glVertexAttribPointer(
+		        0, 2, GL_FLOAT, GL_FALSE, sizeof(PosUVColor),
+		        reinterpret_cast<GLvoid*>(offsetof(PosUVColor, pos))));
+	glCheck(glEnableVertexAttribArray(1));
+	glCheck(glVertexAttribPointer(
+		        1, 2, GL_FLOAT, GL_FALSE, sizeof(PosUVColor),
+		        reinterpret_cast<GLvoid*>(offsetof(PosUVColor, uv))));
+	glCheck(glEnableVertexAttribArray(2));
+	glCheck(glVertexAttribPointer(
+		        2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(PosUVColor),
+		        reinterpret_cast<GLvoid*>(offsetof(PosUVColor, color))));
 }
 
 const View&
@@ -297,4 +351,113 @@ RenderTarget::getVertexArray(unsigned vtxCount)
 	auto size = mVertices.size();
 	mVertices.resize(size + vtxCount);
 	return &mVertices[size];
+}
+
+void
+RenderTarget::reserve(unsigned vertexCount, std::span<const std::uint16_t> indices)
+{
+	auto base = mVertexCount - mVertexOffset;
+	if (base + vertexCount > UINT16_MAX)
+	{
+		saveBatch();
+		base = 0;
+	}
+	mVertexCount += vertexCount;
+	for (auto i : indices)
+	{
+		mIndices.push_back(base + i);
+	}
+	mIndexCount += indices.size();
+}
+
+void
+RenderTarget::startBatch()
+{
+	mIndices.clear();
+	mBatches.clear();
+	mVertexOffset = mVertexCount = 0;
+	mIndexOffset = mIndexCount = 0;
+}
+
+void
+RenderTarget::saveBatch()
+{
+	mBatches.emplace_back(
+		mVertexOffset,
+		mIndexOffset * sizeof(mIndices[0]),
+		mIndexCount - mIndexOffset);
+	mVertexOffset = mVertexCount;
+	mIndexOffset = mIndexCount;
+}
+
+void
+RenderTarget::drawBuffers() const
+{
+	// upload the indices
+	glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO));
+	glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+	                     mIndices.size() * sizeof(mIndices[0]),
+	                     mIndices.data(),
+	                     GL_STREAM_DRAW));
+
+	// draw all the batches
+	for (const auto &batch : mBatches)
+	{
+		glCheck(glDrawElementsBaseVertex(
+			        GL_TRIANGLES,
+			        batch.indexCount,
+			        GL_UNSIGNED_SHORT,
+			        reinterpret_cast<GLvoid*>(batch.indexOffset),
+			        batch.vertexOffset));
+	}
+}
+
+void
+RenderTarget::draw(const std::string &text, glm::vec2 pos, Font &font, Color color)
+{
+	if (text.empty())
+	{
+		return;
+	}
+
+	// NOTE: this ensures the glyphs are rendered in the texture before drawing
+	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> cv;
+	for (auto codepoint : cv.from_bytes(text))
+	{
+		font.getGlyph(codepoint);
+	}
+
+	mUniformColorShader.use();
+	mUniformColorShader.getUniform("uniformColor").setVector4f(color);
+	font.getTexture().bind(0);
+
+	mPosUV.clear();
+	startBatch();
+	pos.y += font.getLineHeight();
+	for (auto codepoint : cv.from_bytes(text))
+	{
+		const auto &g = font.getGlyph(codepoint);
+		pos.x += g.bearing.x;
+		pos.y -= g.bearing.y;
+		reserve(4, indices);
+		for (auto unit : units)
+		{
+			PosUV v;
+			v.pos = g.size * unit + pos;
+			v.uv = g.uvSize * unit + g.uvPos;
+			mPosUV.push_back(v);
+		}
+		pos.x += g.advance - g.bearing.x;
+		pos.y += g.bearing.y;
+	}
+	saveBatch();
+
+	glCheck(glBindVertexArray(mPosUVVAO));
+	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
+	glCheck(glBufferData(GL_ARRAY_BUFFER,
+	                     mPosUV.size() * sizeof(mPosUV[0]),
+	                     mPosUV.data(),
+	                     GL_STREAM_DRAW));
+
+	drawBuffers();
 }

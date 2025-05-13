@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include <unordered_map>
 #include <vector>
 
@@ -11,6 +12,7 @@
 
 class Canvas;
 class Window;
+class Font;
 
 class RenderTarget
 {
@@ -69,8 +71,36 @@ public:
 
 	void setCanvas(const Canvas &canvas);
 
+	void draw(const std::string &text, glm::vec2 pos, Font &font, Color color);
+
 protected:
 	void initialize();
+
+private:
+	struct PosUV
+	{
+		glm::vec2 pos;
+		glm::vec2 uv;
+	};
+
+	struct PosUVColor
+	{
+		glm::vec2 pos;
+		glm::vec2 uv;
+		uint32_t color;
+	};
+
+	struct Batch
+	{
+		unsigned vertexOffset;
+		unsigned indexOffset;
+		unsigned indexCount;
+	};
+
+	void reserve(unsigned vertexCount, std::span<const std::uint16_t> indices);
+	void startBatch();
+	void saveBatch();
+	void drawBuffers() const;
 
 private:
 	struct DrawChannel
@@ -82,7 +112,6 @@ private:
 		DrawChannel *next;
 	};
 
-private:
 	DrawChannel *newChannel(const Texture *texture, unsigned vtxOffset);
 	void beginBatch();
 	void endBatch();
@@ -91,8 +120,17 @@ private:
 	View mDefaultView;
 	View mView;
 
-	std::vector<Vertex>        mVertices;
 	std::vector<std::uint16_t> mIndices;
+	std::vector<PosUV>         mPosUV;
+	std::vector<PosUVColor>    mPosUVColor;
+	std::vector<Batch>         mBatches;
+
+	unsigned mVertexOffset;
+	unsigned mVertexCount;
+	unsigned mIndexOffset;
+	unsigned mIndexCount;
+
+	std::vector<Vertex>        mVertices;
 	std::unordered_map<const Texture *, DrawChannel*> mChannelMap;
 
 	bool mIsBatching;
@@ -105,7 +143,11 @@ private:
 
 	Texture  mWhiteTexture;
 	Shader   mTextureShader;
+	Shader   mUniformColorShader;
+
 	unsigned mTextureVAO;
+	unsigned mPosUVVAO;
+	unsigned mPosUVColorVAO;
 	unsigned mVBO;
 	unsigned mEBO;
 };
