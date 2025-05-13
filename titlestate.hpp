@@ -2,7 +2,6 @@
 
 #include "resources.hpp"
 #include "rectangleshape.hpp"
-#include "sprite.hpp"
 #include "state.hpp"
 
 class TitleState: public State
@@ -15,7 +14,6 @@ public:
 	virtual void draw() override;
 private:
 	Font          &mFont;
-	Sprite         mBackground;
 	RectangleShape mRectangle;
 	glm::vec2      mTextPos;
 	bool           mShowText;

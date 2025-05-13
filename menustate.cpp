@@ -15,7 +15,6 @@ constexpr std::array Options =  {
 MenuState::MenuState(StateStack &stack, const Context &context)
 	: State(stack, context)
 	, mFont(context.fonts->get(FontID::Title))
-	, mBackground(context.textures->get(TextureID::TitleScreen))
 	, mRectangle()
 	, mOptionIndex(Play)
 {
@@ -72,11 +71,7 @@ MenuState::draw()
 	auto &target = *mContext.target;
 
 	target.clear();
-	glm::mat4 identity(1.f);
-
-	mBackground.draw(target, identity);
-	target.draw();
-
+	target.draw(mContext.textures->get(TextureID::TitleScreen), glm::vec2(0.f));
 	target.draw(mRectangle);
 	glm::vec2 pos(300.f, 240.f);
 	unsigned i = 0;

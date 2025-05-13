@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "rectangleshape.hpp"
-#include "sprite.hpp"
 #include "state.hpp"
 
 class MenuState: public State
@@ -25,7 +24,6 @@ public:
 
 private:
 	Font          &mFont;
-	Sprite         mBackground;
 	RectangleShape mRectangle;
 	unsigned       mOptionIndex;
 };
