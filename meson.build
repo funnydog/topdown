@@ -16,11 +16,6 @@ srcs = [
   'menustate.cpp',
   'gamestate.cpp',
   'pausestate.cpp',
-  # scenenodes
-  # 'scenenode.cpp',
-  # 'spritenode.cpp',
-  # 'textnode.cpp',
-  # 'entity.cpp',
   # game
   'world.cpp',
   # 'aircraft.cpp',
