@@ -18,9 +18,6 @@ srcs = [
   'pausestate.cpp',
   # game
   'world.cpp',
-  # 'aircraft.cpp',
-  # 'projectile.cpp',
-  # 'playercontrol.cpp',
   # graphics
   'font.cpp',
   'glcheck.cpp',

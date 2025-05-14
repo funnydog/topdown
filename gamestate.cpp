@@ -1,7 +1,6 @@
 #include <GLFW/glfw3.h>
 
 #include "gamestate.hpp"
-#include "playercontrol.hpp"
 
 GameState::GameState(StateStack &stack, const Context &context)
 	: State(stack, context)

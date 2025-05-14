@@ -3,7 +3,6 @@
 #include <array>
 #include <vector>
 
-#include "command.hpp"
 #include "rendertarget.hpp"
 #include "resources.hpp"
 #include "resourceholder.hpp"
@@ -85,8 +84,6 @@ class World
 public:
 	World(const State::Context &context);
 
-	CommandQueue& getCommandQueue();
-
 	void update(Time dt);
 	void draw(RenderTarget &target);
 
@@ -126,7 +123,6 @@ private:
 
 	std::size_t  mPlayerEntity;
 	bool         mPlayerFire;
-	CommandQueue mCommandQueue;
 	FloatRect    mWorldBounds;
 	glm::vec2    mMapPosition;
 	glm::vec2    mSpawnPosition;

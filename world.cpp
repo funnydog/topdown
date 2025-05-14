@@ -100,7 +100,6 @@ World::World(const State::Context &context)
 	, mFreeList()
 	, mPlayerEntity(0)
 	, mPlayerFire(false)
-	, mCommandQueue()
 	, mWorldBounds()
 	, mMapPosition()
 	, mSpawnIndex(0)
@@ -141,12 +140,6 @@ World::buildScene()
 	mBackground.size = mBackground.texture->getSize() * mBackground.uvSize;
 
 	mPlayerEntity = makeEntity(EntityType::Eagle, mSpawnPosition);
-}
-
-CommandQueue&
-World::getCommandQueue()
-{
-	return mCommandQueue;
 }
 
 FloatRect
