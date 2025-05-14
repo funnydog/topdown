@@ -5,8 +5,6 @@
 GameState::GameState(StateStack &stack, const Context &context)
 	: State(stack, context)
 	, mWindow(*context.window)
-	, mTarget(*context.target)
-	// , mControl(*context.control)
 	, mWorld(context)
 {
 }
@@ -14,7 +12,6 @@ GameState::GameState(StateStack &stack, const Context &context)
 bool
 GameState::update(Time dt)
 {
-	// mControl.handleRealtimeInput(mWindow, mWorld.getCommandQueue());
 	mWorld.update(dt);
 	return true;
 }
@@ -28,15 +25,11 @@ GameState::handleEvent(const Event &event)
 		requestStackPush(StateID::Pause);
 		return true;
 	}
-	// else if (mControl.handleEvent(event, mWorld.getCommandQueue()))
-	// {
-	// 	return true;
-	// }
 	return false;
 }
 
 void
-GameState::draw()
+GameState::draw(RenderTarget &target)
 {
-	mWorld.draw(mTarget);
+	mWorld.draw(target);
 }

@@ -66,10 +66,8 @@ MenuState::handleEvent(const Event &event)
 }
 
 void
-MenuState::draw()
+MenuState::draw(RenderTarget &target)
 {
-	auto &target = *mContext.target;
-
 	target.clear();
 	target.draw(mContext.textures->get(TextureID::TitleScreen), glm::vec2(0.f));
 	target.draw(mRectangle);

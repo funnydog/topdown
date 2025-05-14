@@ -126,7 +126,7 @@ Application::update(Time dt)
 void
 Application::render()
 {
-	mStateStack.draw();
+	mStateStack.draw(mRenderTarget);
 	mWindow.display();
 }
 

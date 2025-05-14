@@ -60,9 +60,8 @@ TitleState::handleEvent(const Event &event)
 }
 
 void
-TitleState::draw()
+TitleState::draw(RenderTarget &target)
 {
-	auto &target = *mContext.target;
 	target.clear();
 	target.draw(mContext.textures->get(TextureID::TitleScreen), glm::vec2(0.f));
 	target.draw(mRectangle);

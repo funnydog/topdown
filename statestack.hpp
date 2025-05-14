@@ -21,7 +21,7 @@ public:
 
 	bool update(Time dt);
 	bool handleEvent(const Event &event);
-	void draw();
+	void draw(RenderTarget &target);
 
 	void pushState(StateID state);
 	void popState();

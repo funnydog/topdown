@@ -46,11 +46,11 @@ StateStack::handleEvent(const Event &event)
 }
 
 void
-StateStack::draw()
+StateStack::draw(RenderTarget &target)
 {
 	for (auto &state: mStack)
 	{
-		state->draw();
+		state->draw(target);
 	}
 }
 

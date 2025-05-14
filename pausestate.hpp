@@ -8,9 +8,9 @@ class PauseState: public State
 public:
 	PauseState(StateStack &stack, const Context &context);
 
-	virtual bool update(Time dt) override;
-	virtual bool handleEvent(const Event &event) override;
-	virtual void draw() override;
+	bool update(Time dt) override;
+	bool handleEvent(const Event &event) override;
+	void draw(RenderTarget &target) override;
 
 private:
 	RectangleShape mBackground;

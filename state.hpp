@@ -9,7 +9,6 @@
 #include "window.hpp"
 
 class StateStack;
-// class PlayerControl;
 
 class State
 {
@@ -28,7 +27,7 @@ public:
 	virtual ~State() = default;
 	virtual bool update(Time dt) = 0;
 	virtual bool handleEvent(const Event &event) = 0;
-	virtual void draw() = 0;
+	virtual void draw(RenderTarget &target) = 0;
 
 protected:
 	void requestStackPush(StateID state);

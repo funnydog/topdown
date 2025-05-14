@@ -38,10 +38,8 @@ PauseState::handleEvent(const Event &event)
 }
 
 void
-PauseState::draw()
+PauseState::draw(RenderTarget &target)
 {
-	auto &target = *mContext.target;
-
 	target.draw(mBackground);
 	target.draw("Game Paused", {200.f, 200.f},
 	            mContext.fonts->get(FontID::Title),

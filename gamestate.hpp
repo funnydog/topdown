@@ -8,13 +8,11 @@ class GameState: public State
 public:
 	GameState(StateStack &stack, const Context &context);
 
-	virtual bool update(Time dt) override;
-	virtual bool handleEvent(const Event &event) override;
-	virtual void draw() override;
+	bool update(Time dt) override;
+	bool handleEvent(const Event &event) override;
+	void draw(RenderTarget &target) override;
 
 private:
-	Window        &mWindow;
-	RenderTarget  &mTarget;
-	// PlayerControl &mControl;
-	World          mWorld;
+	Window &mWindow;
+	World   mWorld;
 };
