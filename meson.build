@@ -7,7 +7,7 @@ project('topdown', 'cpp',
   ])
 
 srcs = [
-  'topdown.cpp',
+  'main.cpp',
   'application.cpp',
   # states
   'state.cpp',
