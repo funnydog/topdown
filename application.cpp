@@ -5,10 +5,13 @@
 #include "application.hpp"
 #include "clock.hpp"
 
+#include "world.hpp"
 #include "titlestate.hpp"
 #include "menustate.hpp"
 #include "gamestate.hpp"
 #include "pausestate.hpp"
+
+World world;
 
 namespace
 {
@@ -24,24 +27,21 @@ Application::Application()
 	: mEventQueue()
 	, mWindow(PROJECT_NAME, WIDTH, HEIGHT)
 	, mRenderTarget()
-	, mTextures()
-	, mFonts()
-	, mStateStack({&mWindow, &mRenderTarget, &mTextures, &mFonts})
 	, mUpdateTime(Time::Zero)
 	, mNumFrames(0)
 {
 	mRenderTarget.setViewport(WIDTH, HEIGHT);
 	mEventQueue.registerWindow(mWindow);
 
-	mTextures.load(TextureID::TitleScreen, "assets/textures/pillars.jpg");
-
-	mFonts.load(FontID::Title, "assets/fonts/belligerent.ttf", 48);
-	mFonts.load(FontID::Body, "assets/fonts/belligerent.ttf", 26);
+	world.textures.load(TextureID::TitleScreen, "assets/textures/pillars.jpg");
+	world.textures.load(TextureID::Entities, "assets/textures/Entities.png");
+	world.fonts.load(FontID::Title, "assets/fonts/belligerent.ttf", 48);
+	world.fonts.load(FontID::Body, "assets/fonts/belligerent.ttf", 26);
 
 	registerStates();
 
-	mStateStack.pushState(StateID::Title);
-	mStateStack.update(Time::Zero);
+	world.states.pushState(StateID::Title);
+	world.states.update(Time::Zero);
 }
 
 void
@@ -62,7 +62,7 @@ Application::run()
 			processInput();
 			update(TimePerFrame);
 
-			if (mStateStack.isEmpty())
+			if (world.states.isEmpty())
 			{
 				quit();
 			}
@@ -86,7 +86,7 @@ Application::processInput()
 	Event event;
 	while (mEventQueue.get(event))
 	{
-		if (mStateStack.handleEvent(event))
+		if (world.states.handleEvent(event))
 		{
 			// do nothing
 		}
@@ -114,28 +114,47 @@ Application::processInput()
 			}
 		}
 	}
+
+	// world input
+	static const int keys[] = {
+		GLFW_KEY_UP,
+		GLFW_KEY_DOWN,
+		GLFW_KEY_LEFT,
+		GLFW_KEY_RIGHT,
+		GLFW_KEY_SPACE,
+	};
+	unsigned input = 0;
+	for (unsigned i = 0, mask = 1; i < 5; i++, mask<<=1)
+	{
+		if (mWindow.isKeyPressed(keys[i]))
+		{
+			input |= mask;
+		}
+	}
+	world.inputChange = (world.inputStatus ^ input) & input;
+	world.inputStatus = input;
 }
 
 void
 Application::update(Time dt)
 {
-	mStateStack.update(dt);
+	world.states.update(dt);
 }
 
 void
 Application::render()
 {
-	mStateStack.draw(mRenderTarget);
+	world.states.draw(mRenderTarget);
 	mWindow.display();
 }
 
 void
 Application::registerStates()
 {
-	mStateStack.registerState<TitleState>(StateID::Title);
-	mStateStack.registerState<MenuState>(StateID::Menu);
-	mStateStack.registerState<GameState>(StateID::GamePlay);
-	mStateStack.registerState<PauseState>(StateID::Pause);
+	world.states.registerState<TitleState>(StateID::Title);
+	world.states.registerState<MenuState>(StateID::Menu);
+	world.states.registerState<GameState>(StateID::GamePlay);
+	world.states.registerState<PauseState>(StateID::Pause);
 }
 
 void

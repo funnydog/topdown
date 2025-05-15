@@ -296,7 +296,7 @@ RenderTarget::draw(const Drawable &drw, glm::vec2 pos)
 	saveBatch();
 
 	mTextureShader.use();
-	drw.texture->bind(0);
+	world.textures.get(drw.texID).bind(0);
 
 	glCheck(glBindVertexArray(mPosUVVAO));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));

@@ -1,5 +1,6 @@
 #include <GLFW/glfw3.h>
 
+#include "world.hpp"
 #include "menustate.hpp"
 #include "rendertarget.hpp"
 #include "resourceholder.hpp"
@@ -12,13 +13,11 @@ constexpr std::array Options =  {
 };
 }
 
-MenuState::MenuState(StateStack &stack, const Context &context)
-	: State(stack, context)
-	, mFont(context.fonts->get(FontID::Title))
-	, mRectangle()
+MenuState::MenuState()
+	: mRectangle()
 	, mOptionIndex(Play)
 {
-	glm::vec2 windowSize = context.window->getSize();
+	glm::vec2 windowSize = glm::vec2(640.f, 480.f);
 	mRectangle.setSize(windowSize);
 	mRectangle.setColor(Color::fromRGBA(40, 40, 40, 100));
 }
@@ -51,10 +50,10 @@ MenuState::handleEvent(const Event &event)
 			break;
 		case GLFW_KEY_SPACE:
 		case GLFW_KEY_ENTER:
-			requestStackPop();
+			world.states.popState();
 			if (mOptionIndex == Play)
 			{
-				requestStackPush(StateID::GamePlay);
+				world.states.pushState(StateID::GamePlay);
 			}
 			break;
 		default:
@@ -69,14 +68,17 @@ void
 MenuState::draw(RenderTarget &target)
 {
 	target.clear();
-	target.draw(mContext.textures->get(TextureID::TitleScreen), glm::vec2(0.f));
+	auto &background = world.textures.get(TextureID::TitleScreen);
+	target.draw(background, glm::vec2(0.f));
 	target.draw(mRectangle);
+
+	auto &font = world.fonts.get(FontID::Title);
 	glm::vec2 pos(300.f, 240.f);
 	unsigned i = 0;
 	for (const auto &option: Options)
 	{
 		Color color = i == mOptionIndex ? Color::Red : Color::White;
-		target.draw(option, pos, mFont, color);
+		target.draw(option, pos, font, color);
 		pos.y += 80.f;
 		i++;
 	}

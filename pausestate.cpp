@@ -1,13 +1,15 @@
 #include <GLFW/glfw3.h>
 
+#include "world.hpp"
 #include "pausestate.hpp"
 #include "rendertarget.hpp"
 #include "resourceholder.hpp"
 
-PauseState::PauseState(StateStack &stack, const Context &context)
-	: State(stack, context)
-	, mBackground(context.window->getSize(), Color::fromRGBA(0, 0, 0, 150))
+PauseState::PauseState()
+	: mBackground()
 {
+	mBackground.setSize(glm::vec2(640.f, 480.f));
+	mBackground.setColor(Color::fromRGBA(0, 0, 0, 150));
 }
 
 bool
@@ -25,11 +27,11 @@ PauseState::handleEvent(const Event &event)
 		switch (ep->key)
 		{
 		case GLFW_KEY_BACKSPACE:
-			requestStackClear();
-			requestStackPush(StateID::Menu);
+			world.states.clearStack();
+			world.states.pushState(StateID::Menu);
 			break;
 		default:
-			requestStackPop();
+			world.states.popState();
 			break;
 		}
 		return true;
@@ -42,9 +44,9 @@ PauseState::draw(RenderTarget &target)
 {
 	target.draw(mBackground);
 	target.draw("Game Paused", {200.f, 200.f},
-	            mContext.fonts->get(FontID::Title),
+	            world.fonts.get(FontID::Title),
 	            Color::White);
 	target.draw("Press Backspace to return to the main menu", {70.f, 280.f },
-	            mContext.fonts->get(FontID::Body),
+	            world.fonts.get(FontID::Body),
 	            Color::White);
 }

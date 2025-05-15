@@ -7,13 +7,13 @@
 class TitleState: public State
 {
 public:
-	TitleState(StateStack &stack, const Context &context);
+	TitleState();
 
 	bool update(Time dt) override;
 	bool handleEvent(const Event &event) override;
 	void draw(RenderTarget &target) override;
+
 private:
-	Font          &mFont;
 	RectangleShape mRectangle;
 	glm::vec2      mTextPos;
 	bool           mShowText;

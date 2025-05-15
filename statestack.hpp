@@ -9,8 +9,7 @@
 class StateStack
 {
 public:
-	explicit StateStack(State::Context context);
-
+	StateStack();
 	StateStack(const StateStack &) = delete;
 	StateStack& operator=(const StateStack &) = delete;
 	StateStack(StateStack &&) noexcept = delete;
@@ -48,7 +47,6 @@ private:
 private:
 	std::vector<State::Ptr> mStack;
 	std::vector<PendingChange> mPendingList;
-	State::Context mContext;
 	std::map<StateID, std::function<State::Ptr()>> mFactories;
 };
 
@@ -59,6 +57,6 @@ StateStack::registerState(StateID state, Args&&... args)
 	// NOTE: don't forward the references to the lambda because
 	// when we will try to use them they may be gone.
 	mFactories[state] = [this, args...] () {
-		return std::make_unique<T>(*this, mContext, args...);
+		return std::make_unique<T>(args...);
 	};
 }

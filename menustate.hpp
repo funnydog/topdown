@@ -16,14 +16,13 @@ public:
 		OptionCount,
 	};
 public:
-	MenuState(StateStack &stack, const Context &context);
+	MenuState();
 
 	bool update(Time dt) override;
 	bool handleEvent(const Event &event) override;
 	void draw(RenderTarget &target) override;
 
 private:
-	Font          &mFont;
 	RectangleShape mRectangle;
 	unsigned       mOptionIndex;
 };

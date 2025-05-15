@@ -1,11 +1,11 @@
 #include <cassert>
 
+#include "state.hpp"
 #include "statestack.hpp"
 
-StateStack::StateStack(State::Context context)
+StateStack::StateStack()
 	: mStack()
 	, mPendingList()
-	, mContext(context)
 	, mFactories()
 {
 }

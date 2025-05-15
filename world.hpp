@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <memory>
 #include <vector>
 
 #include "rendertarget.hpp"
@@ -8,124 +9,96 @@
 #include "resourceholder.hpp"
 #include "font.hpp"
 #include "texture.hpp"
-#include "state.hpp"
-#include "time.hpp"
-#include "view.hpp"
+#include "statestack.hpp"
 
-// components
-
-namespace Comp
-{
-enum
-{
-	None        = 0,
-	Physics     = 1 << 0,
-	Drawable    = 1 << 1,
-	Restriction = 1 << 2,
-	Points      = 1 << 3,
-	Fire        = 1 << 4,
-};
-};
-
-struct Physics
-{
-	glm::vec2 pos;
-	glm::vec2 vel;
-};
+#define INPUT_UP    0x01
+#define INPUT_DOWN  0x02
+#define INPUT_LEFT  0x04
+#define INPUT_RIGHT 0x08
+#define INPUT_SPACE 0x10
 
 struct Drawable
 {
-	const Texture *texture;
+	TextureID texID;
+	glm::vec2 size;
 	glm::vec2 uvPos;
 	glm::vec2 uvSize;
-	glm::vec2 size;
 };
 
-enum class Restriction
+struct EnemyBullet
 {
-	KeepInside,
-	KillOutside,
+	glm::vec2 pos;
+	glm::vec2 vel;
+	int spriteIndex;
+	float delay;
 };
 
-struct Points
-{
-	int hitpoints;
-};
-
-struct Fire
-{
-	Time interval;
-	Time elapsed;
-};
-
-enum class EntityType
+enum class EnemyType
 {
 	Eagle,
 	Raptor,
 	Avenger,
-	PlayerBullet,
-	EnemyBullet,
 };
 
-struct Entity
+struct Enemy
 {
-	EntityType type;
-	unsigned components;
-
-	Physics phy;
-	Drawable drw;
-	Restriction rst;
-	Points data;
-	Fire fire;
+	EnemyType type;
+	int state;
+	glm::vec2 pos;
+	glm::vec2 vel;
+	float xCenter;
+	float yCenter;
+	int spriteIndex;
 };
 
-class World
+enum class PlayerBulletType
 {
-public:
-	World(const State::Context &context);
-
-	void update(Time dt);
-	void draw(RenderTarget &target);
-
-	void fireBullet();
-	void setPlayerVelocity(glm::vec2 velocity);
-
-private:
-	void loadFonts();
-	void loadTextures();
-	void buildScene();
-
-	FloatRect getBattlefieldRect() const;
-
-	void scrollBackground(Time dt);
-	void spawnEnemies();
-
-	std::size_t makeEntity(EntityType type, glm::vec2 pos);
-
-private:
-	enum Layer
-	{
-		Background,
-		Air,
-		LayerCount,
-	};
-private:
-	Window        *mWindow;
-	View           mWorldView;
-	TextureHolder  mTextures;
-	FontHolder     mFonts;
-
-	Drawable       mBackground;
-	glm::vec2      mBackgroundPos;
-
-	std::vector<Entity> mEntities;
-	std::vector<std::size_t> mFreeList;
-
-	std::size_t  mPlayerEntity;
-	bool         mPlayerFire;
-	FloatRect    mWorldBounds;
-	glm::vec2    mMapPosition;
-	glm::vec2    mSpawnPosition;
-	std::size_t  mSpawnIndex;
-	float        mScrollSpeed;
+	Gun,
+	Cannon,
+	Missile,
 };
+
+struct PlayerBullet
+{
+	PlayerBulletType type;
+	glm::vec2 pos;
+	glm::vec2 vel;
+	int spriteIndex;
+	float delay;
+};
+
+enum class PlayerState
+{
+	Flying,
+	Firing,
+	Dead,
+};
+
+struct Player
+{
+	PlayerState state;
+	glm::vec2 pos;
+	int spriteIndex;
+	PlayerBulletType bulletType;
+	unsigned maxBulletCount;
+	float delay;
+};
+
+struct World
+{
+	std::vector<Enemy> enemies;
+	std::vector<EnemyBullet> enemyBullets;
+	std::vector<PlayerBullet> playerBullets;
+
+	unsigned inputStatus;
+	unsigned inputChange;
+
+	Player player;
+
+	std::unique_ptr<Window> window;
+	TextureHolder textures;
+	FontHolder fonts;
+	StateStack states;
+};
+
+extern World world;

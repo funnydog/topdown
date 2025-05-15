@@ -10,14 +10,11 @@ srcs = [
   'main.cpp',
   'application.cpp',
   # states
-  'state.cpp',
   'statestack.cpp',
   'titlestate.cpp',
   'menustate.cpp',
   'gamestate.cpp',
   'pausestate.cpp',
-  # game
-  'world.cpp',
   # graphics
   'font.cpp',
   'glcheck.cpp',
@@ -27,7 +24,6 @@ srcs = [
   'stb_image.cpp',
   'texture.cpp',
   'transformable.cpp',
-  'view.cpp',
   # system
   'clock.cpp',
   'eventqueue.cpp',

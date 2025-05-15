@@ -2,13 +2,8 @@
 
 #include "eventqueue.hpp"
 #include "rendertarget.hpp"
-#include "resourceholder.hpp"
-#include "statestack.hpp"
 #include "time.hpp"
 #include "window.hpp"
-
-#include "font.hpp"
-#include "texture.hpp"
 
 class Application
 {
@@ -30,9 +25,6 @@ private:
 	EventQueue    mEventQueue;
 	Window        mWindow;
 	RenderTarget  mRenderTarget;
-	TextureHolder mTextures;
-	FontHolder    mFonts;
-	StateStack    mStateStack;
 	Time          mUpdateTime;
 	std::size_t   mNumFrames;
 };

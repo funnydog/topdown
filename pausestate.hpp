@@ -6,7 +6,7 @@
 class PauseState: public State
 {
 public:
-	PauseState(StateStack &stack, const Context &context);
+	PauseState();
 
 	bool update(Time dt) override;
 	bool handleEvent(const Event &event) override;

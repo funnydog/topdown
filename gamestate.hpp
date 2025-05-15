@@ -6,13 +6,14 @@
 class GameState: public State
 {
 public:
-	GameState(StateStack &stack, const Context &context);
+	GameState();
 
 	bool update(Time dt) override;
 	bool handleEvent(const Event &event) override;
 	void draw(RenderTarget &target) override;
 
 private:
-	Window &mWindow;
-	World   mWorld;
+	void updatePlayer(Player &player, Time dt);
+	void updatePlayerPosition(Player &player, Time dt);
+	void firePlayerBullet(Player &player);
 };

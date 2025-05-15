@@ -5,6 +5,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include "world.hpp"
 #include "font.hpp"
 #include "glcheck.hpp"
 #include "resourceholder.hpp"
@@ -15,18 +16,16 @@ namespace
 const std::string PressKey = "Press a key to start!";
 }
 
-TitleState::TitleState(StateStack &stack, const Context &context)
-	: State(stack, context)
-	, mFont(context.fonts->get(FontID::Title))
-	, mRectangle()
+TitleState::TitleState()
+	: mRectangle()
 	, mShowText(true)
 	, mElapsedTime(Time::Zero)
 {
-	glm::vec2 windowSize = context.window->getSize();
-	glm::vec2 textSize = mFont.getSize(PressKey);
+	auto &font = world.fonts.get(FontID::Title);
+	glm::vec2 windowSize = glm::vec2(640.f, 480.f);
+	glm::vec2 textSize = font.getSize(PressKey);
 
-	mTextPos = windowSize * glm::vec2(.5f, .8f);
-	mTextPos -= textSize * .5f;
+	mTextPos = windowSize * glm::vec2(.5f, .8f) - textSize * 0.5f;
 
 	mRectangle.setColor(Color::fromRGBA(50, 50, 50, 150));
 	mRectangle.setSize(textSize * 1.2f);
@@ -52,8 +51,8 @@ TitleState::handleEvent(const Event &event)
 	if (const auto ev(std::get_if<KeyPressed>(&event)); ev
 	    && ev->key != GLFW_KEY_ESCAPE)
 	{
-		requestStackPop();
-		requestStackPush(StateID::Menu);
+		world.states.popState();
+		world.states.pushState(StateID::Menu);
 		return true;
 	}
 	return false;
@@ -62,11 +61,13 @@ TitleState::handleEvent(const Event &event)
 void
 TitleState::draw(RenderTarget &target)
 {
+	auto &font = world.fonts.get(FontID::Title);
+
 	target.clear();
-	target.draw(mContext.textures->get(TextureID::TitleScreen), glm::vec2(0.f));
+	target.draw(world.textures.get(TextureID::TitleScreen), glm::vec2(0.f));
 	target.draw(mRectangle);
 	if (mShowText)
 	{
-		target.draw(PressKey, mTextPos, mFont, Color::White);
+		target.draw(PressKey, mTextPos, font, Color::White);
 	}
 }
