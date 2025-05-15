@@ -17,9 +17,8 @@
 #define INPUT_RIGHT 0x08
 #define INPUT_SPACE 0x10
 
-struct Drawable
+struct Frame
 {
-	TextureID texID;
 	glm::vec2 size;
 	glm::vec2 uvPos;
 	glm::vec2 uvSize;
@@ -29,7 +28,7 @@ struct EnemyBullet
 {
 	glm::vec2 pos;
 	glm::vec2 vel;
-	int spriteIndex;
+	int frameIndex;
 	float delay;
 };
 
@@ -48,7 +47,7 @@ struct Enemy
 	glm::vec2 vel;
 	float xCenter;
 	float yCenter;
-	int spriteIndex;
+	int frameIndex;
 };
 
 enum class PlayerBulletType
@@ -63,7 +62,7 @@ struct PlayerBullet
 	PlayerBulletType type;
 	glm::vec2 pos;
 	glm::vec2 vel;
-	int spriteIndex;
+	int frameIndex;
 	float delay;
 };
 
@@ -78,7 +77,7 @@ struct Player
 {
 	PlayerState state;
 	glm::vec2 pos;
-	int spriteIndex;
+	int frameIndex;
 	PlayerBulletType bulletType;
 	unsigned maxBulletCount;
 	float delay;

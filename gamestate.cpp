@@ -6,91 +6,79 @@
 namespace
 {
 
-enum Sprite
+enum
 {
-	SPRITE_PLAYERCENTER,
-	SPRITE_PLAYERRIGHT,
-	SPRITE_PLAYERLEFT,
-	SPRITE_ENEMY1,
-	SPRITE_ENEMY2,
-	SPRITE_HEALTHPOW,
-	SPRITE_MISSILEPOW,
-	SPRITE_DOUBLEGUNPOW,
-	SPRITE_FASTERGUNPOW,
-	SPRITE_MISSILE,
-	SPRITE_PLAYERBULLET,
-	SPRITE_ENEMYBULLET,
+	FRAME_PLAYERCENTER,
+	FRAME_PLAYERRIGHT,
+	FRAME_PLAYERLEFT,
+	FRAME_ENEMY1,
+	FRAME_ENEMY2,
+	FRAME_HEALTHPOW,
+	FRAME_MISSILEPOW,
+	FRAME_DOUBLEGUNPOW,
+	FRAME_FASTERGUNPOW,
+	FRAME_MISSILE,
+	FRAME_PLAYERBULLET,
+	FRAME_ENEMYBULLET,
 };
 
-const struct Drawable sprites[] = {
+const Frame frames[] = {
 	{
-		TextureID::Entities,
 		{ 48.f, 64.f },
 		{  0.f / 288.f,  0.f / 104.f },
 		{ 48.f / 288.f, 64.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 48.f, 64.f },
 		{ 48.f / 288.f,  0.f / 104.f },
 		{ 48.f / 288.f, 64.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 48.f, 64.f },
 		{ 96.f / 288.f,  0.f / 104.f },
 		{ 48.f / 288.f, 64.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 84.f, 64.f },
 		{ 144.f / 288.f,  0.f / 104.f },
 		{  84.f / 288.f, 64.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 60.f, 64.f },
 		{ 228.f / 288.f,  0.f / 104.f },
 		{  60.f / 288.f, 64.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 40.f, 40.f },
 		{  0.f / 288.f, 64.f / 104.f },
 		{ 40.f / 288.f, 40.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 40.f, 40.f },
 		{ 40.f / 288.f, 64.f / 104.f },
 		{ 40.f / 288.f, 40.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 40.f, 40.f },
 		{ 80.f / 288.f, 64.f / 104.f },
 		{ 40.f / 288.f, 40.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 40.f, 40.f },
 		{ 120.f / 288.f, 64.f / 104.f },
 		{  40.f / 288.f, 40.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 15.f, 32.f },
 		{ 160.f / 288.f, 64.f / 104.f },
 		{  15.f / 288.f, 32.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 3.f, 14.f },
 		{ 175.f / 288.f, 64.f / 104.f },
 		{   3.f / 288.f, 14.f / 104.f },
 	},
 	{
-		TextureID::Entities,
 		{ 3.f, 14.f },
 		{ 178.f / 288.f, 64.f / 104.f },
 		{   3.f / 288.f, 14.f / 104.f },
@@ -101,6 +89,8 @@ const struct Drawable sprites[] = {
 
 GameState::GameState()
 {
+	world.player.pos = (glm::vec2(640.f, 480.f) - glm::vec2(48.f, 64.f))
+		* glm::vec2(0.5f, 0.8f);
 	world.player.maxBulletCount = 3;
 }
 
@@ -177,18 +167,18 @@ GameState::updatePlayerPosition(Player &player, Time dt)
 	{
 		pvel *= 1.f / std::sqrtf(2.f);
 	}
-	// update the player sprite
+	// update the player frame
 	if (pvel.x < 0.f)
 	{
-		player.spriteIndex = SPRITE_PLAYERRIGHT;
+		player.frameIndex = FRAME_PLAYERRIGHT;
 	}
 	else if (pvel.x > 0.f)
 	{
-		player.spriteIndex = SPRITE_PLAYERLEFT;
+		player.frameIndex = FRAME_PLAYERLEFT;
 	}
 	else
 	{
-		world.player.spriteIndex = SPRITE_PLAYERCENTER;
+		world.player.frameIndex = FRAME_PLAYERCENTER;
 	}
 	// update the player position
 	pvel = player.pos + pvel * dt.asSeconds();
@@ -203,7 +193,7 @@ GameState::firePlayerBullet(Player &player)
 	pb.type = player.bulletType;
 	pb.pos = player.pos + glm::vec2(24.f - 2.f, -14.f);
 	pb.vel = glm::vec2(0, -300.f);
-	pb.spriteIndex = SPRITE_PLAYERBULLET;
+	pb.frameIndex = FRAME_PLAYERBULLET;
 	world.playerBullets.push_back(pb);
 }
 
@@ -226,9 +216,11 @@ GameState::draw(RenderTarget &target)
 {
 	target.clear(Color::fromRGBA(0, 0, 40, 100));
         // NOTE: draw the world
+	target.beginFrames(world.textures.get(TextureID::Entities));
 	for (const auto &b : world.playerBullets)
 	{
-		target.draw(sprites[b.spriteIndex], b.pos);
+		target.addFrame(frames[b.frameIndex], b.pos);
 	}
-	target.draw(sprites[world.player.spriteIndex], world.player.pos);
+	target.addFrame(frames[world.player.frameIndex], world.player.pos);
+	target.endFrames();
 }

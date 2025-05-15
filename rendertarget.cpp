@@ -281,22 +281,31 @@ RenderTarget::draw(const Texture &texture, glm::vec2 pos)
 }
 
 void
-RenderTarget::draw(const Drawable &drw, glm::vec2 pos)
+RenderTarget::beginFrames(const Texture &texture)
 {
 	mPosUV.clear();
 	startBatch();
+	mTextureShader.use();
+	texture.bind(0);
+}
+
+void
+RenderTarget::addFrame(const Frame &drw, glm::vec2 pos)
+{
 	reserve(4, indices);
 	for (auto unit : units)
 	{
-		PosUV v;
-		v.pos = unit * drw.size + pos;
-		v.uv = unit * drw.uvSize + drw.uvPos;
-		mPosUV.push_back(v);
+		mPosUV.emplace_back(
+			unit * drw.size + pos,
+			unit * drw.uvSize + drw.uvPos
+			);
 	}
-	saveBatch();
+}
 
-	mTextureShader.use();
-	world.textures.get(drw.texID).bind(0);
+void
+RenderTarget::endFrames()
+{
+	saveBatch();
 
 	glCheck(glBindVertexArray(mPosUVVAO));
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
@@ -304,6 +313,5 @@ RenderTarget::draw(const Drawable &drw, glm::vec2 pos)
 	                     mPosUV.size() * sizeof(mPosUV[0]),
 	                     mPosUV.data(),
 	                     GL_STREAM_DRAW));
-
 	drawBuffers();
 }
