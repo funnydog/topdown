@@ -87,6 +87,9 @@ constexpr std::array frames = {
 	}
 };
 
+constexpr std::array enemyWaves = {
+	EnemyWave{ EnemyType::Eagle, 100.f,  50.f, 0.f, 1 },
+	EnemyWave{ EnemyType::Eagle, 500.f, 100.f, 0.f, 1 },
 };
 }
 
@@ -95,11 +98,78 @@ GameState::GameState()
 	world.player.pos = (glm::vec2(640.f, 480.f) - glm::vec2(48.f, 64.f))
 		* glm::vec2(0.5f, 0.8f);
 	world.player.maxBulletCount = 3;
+
+	world.mapPosition = 0.f;
+	world.nextWave = 0;
 }
 
 bool
 GameState::update(Time dt)
 {
+        // scroll the map
+	world.mapPosition += 4.f * dt.asSeconds();
+	if (world.mapPosition >= 480.f * 9.f)
+	{
+		world.mapPosition = 480.f * 9.f;
+	}
+
+	// span new enemies
+	while (world.nextWave < enemyWaves.size()
+	       && world.mapPosition >= enemyWaves[world.nextWave].spawnY)
+	{
+		world.activeWaves.push_back(enemyWaves[world.nextWave]);
+		world.nextWave++;
+	}
+	auto wit = world.activeWaves.begin();
+	while (wit != world.activeWaves.end())
+	{
+		// TODO: spawn the enemy
+		Enemy e{};
+		e.type = wit->type;
+		e.pos.x = wit->spawnX;
+		e.pos.y = 0.f;
+		switch (e.type)
+		{
+		case EnemyType::Eagle:
+			e.frameIndex = FRAME_ENEMY1;
+			e.pos -= frames[FRAME_ENEMY1].size;
+			e.vel = glm::vec2(0.f, 60.f);
+			e.state = 0;
+			world.enemies.push_back(e);
+			break;
+		case EnemyType::Raptor:
+		case EnemyType::Avenger:
+			break;
+		}
+		wit->enemyCount--;
+		if (wit->enemyCount == 0)
+		{
+			wit = world.activeWaves.erase(wit);
+		}
+		else
+		{
+			++wit;
+		}
+	}
+
+	// update the enemies
+	auto e = world.enemies.begin();
+	while (e != world.enemies.end())
+	{
+		e->pos += e->vel * dt.asSeconds();
+		if (e->pos.x < 0.f
+		    || e->pos.x + frames[e->frameIndex].size.x > 640.f
+		    || e->pos.y > 480.f)
+		{
+			e = world.enemies.erase(e);
+		}
+		else
+		{
+			++e;
+		}
+	}
+
+	// update the bullets
 	auto b = world.playerBullets.begin();
 	while (b != world.playerBullets.end())
 	{
@@ -223,6 +293,10 @@ GameState::draw(RenderTarget &target)
 	for (const auto &b : world.playerBullets)
 	{
 		target.addFrame(frames[b.frameIndex], b.pos);
+	}
+	for (const auto &e : world.enemies)
+	{
+		target.addFrame(frames[e.frameIndex], e.pos);
 	}
 	target.addFrame(frames[world.player.frameIndex], world.player.pos);
 	target.endFrames();

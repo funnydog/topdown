@@ -50,6 +50,15 @@ struct Enemy
 	int frameIndex;
 };
 
+struct EnemyWave
+{
+	EnemyType type{};
+	float spawnX{};
+	float spawnY{};
+	float spawnDelay{};
+	unsigned enemyCount{};
+};
+
 enum class PlayerBulletType
 {
 	Gun,
@@ -93,6 +102,10 @@ struct World
 	unsigned inputChange;
 
 	Player player;
+
+	float mapPosition;
+	size_t nextWave;
+	std::vector<EnemyWave> activeWaves;
 
 	std::unique_ptr<Window> window;
 	TextureHolder textures;
