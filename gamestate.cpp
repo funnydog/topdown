@@ -88,8 +88,8 @@ constexpr std::array frames = {
 };
 
 constexpr std::array enemyWaves = {
-	EnemyWave{ EnemyType::Eagle, 100.f,  50.f, 0.f, 1 },
-	EnemyWave{ EnemyType::Eagle, 500.f, 100.f, 0.f, 1 },
+	EnemyWave{ EnemyType::Eagle,  100.f,  20.f, 5.f, 2 },
+	EnemyWave{ EnemyType::Eagle,  500.f, 100.f, 0.f, 1 },
 };
 }
 
