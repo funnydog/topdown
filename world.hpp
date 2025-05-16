@@ -57,6 +57,7 @@ struct EnemyWave
 	float spawnY{};
 	float spawnDelay{};
 	unsigned enemyCount{};
+	float spawnElapsed{};
 };
 
 enum class PlayerBulletType

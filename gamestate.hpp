@@ -16,4 +16,7 @@ private:
 	void updatePlayer(Player &player, Time dt);
 	void updatePlayerPosition(Player &player, Time dt);
 	void firePlayerBullet(Player &player);
+
+	void createEnemy(const EnemyWave &w);
+	void updateEnemy(Enemy &e, Time dt);
 };

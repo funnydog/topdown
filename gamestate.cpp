@@ -124,41 +124,31 @@ GameState::update(Time dt)
 	while (wit != world.activeWaves.end())
 	{
 		// TODO: spawn the enemy
-		Enemy e{};
-		e.type = wit->type;
-		e.pos.x = wit->spawnX;
-		e.pos.y = 0.f;
-		switch (e.type)
+		wit->spawnElapsed -= dt.asSeconds();
+		if (wit->spawnElapsed < 0.f)
 		{
-		case EnemyType::Eagle:
-			e.frameIndex = FRAME_ENEMY1;
-			e.pos -= frames[FRAME_ENEMY1].size;
-			e.vel = glm::vec2(0.f, 60.f);
-			e.state = 0;
-			world.enemies.push_back(e);
-			break;
-		case EnemyType::Raptor:
-		case EnemyType::Avenger:
-			break;
+			wit->spawnElapsed += wit->spawnDelay;
+			createEnemy(*wit);
+			wit->enemyCount--;
+			if (wit->enemyCount == 0)
+			{
+				wit = world.activeWaves.erase(wit);
+				continue;
+			}
 		}
-		wit->enemyCount--;
-		if (wit->enemyCount == 0)
-		{
-			wit = world.activeWaves.erase(wit);
-		}
-		else
-		{
-			++wit;
-		}
+		++wit;
 	}
 
 	// update the enemies
 	auto e = world.enemies.begin();
 	while (e != world.enemies.end())
 	{
-		e->pos += e->vel * dt.asSeconds();
+		updateEnemy(*e, dt);
+
+		// check if the enemy is outside the screen
+		const auto &frame = frames[e->frameIndex];
 		if (e->pos.x < 0.f
-		    || e->pos.x + frames[e->frameIndex].size.x > 640.f
+		    || e->pos.x + frame.size.x > 640.f
 		    || e->pos.y > 480.f)
 		{
 			e = world.enemies.erase(e);
@@ -270,6 +260,51 @@ GameState::firePlayerBullet(Player &player)
 	world.playerBullets.push_back(pb);
 }
 
+void
+GameState::createEnemy(const EnemyWave &w)
+{
+	Enemy e{};
+	switch (w.type)
+	{
+	case EnemyType::Eagle:
+		e.type = w.type;
+		e.pos.x = w.spawnX;
+		e.pos.y = 0.f;
+		e.vel = glm::vec2(0.f, 60.f);
+		e.state = 0;
+		break;
+	case EnemyType::Raptor:
+	case EnemyType::Avenger:
+		abort();
+	}
+	world.enemies.push_back(e);
+}
+
+void
+GameState::updateEnemy(Enemy &e, Time dt)
+{
+	switch (e.type)
+	{
+	case EnemyType::Eagle:
+		switch (e.state)
+		{
+		case 0:
+			e.frameIndex = FRAME_ENEMY1;
+			e.pos.y -= frames[e.frameIndex].size.y;
+			e.vel = glm::vec2(0.f, 60.f);
+			e.state++;
+			break;
+		case 1:
+			e.pos += e.vel * dt.asSeconds();
+			break;
+		}
+		break;
+	case EnemyType::Raptor:
+	case EnemyType::Avenger:
+		abort();
+	}
+}
+
 bool
 GameState::handleEvent(const Event &event)
 {
@@ -290,13 +325,13 @@ GameState::draw(RenderTarget &target)
 	target.clear(Color::fromRGBA(0, 0, 40, 100));
         // NOTE: draw the world
 	target.beginFrames(world.textures.get(TextureID::Entities));
-	for (const auto &b : world.playerBullets)
-	{
-		target.addFrame(frames[b.frameIndex], b.pos);
-	}
 	for (const auto &e : world.enemies)
 	{
 		target.addFrame(frames[e.frameIndex], e.pos);
+	}
+	for (const auto &b : world.playerBullets)
+	{
+		target.addFrame(frames[b.frameIndex], b.pos);
 	}
 	target.addFrame(frames[world.player.frameIndex], world.player.pos);
 	target.endFrames();
