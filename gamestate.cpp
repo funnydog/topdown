@@ -89,6 +89,7 @@ constexpr std::array frames = {
 
 constexpr std::array enemyWaves = {
 	EnemyWave{ EnemyType::Eagle,  100.f,  20.f, 5.f, 2 },
+	EnemyWave{ EnemyType::Raptor, 100.f,  60.f, 1.f, 6 },
 	EnemyWave{ EnemyType::Eagle,  500.f, 100.f, 0.f, 1 },
 };
 }
@@ -274,6 +275,11 @@ GameState::createEnemy(const EnemyWave &w)
 		e.state = 0;
 		break;
 	case EnemyType::Raptor:
+		e.type = w.type;
+		e.pos.x = w.spawnX;
+		e.pos.y = 0.f;
+		e.state = 0;
+		break;
 	case EnemyType::Avenger:
 		abort();
 	}
@@ -300,6 +306,21 @@ GameState::updateEnemy(Enemy &e, Time dt)
 		}
 		break;
 	case EnemyType::Raptor:
+		switch (e.state)
+		{
+		case 0:
+			e.frameIndex = FRAME_ENEMY2;
+			e.pos.y -= frames[e.frameIndex].size.y;
+			e.xCenter = 320.f - frames[e.frameIndex].size.x * 0.5f;
+			e.vel.y = 80.f;
+			e.state++;
+			break;
+		case 1:
+			e.vel.x += (e.xCenter - e.pos.x) * dt.asSeconds();
+			e.pos += e.vel * dt.asSeconds();
+			break;
+		}
+		break;
 	case EnemyType::Avenger:
 		abort();
 	}
