@@ -71,6 +71,9 @@ Application::run()
 		updateStatistics(elapsedTime);
 		render();
 	}
+
+	world.fonts.destroy();
+	world.textures.destroy();
 	mRenderTarget.destroy();
 }
 
