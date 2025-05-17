@@ -10,7 +10,7 @@ class EventQueue;
 class Window
 {
 public:
-	Window(const std::string &title, unsigned width, unsigned height);
+	Window();
 	~Window();
 
 	Window(const Window &) = delete;
@@ -18,9 +18,12 @@ public:
 	Window(Window &&) noexcept = delete;
 	Window& operator=(Window &&) noexcept = delete;
 
-	void display();
+	void open(const std::string &title, unsigned width, unsigned height);
 	void close();
+
 	bool isClosed() const;
+
+	void display();
 
 	glm::ivec2 getSize() const;
 

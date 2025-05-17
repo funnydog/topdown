@@ -6,23 +6,30 @@
 #include "glcheck.hpp"
 #include "window.hpp"
 
-Window::Window(const std::string &title, unsigned width, unsigned height)
+Window::Window()
 	: mWindow(nullptr)
-	, mSize{width, height}
+	, mSize{}
 {
-	if (!glfwInit())
-	{
-		throw std::runtime_error("Unable to initialize GLFW3");
-	}
+}
 
+Window::~Window()
+{
+	if (mWindow)
+	{
+		glfwDestroyWindow(mWindow);
+	}
+}
+
+void
+Window::open(const std::string &title, unsigned width, unsigned height)
+{
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	mWindow = glfwCreateWindow(mSize.x, mSize.y, title.c_str(), nullptr, nullptr);
+	mWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 	if (!mWindow)
 	{
-		glfwTerminate();
 		throw std::runtime_error("Unable to create the window");
 	}
 	glfwMakeContextCurrent(mWindow);
@@ -31,29 +38,17 @@ Window::Window(const std::string &title, unsigned width, unsigned height)
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 	{
-		glfwTerminate();
 		throw std::runtime_error(
 			reinterpret_cast<const char *>(glewGetErrorString(err)));
 	}
+	mSize.x = width;
+	mSize.y = height;
 
 	glfwSwapInterval(1);
-
 	glCheck(glEnable(GL_CULL_FACE));
 	glCheck(glEnable(GL_BLEND));
 	glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	glCheck(glClearColor(0.f, 0.2f, 0.4f, 1.0f));
-}
-
-Window::~Window()
-{
-	glfwDestroyWindow(mWindow);
-	glfwTerminate();
-}
-
-void
-Window::display()
-{
-	glfwSwapBuffers(mWindow);
 }
 
 void
@@ -66,6 +61,12 @@ bool
 Window::isClosed() const
 {
 	return glfwWindowShouldClose(mWindow);
+}
+
+void
+Window::display()
+{
+	glfwSwapBuffers(mWindow);
 }
 
 bool

@@ -25,11 +25,28 @@ const Time TimePerFrame = Time::microseconds(1000000ULL / 60ULL);
 
 Application::Application()
 	: mEventQueue()
-	, mWindow(PROJECT_NAME, WIDTH, HEIGHT)
+	, mWindow()
 	, mRenderTarget()
 	, mUpdateTime(Time::Zero)
 	, mNumFrames(0)
 {
+	if (!glfwInit())
+	{
+		throw std::runtime_error("Unable to initialize GLFW3");
+	}
+}
+
+Application::~Application()
+{
+	glfwTerminate();
+}
+
+void
+Application::run()
+{
+	Clock clock;
+
+	mWindow.open(PROJECT_NAME, WIDTH, HEIGHT);
 	mRenderTarget.create(mWindow);
 	mEventQueue.registerWindow(mWindow);
 
@@ -42,12 +59,6 @@ Application::Application()
 
 	world.states.pushState(StateID::Title);
 	world.states.update(Time::Zero);
-}
-
-void
-Application::run()
-{
-	Clock clock;
 
 	Time timeSinceLastUpdate = clock.getElapsedTime();
 	while (!mWindow.isClosed())
