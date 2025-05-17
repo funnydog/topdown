@@ -107,13 +107,28 @@ GameState::GameState()
 bool
 GameState::update(Time dt)
 {
-        // scroll the map
+	updateMap(dt);
+	updateWaves(dt);
+	updateEnemies(dt);
+	updateBullets(dt);
+	updatePlayer(world.player, dt);
+	return true;
+}
+
+void
+GameState::updateMap(Time dt)
+{
+	// scroll the map
 	world.mapPosition += 4.f * dt.asSeconds();
 	if (world.mapPosition >= 480.f * 9.f)
 	{
 		world.mapPosition = 480.f * 9.f;
 	}
+}
 
+void
+GameState::updateWaves(Time dt)
+{
 	// span new enemies
 	while (world.nextWave < enemyWaves.size()
 	       && world.mapPosition >= enemyWaves[world.nextWave].spawnY)
@@ -139,7 +154,11 @@ GameState::update(Time dt)
 		}
 		++wit;
 	}
+}
 
+void
+GameState::updateEnemies(Time dt)
+{
 	// update the enemies
 	auto e = world.enemies.begin();
 	while (e != world.enemies.end())
@@ -159,7 +178,11 @@ GameState::update(Time dt)
 			++e;
 		}
 	}
+}
 
+void
+GameState::updateBullets(Time dt)
+{
 	// update the bullets
 	auto b = world.playerBullets.begin();
 	while (b != world.playerBullets.end())
@@ -174,8 +197,6 @@ GameState::update(Time dt)
 			++b;
 		}
 	}
-	updatePlayer(world.player, dt);
-	return true;
 }
 
 void
