@@ -58,7 +58,7 @@ Application::run()
 	registerStates();
 
 	world.states.pushState(StateID::Title);
-	world.states.update(Time::Zero);
+	world.states.update(0.f);
 
 	Time timeSinceLastUpdate = clock.getElapsedTime();
 	while (!mWindow.isClosed())
@@ -153,7 +153,7 @@ Application::processInput()
 void
 Application::update(Time dt)
 {
-	world.states.update(dt);
+	world.states.update(dt.asSeconds());
 }
 
 void

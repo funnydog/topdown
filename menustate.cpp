@@ -23,7 +23,7 @@ MenuState::MenuState()
 }
 
 bool
-MenuState::update(Time)
+MenuState::update(float)
 {
 	return true;
 }

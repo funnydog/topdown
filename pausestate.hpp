@@ -8,7 +8,7 @@ class PauseState: public State
 public:
 	PauseState();
 
-	bool update(Time dt) override;
+	bool update(float dt) override;
 	bool handleEvent(const Event &event) override;
 	void draw(RenderTarget &target) override;
 

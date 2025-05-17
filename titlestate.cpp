@@ -19,7 +19,7 @@ const std::string PressKey = "Press a key to start!";
 TitleState::TitleState()
 	: mRectangle()
 	, mShowText(true)
-	, mElapsedTime(Time::Zero)
+	, mElapsedTime(0.f)
 {
 	auto &font = world.fonts.get(FontID::Title);
 	glm::vec2 windowSize = glm::vec2(640.f, 480.f);
@@ -34,12 +34,12 @@ TitleState::TitleState()
 }
 
 bool
-TitleState::update(Time dt)
+TitleState::update(float dt)
 {
 	mElapsedTime += dt;
-	if (mElapsedTime >= Time::seconds(1))
+	if (mElapsedTime >= 1.f)
 	{
-		mElapsedTime -= Time::seconds(1);
+		mElapsedTime -= 1.f;
 		mShowText = !mShowText;
 	}
 	return true;

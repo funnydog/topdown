@@ -105,7 +105,7 @@ GameState::GameState()
 }
 
 bool
-GameState::update(Time dt)
+GameState::update(float dt)
 {
 	updateMap(dt);
 	updateWaves(dt);
@@ -116,10 +116,10 @@ GameState::update(Time dt)
 }
 
 void
-GameState::updateMap(Time dt)
+GameState::updateMap(float dt)
 {
 	// scroll the map
-	world.mapPosition += 4.f * dt.asSeconds();
+	world.mapPosition += 4.f * dt;
 	if (world.mapPosition >= 480.f * 9.f)
 	{
 		world.mapPosition = 480.f * 9.f;
@@ -127,7 +127,7 @@ GameState::updateMap(Time dt)
 }
 
 void
-GameState::updateWaves(Time dt)
+GameState::updateWaves(float dt)
 {
 	// span new enemies
 	while (world.nextWave < enemyWaves.size()
@@ -140,7 +140,7 @@ GameState::updateWaves(Time dt)
 	while (wit != world.activeWaves.end())
 	{
 		// TODO: spawn the enemy
-		wit->spawnElapsed -= dt.asSeconds();
+		wit->spawnElapsed -= dt;
 		if (wit->spawnElapsed < 0.f)
 		{
 			wit->spawnElapsed += wit->spawnDelay;
@@ -157,7 +157,7 @@ GameState::updateWaves(Time dt)
 }
 
 void
-GameState::updateEnemies(Time dt)
+GameState::updateEnemies(float dt)
 {
 	// update the enemies
 	auto e = world.enemies.begin();
@@ -181,13 +181,13 @@ GameState::updateEnemies(Time dt)
 }
 
 void
-GameState::updateBullets(Time dt)
+GameState::updateBullets(float dt)
 {
 	// update the bullets
 	auto b = world.playerBullets.begin();
 	while (b != world.playerBullets.end())
 	{
-		b->pos += b->vel * dt.asSeconds();
+		b->pos += b->vel * dt;
 		if (b->pos.y < 0.f)
 		{
 			b = world.playerBullets.erase(b);
@@ -200,7 +200,7 @@ GameState::updateBullets(Time dt)
 }
 
 void
-GameState::updatePlayer(Player &player, Time dt)
+GameState::updatePlayer(Player &player, float dt)
 {
 	switch (player.state)
 	{
@@ -216,7 +216,7 @@ GameState::updatePlayer(Player &player, Time dt)
 		break;
 	case PlayerState::Firing:
 		updatePlayerPosition(player, dt);
-		world.player.delay -= dt.asSeconds();
+		world.player.delay -= dt;
 		if (world.player.delay > 0)
 		{
 			world.player.state = PlayerState::Flying;
@@ -228,7 +228,7 @@ GameState::updatePlayer(Player &player, Time dt)
 }
 
 void
-GameState::updatePlayerPosition(Player &player, Time dt)
+GameState::updatePlayerPosition(Player &player, float dt)
 {
 	glm::vec2 pvel(0.f);
 	if (world.inputStatus & INPUT_UP)
@@ -266,7 +266,7 @@ GameState::updatePlayerPosition(Player &player, Time dt)
 		world.player.frameIndex = FRAME_PLAYERCENTER;
 	}
 	// update the player position
-	pvel = player.pos + pvel * dt.asSeconds();
+	pvel = player.pos + pvel * dt;
 	player.pos.x = glm::clamp(pvel.x, 10.f, 640.f - 48.f - 10.f);
 	player.pos.y = glm::clamp(pvel.y, 10.f, 480.f - 64.f - 10.f);
 }
@@ -308,7 +308,7 @@ GameState::createEnemy(const EnemyWave &w)
 }
 
 void
-GameState::updateEnemy(Enemy &e, Time dt)
+GameState::updateEnemy(Enemy &e, float dt)
 {
 	switch (e.type)
 	{
@@ -322,7 +322,7 @@ GameState::updateEnemy(Enemy &e, Time dt)
 			e.state++;
 			break;
 		case 1:
-			e.pos += e.vel * dt.asSeconds();
+			e.pos += e.vel * dt;
 			break;
 		}
 		break;
@@ -337,8 +337,8 @@ GameState::updateEnemy(Enemy &e, Time dt)
 			e.state++;
 			break;
 		case 1:
-			e.vel.x += (e.xCenter - e.pos.x) * dt.asSeconds();
-			e.pos += e.vel * dt.asSeconds();
+			e.vel.x += (e.xCenter - e.pos.x) * dt;
+			e.pos += e.vel * dt;
 			break;
 		}
 		break;

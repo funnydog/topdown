@@ -11,7 +11,7 @@ StateStack::StateStack()
 }
 
 bool
-StateStack::update(Time dt)
+StateStack::update(float dt)
 {
 	bool handled = false;
 	for (auto it = mStack.rbegin(); it != mStack.rend(); ++it)

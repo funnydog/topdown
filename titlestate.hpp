@@ -9,7 +9,7 @@ class TitleState: public State
 public:
 	TitleState();
 
-	bool update(Time dt) override;
+	bool update(float dt) override;
 	bool handleEvent(const Event &event) override;
 	void draw(RenderTarget &target) override;
 
@@ -17,5 +17,5 @@ private:
 	RectangleShape mRectangle;
 	glm::vec2      mTextPos;
 	bool           mShowText;
-	Time           mElapsedTime;
+	float          mElapsedTime;
 };

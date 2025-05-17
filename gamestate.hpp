@@ -8,21 +8,21 @@ class GameState: public State
 public:
 	GameState();
 
-	bool update(Time dt) override;
+	bool update(float dt) override;
 	bool handleEvent(const Event &event) override;
 	void draw(RenderTarget &target) override;
 
 private:
-	void updateMap(Time dt);
-	void updateWaves(Time dt);
-	void updateEnemies(Time dt);
-	void updateBullets(Time dt);
+	void updateMap(float dt);
+	void updateWaves(float dt);
+	void updateEnemies(float dt);
+	void updateBullets(float dt);
 
-	void updatePlayer(Player &player, Time dt);
-	void updatePlayerPosition(Player &player, Time dt);
+	void updatePlayer(Player &player, float dt);
+	void updatePlayerPosition(Player &player, float dt);
 	void firePlayerBullet(Player &player);
 
 	void createEnemy(const EnemyWave &w);
-	void updateEnemy(Enemy &e, Time dt);
+	void updateEnemy(Enemy &e, float dt);
 
 };

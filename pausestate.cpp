@@ -13,7 +13,7 @@ PauseState::PauseState()
 }
 
 bool
-PauseState::update(Time)
+PauseState::update(float)
 {
 	// do nothing
 	return true;

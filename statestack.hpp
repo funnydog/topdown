@@ -18,7 +18,7 @@ public:
 	template <typename T, typename... Args>
 	void registerState(StateID state, Args&&... args);
 
-	bool update(Time dt);
+	bool update(float dt);
 	bool handleEvent(const Event &event);
 	void draw(RenderTarget &target);
 
