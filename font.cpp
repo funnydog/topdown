@@ -33,7 +33,6 @@ Font::Font()
 	, mPositionY(0)
 	, mMaxHeight(0)
 {
-	mTexture.setSmooth(true);
 }
 
 Font::~Font()
@@ -106,8 +105,7 @@ Font::resizeTexture(unsigned newWidth, unsigned newHeight)
 	auto oldHeight = mTexture.getHeight();
 
 	Texture newTexture;
-	newTexture.setSmooth(mTexture.isSmooth());
-	newTexture.create(newWidth, newHeight);
+	newTexture.create(newWidth, newHeight, nullptr, false, true);
 	newTexture.update(mTexture);
 	std::swap(mTexture, newTexture);
 
