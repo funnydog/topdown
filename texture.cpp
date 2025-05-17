@@ -187,7 +187,7 @@ glm::vec2
 Texture::getSize() const
 {
 	glm::vec2 size(0.f);
-	if (mTexture)
+	if (mTexture != -1U)
 	{
 		GLint width = 0;
 		GLint height = 0;
@@ -205,7 +205,7 @@ unsigned
 Texture::getWidth() const
 {
 	GLint width = 0;
-	if (mTexture)
+	if (mTexture != -1U)
 	{
 		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
 		glCheck(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width));
@@ -218,7 +218,7 @@ unsigned
 Texture::getHeight() const
 {
 	GLint height = 0;
-	if (mTexture)
+	if (mTexture != -1U)
 	{
 		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
 		glCheck(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height));
@@ -230,10 +230,13 @@ Texture::getHeight() const
 bool
 Texture::isRepeated() const
 {
-	GLint glWrapping;
-	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
-	glCheck(glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &glWrapping));
-	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	GLint glWrapping = 0;
+	if (mTexture != -1U)
+	{
+		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+		glCheck(glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &glWrapping));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	}
 	return glWrapping == GL_REPEAT;
 }
 
@@ -241,19 +244,25 @@ void
 Texture::setRepeated(bool repeated)
 {
 	GLint glWrapping = repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE;
-	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
-	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrapping));
-	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrapping));
-	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	if (mTexture != -1U)
+	{
+		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrapping));
+		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrapping));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	}
 }
 
 bool
 Texture::isSmooth() const
 {
-	GLint glFiltering;
-	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
-	glCheck(glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &glFiltering));
-	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	GLint glFiltering = 0;
+	if (mTexture != -1U)
+	{
+		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+		glCheck(glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &glFiltering));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	}
 	return glFiltering == GL_LINEAR;
 }
 
@@ -261,8 +270,11 @@ void
 Texture::setSmooth(bool smooth)
 {
 	GLint glFiltering = smooth ? GL_LINEAR : GL_NEAREST;
-	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
-	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFiltering));
-	glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFiltering));
-	glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	if (mTexture != -1U)
+	{
+		glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
+		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFiltering));
+		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFiltering));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	}
 }
