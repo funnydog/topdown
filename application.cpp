@@ -131,7 +131,7 @@ Application::processInput()
 	}
 
 	// world input
-	static const int keys[] = {
+	constexpr std::array keys = {
 		GLFW_KEY_UP,
 		GLFW_KEY_DOWN,
 		GLFW_KEY_LEFT,
@@ -139,7 +139,7 @@ Application::processInput()
 		GLFW_KEY_SPACE,
 	};
 	unsigned input = 0;
-	for (unsigned i = 0, mask = 1; i < 5; i++, mask<<=1)
+	for (unsigned i = 0, mask = 1; i < keys.size(); i++, mask<<=1)
 	{
 		if (mWindow.isKeyPressed(keys[i]))
 		{
