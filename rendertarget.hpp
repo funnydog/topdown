@@ -16,9 +16,8 @@ struct Frame;
 class RenderTarget
 {
 public:
-	RenderTarget();
-	~RenderTarget();
-
+	bool create(const Window &window);
+	void destroy();
 	void setViewport(unsigned width, unsigned height);
 
 	/**
@@ -67,17 +66,17 @@ private:
 	std::vector<PosUVColor>    mPosUVColor;
 	std::vector<Batch>         mBatches;
 
-	unsigned mVertexOffset;
-	unsigned mVertexCount;
-	unsigned mIndexOffset;
-	unsigned mIndexCount;
+	unsigned mVertexOffset = 0;
+	unsigned mVertexCount = 0;
+	unsigned mIndexOffset = 0;
+	unsigned mIndexCount = 0;
 
 	Texture  mWhiteTexture;
 	Shader   mTextureShader;
 	Shader   mUniformColorShader;
 
-	unsigned mPosUVVAO;
-	unsigned mPosUVColorVAO;
-	unsigned mVBO;
-	unsigned mEBO;
+	unsigned mPosUVVAO = 0;
+	unsigned mPosUVColorVAO = 0;
+	unsigned mVBO = 0;
+	unsigned mEBO = 0;
 };

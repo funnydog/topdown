@@ -30,7 +30,7 @@ Application::Application()
 	, mUpdateTime(Time::Zero)
 	, mNumFrames(0)
 {
-	mRenderTarget.setViewport(WIDTH, HEIGHT);
+	mRenderTarget.create(mWindow);
 	mEventQueue.registerWindow(mWindow);
 
 	world.textures.load(TextureID::TitleScreen, "assets/textures/pillars.jpg");
@@ -71,6 +71,7 @@ Application::run()
 		updateStatistics(elapsedTime);
 		render();
 	}
+	mRenderTarget.destroy();
 }
 
 void

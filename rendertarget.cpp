@@ -23,19 +23,12 @@ static const glm::vec2 units[] = {
 };
 }
 
-RenderTarget::RenderTarget()
-	: mVertexOffset(0)
-	, mVertexCount(0)
-	, mIndexOffset(0)
-	, mIndexCount(0)
-	, mPosUVVAO(0)
-	, mPosUVColorVAO(0)
-	, mVBO(0)
-	, mEBO(0)
+bool
+RenderTarget::create(const Window &window)
 {
 	mWhiteTexture.create(1, 1, &Color::White);
 
-        // shader creation and configuration
+	// shader creation and configuration
 	mTextureShader.create();
 	mTextureShader.attachFile(ShaderType::Vertex, "assets/shaders/simple.vs");
 	mTextureShader.attachFile(ShaderType::Fragment, "assets/shaders/texture.fs");
@@ -78,9 +71,14 @@ RenderTarget::RenderTarget()
 	glCheck(glVertexAttribPointer(
 		        2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(PosUVColor),
 		        reinterpret_cast<GLvoid*>(offsetof(PosUVColor, color))));
+
+	auto size = window.getSize();
+	setViewport(size.x, size.y);
+	return true;
 }
 
-RenderTarget::~RenderTarget()
+void
+RenderTarget::destroy()
 {
 	glCheck(glBindVertexArray(0));
 	glCheck(glDeleteVertexArrays(1, &mPosUVColorVAO));
