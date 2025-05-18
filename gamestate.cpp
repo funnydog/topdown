@@ -112,6 +112,40 @@ GameState::update(float dt)
 	updateEnemies(dt);
 	updateBullets(dt);
 	updatePlayer(world.player, dt);
+
+	// collision bullets / enemies
+	auto e = world.enemies.begin();
+	while (e != world.enemies.end())
+	{
+		FloatRect enemyRect;
+		getEnemyRect(*e, enemyRect);
+
+		bool collision = false;
+		auto b = world.playerBullets.begin();
+		while (b != world.playerBullets.end())
+		{
+			FloatRect bulletRect;
+			getPlayerBulletRect(*b, bulletRect);
+
+			if (enemyRect.overlaps(bulletRect))
+			{
+				collision = true;
+				break;
+			}
+
+			++b;
+		}
+
+		if (collision)
+		{
+			e = world.enemies.erase(e);
+			world.playerBullets.erase(b);
+		}
+		else
+		{
+			++e;
+		}
+	}
 	return true;
 }
 
@@ -377,4 +411,29 @@ GameState::draw(RenderTarget &target)
 	}
 	target.addFrame(frames[world.player.frameIndex], world.player.pos);
 	target.endFrames();
+}
+
+void
+GameState::getPlayerBulletRect(const PlayerBullet &b, FloatRect &r)
+{
+	r.pos = b.pos;
+	r.size = glm::vec2(3.f, 14.f);
+}
+
+void
+GameState::getEnemyRect(const Enemy &e, FloatRect &r)
+{
+	switch (e.type)
+	{
+	case EnemyType::Eagle:
+		r.pos = e.pos + glm::vec2(10.f, 10.f);
+		r.size = glm::vec2(64.f, 44.f);
+		break;
+	case EnemyType::Raptor:
+		r.pos = e.pos + glm::vec2(5.f, 10.f);
+		r.size = glm::vec2(50.f, 44.f);
+		break;
+	case EnemyType::Avenger:
+		abort();
+	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "rect.hpp"
 #include "state.hpp"
 #include "world.hpp"
 
@@ -25,4 +26,6 @@ private:
 	void createEnemy(const EnemyWave &w);
 	void updateEnemy(Enemy &e, float dt);
 
+	void getPlayerBulletRect(const PlayerBullet &b, FloatRect &r);
+	void getEnemyRect(const Enemy &e, FloatRect &r);
 };
