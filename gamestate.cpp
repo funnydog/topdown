@@ -215,62 +215,8 @@ GameState::update(float dt)
 	updateEnemies(dt);
 	updateBullets(dt);
 	updatePlayer(world.player, dt);
-
-	// update the explosions
-	auto ex = world.explosions.begin();
-	while (ex != world.explosions.end())
-	{
-		ex->delay -= dt;
-		if (ex->delay <= 0.f)
-		{
-			ex->delay += .03333f;
-			ex->frameIndex++;
-			if (ex->frameIndex >= expFrames.size())
-			{
-				ex = world.explosions.erase(ex);
-				continue;
-			}
-		}
-		++ex;
-	}
-
-	// collision bullets / enemies
-	auto e = world.enemies.begin();
-	while (e != world.enemies.end())
-	{
-		FloatRect enemyRect;
-		getEnemyRect(*e, enemyRect);
-
-		bool collision = false;
-		auto b = world.playerBullets.begin();
-		while (b != world.playerBullets.end())
-		{
-			FloatRect bulletRect;
-			getPlayerBulletRect(*b, bulletRect);
-
-			if (enemyRect.overlaps(bulletRect))
-			{
-				collision = true;
-				break;
-			}
-
-			++b;
-		}
-
-		if (collision)
-		{
-			world.explosions.emplace_back(
-				enemyRect.center() - glm::vec2(96.f) * 0.5f,
-				0,
-				.03333f);
-			e = world.enemies.erase(e);
-			world.playerBullets.erase(b);
-		}
-		else
-		{
-			++e;
-		}
-	}
+	updateExplosions(dt);
+	collideBulletsEnemies();
 	return true;
 }
 
@@ -568,5 +514,73 @@ GameState::getEnemyRect(const Enemy &e, FloatRect &r)
 		break;
 	case EnemyType::Avenger:
 		abort();
+	}
+}
+
+void
+GameState::collideBulletsEnemies()
+{
+	auto e = world.enemies.begin();
+	while (e != world.enemies.end())
+	{
+		FloatRect enemyRect;
+		getEnemyRect(*e, enemyRect);
+
+		bool collision = false;
+		auto b = world.playerBullets.begin();
+		while (b != world.playerBullets.end())
+		{
+			FloatRect bulletRect;
+			getPlayerBulletRect(*b, bulletRect);
+
+			if (enemyRect.overlaps(bulletRect))
+			{
+				collision = true;
+				break;
+			}
+
+			++b;
+		}
+
+		if (collision)
+		{
+			createExplosion(enemyRect.center());
+			e = world.enemies.erase(e);
+			world.playerBullets.erase(b);
+		}
+		else
+		{
+			++e;
+		}
+	}
+}
+
+void
+GameState::createExplosion(glm::vec2 pos)
+{
+	world.explosions.emplace_back(
+		pos - glm::vec2(96.f) * 0.5f,
+		0,
+		.03333f);
+}
+
+void
+GameState::updateExplosions(float dt)
+{
+	auto ex = world.explosions.begin();
+	while (ex != world.explosions.end())
+	{
+		ex->delay -= dt;
+		if (ex->delay <= 0.f)
+		{
+			ex->delay += .03333f;
+			ex->frameIndex++;
+			if (ex->frameIndex >= expFrames.size())
+			{
+				ex = world.explosions.erase(ex);
+				continue;
+			}
+		}
+		++ex;
 	}
 }

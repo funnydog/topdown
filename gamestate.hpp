@@ -28,4 +28,8 @@ private:
 
 	void getPlayerBulletRect(const PlayerBullet &b, FloatRect &r);
 	void getEnemyRect(const Enemy &e, FloatRect &r);
+	void collideBulletsEnemies();
+
+	void createExplosion(glm::vec2 pos);
+	void updateExplosions(float dt);
 };
