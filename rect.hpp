@@ -13,6 +13,7 @@ struct Rect
 	explicit Rect(const Rect<U> &rectangle);
 
 	bool contains(T point) const;
+	bool overlaps(const Rect<T> &other);
 
 	T pos;
 	T size;
@@ -51,6 +52,16 @@ Rect<T>::contains(T point) const
 {
 	return pos.x <= point.x && point.x < pos.x + size.x
 		&& pos.y <= point.y && point.y < pos.y + size.y;
+}
+
+template <typename T>
+bool
+Rect<T>::overlaps(const Rect<T> &other)
+{
+	return (pos.x < other.pos.x + other.size.x
+	        && pos.x + size.x > other.pos.x
+	        && pos.y < other.pos.y + other.size.y
+	        && pos.y + size.y > other.pos.y);
 }
 
 template <typename T>
