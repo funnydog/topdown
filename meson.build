@@ -18,6 +18,7 @@ srcs = [
   # graphics
   'font.cpp',
   'glcheck.cpp',
+  'rect.cpp',
   'rectangleshape.cpp',
   'rendertarget.cpp',
   'shader.cpp',

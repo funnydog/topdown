@@ -260,7 +260,7 @@ GameState::update(float dt)
 		if (collision)
 		{
 			world.explosions.emplace_back(
-				enemyRect.pos + (enemyRect.size - glm::vec2(96.f)) * 0.5f,
+				enemyRect.center() - glm::vec2(96.f) * 0.5f,
 				0,
 				.03333f);
 			e = world.enemies.erase(e);

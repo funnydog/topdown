@@ -14,6 +14,7 @@ struct Rect
 
 	bool contains(T point) const;
 	bool overlaps(const Rect<T> &other);
+	T center() const;
 
 	T pos;
 	T size;
