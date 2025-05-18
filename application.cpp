@@ -52,6 +52,7 @@ Application::run()
 
 	world.textures.load(TextureID::TitleScreen, "assets/textures/pillars.jpg");
 	world.textures.load(TextureID::Entities, "assets/textures/Entities.png");
+	world.textures.load(TextureID::Explosion, "assets/textures/explosion.png");
 	world.fonts.load(FontID::Title, "assets/fonts/belligerent.ttf", 48);
 	world.fonts.load(FontID::Body, "assets/fonts/belligerent.ttf", 26);
 

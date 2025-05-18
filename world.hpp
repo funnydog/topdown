@@ -93,11 +93,19 @@ struct Player
 	float delay;
 };
 
+struct Explosion
+{
+	glm::vec2 pos;
+	unsigned frameIndex;
+	float delay;
+};
+
 struct World
 {
 	std::vector<Enemy> enemies;
 	std::vector<EnemyBullet> enemyBullets;
 	std::vector<PlayerBullet> playerBullets;
+	std::vector<Explosion> explosions;
 
 	unsigned inputStatus;
 	unsigned inputChange;

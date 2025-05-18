@@ -87,6 +87,109 @@ constexpr std::array frames = {
 	}
 };
 
+constexpr std::array expFrames = {
+	Frame{
+		{ 96.f, 96.f },
+		{   0.f / 480.f,   0.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{  96.f / 480.f,   0.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 192.f / 480.f,   0.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 288.f / 480.f,   0.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 384.f / 480.f,   0.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{   0.f / 480.f,  96.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{  96.f / 480.f,  96.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 192.f / 480.f,  96.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 288.f / 480.f,  96.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 384.f / 480.f,  96.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{   0.f / 480.f, 192.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{  96.f / 480.f, 192.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 192.f / 480.f, 192.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 288.f / 480.f, 192.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 384.f / 480.f, 192.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{   0.f / 480.f, 288.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{  96.f / 480.f, 288.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 192.f / 480.f, 288.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 288.f / 480.f, 288.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+	Frame{
+		{ 96.f, 96.f },
+		{ 384.f / 480.f, 288.f / 384.f },
+		{  96.f / 480.f,  96.f / 384.f }
+	},
+};
+
 constexpr std::array enemyWaves = {
 	EnemyWave{ EnemyType::Eagle,  100.f,  20.f, 5.f, 2 },
 	EnemyWave{ EnemyType::Raptor, 100.f,  60.f, 1.f, 6 },
@@ -113,6 +216,24 @@ GameState::update(float dt)
 	updateBullets(dt);
 	updatePlayer(world.player, dt);
 
+	// update the explosions
+	auto ex = world.explosions.begin();
+	while (ex != world.explosions.end())
+	{
+		ex->delay -= dt;
+		if (ex->delay <= 0.f)
+		{
+			ex->delay += .03333f;
+			ex->frameIndex++;
+			if (ex->frameIndex >= expFrames.size())
+			{
+				ex = world.explosions.erase(ex);
+				continue;
+			}
+		}
+		++ex;
+	}
+
 	// collision bullets / enemies
 	auto e = world.enemies.begin();
 	while (e != world.enemies.end())
@@ -138,6 +259,10 @@ GameState::update(float dt)
 
 		if (collision)
 		{
+			world.explosions.emplace_back(
+				enemyRect.pos + (enemyRect.size - glm::vec2(96.f)) * 0.5f,
+				0,
+				.03333f);
 			e = world.enemies.erase(e);
 			world.playerBullets.erase(b);
 		}
@@ -410,6 +535,14 @@ GameState::draw(RenderTarget &target)
 		target.addFrame(frames[b.frameIndex], b.pos);
 	}
 	target.addFrame(frames[world.player.frameIndex], world.player.pos);
+	target.endFrames();
+
+	// NOTE: Explosions use a different texture
+	target.beginFrames(world.textures.get(TextureID::Explosion));
+	for (const auto &e : world.explosions)
+	{
+		target.addFrame(expFrames[e.frameIndex], e.pos);
+	}
 	target.endFrames();
 }
 
