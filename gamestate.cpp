@@ -244,7 +244,6 @@ GameState::updateWaves(float dt)
 	auto wit = world.activeWaves.begin();
 	while (wit != world.activeWaves.end())
 	{
-		// TODO: spawn the enemy
 		wit->spawnElapsed -= dt;
 		if (wit->spawnElapsed < 0.f)
 		{
