@@ -468,7 +468,7 @@ GameState::handleEvent(const Event &event)
 void
 GameState::draw(RenderTarget &target)
 {
-	target.clear(Color::fromRGBA(0, 0, 40, 100));
+	target.clear(Color::fromRGBA(0, 0, 40));
         // NOTE: draw the world
 	target.beginFrames(world.textures.get(TextureID::Entities));
 	for (const auto &e : world.enemies)
